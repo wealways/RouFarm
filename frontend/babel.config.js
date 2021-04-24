@@ -1,5 +1,5 @@
 const presets = ['module:metro-react-native-babel-preset'];
-const plugins = ['babel-plugin-styled-components'];
+let plugins = ['babel-plugin-styled-components'];
 
 plugins.push([
   'module-resolver',
