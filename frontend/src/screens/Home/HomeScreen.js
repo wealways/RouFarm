@@ -43,7 +43,7 @@ const TodoWrapper = styled.View`
   border-radius: 24px;
 `;
 
-function HomeScreen(props, { navigation }) {
+function HomeScreen({ navigation }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [qrOpen, setQROpen] = useState(false);
@@ -95,7 +95,7 @@ function HomeScreen(props, { navigation }) {
             <Card style={styles.cardWidth}>
               {dailyQ.map((value) => (
                 <TodoWrapper key={value.id}>
-                  <TouchableOpacity onPress={() => setActive(!active)}>
+                  <TouchableOpacity onPress={() => {}}>
                     <Text>{value.content}</Text>
                   </TouchableOpacity>
                   <CheckBox

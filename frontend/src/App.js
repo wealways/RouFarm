@@ -17,8 +17,9 @@ import { Home, Report, QR } from './screens/index';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './modules';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, composeWithDevTools());
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
