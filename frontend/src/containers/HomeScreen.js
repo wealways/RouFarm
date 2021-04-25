@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { View, ScrollView, Text, Animated } from 'react-native';
 
+import { CommonActions } from '@react-navigation/native';
+
 import QRCode from '@/components/animations/QRCode.js';
 import Carrot from '@/components/animations/Carrot.js';
 
@@ -45,8 +47,8 @@ const HideButton = styled.TouchableOpacity`
 
 function HomeScreen({ navigation }) {
   const [open, setOpen] = useState(false);
+  const [qrOpen, setQROpen] = useState(false);
 
-  console.log(open);
   return (
     <View style={{ flex: 1, backgroundColor: '#5c7152' }}>
       <ScrollView>
@@ -58,9 +60,9 @@ function HomeScreen({ navigation }) {
       <QRCodeButton
         onPress={() => {
           navigation.navigate('QR');
-          console.log('Click Button');
+          setQROpen(!qrOpen);
         }}>
-        <QRCode />
+        <QRCode active={qrOpen} />
       </QRCodeButton>
 
       <ButtonWrapper
