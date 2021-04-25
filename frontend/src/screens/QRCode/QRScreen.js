@@ -13,7 +13,7 @@ import {
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
 import { Dimensions } from 'react-native';
-import theme from '../theme';
+import theme from '@/theme';
 
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
