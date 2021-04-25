@@ -1,36 +1,32 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
+import 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, useColorScheme } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { Button } from '@/components/Button';
+import { ScrollView, StatusBar, useColorScheme } from 'react-native';
+
+import { ThemeProvider } from 'styled-components/native';
+import theme from './theme/index';
+
+import { Home, Report, QR } from '@/containers/index';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const [color, setColor] = useState(false);
+  const Stack = createStackNavigator();
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-        <Button onPress={() => setColor(!color)} bgColor={color} title="버튼" />
-      </ScrollView>
-    </SafeAreaView>
+    <ThemeProvider theme={theme}>
+      <NavigationContainer>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <Stack.Navigator component={Home}>
+          <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
+          <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
+          <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default App;
