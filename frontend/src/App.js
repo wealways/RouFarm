@@ -10,7 +10,7 @@ import { StatusBar, useColorScheme } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
 import theme from './theme/index';
 
-// 컴포넌트
+// 페이지
 import { Home, Report, QR } from './screens/index';
 
 // 리덕스
