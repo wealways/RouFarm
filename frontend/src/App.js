@@ -11,7 +11,7 @@ import { ThemeProvider } from 'styled-components/native';
 import theme from './theme/index';
 
 // 페이지
-import { Home, Report, QR } from './screens/index';
+import { Home, Report, QR, CreateRoutine } from './screens/index';
 
 // 리덕스
 import { createStore } from 'redux';
@@ -35,6 +35,11 @@ const App = () => {
             <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
             <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
             <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="CreateRoutine"
+              component={CreateRoutine}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

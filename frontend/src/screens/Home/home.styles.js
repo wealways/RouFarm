@@ -5,6 +5,19 @@ const Wrapper = styled.View`
   background: ${({ theme }) => theme.colors.second};
 `;
 
+const TodoWrapper = styled.View`
+  flex: 4;
+  margin: 8px;
+  padding: 0 16px;
+  width: 100%;
+  height: 60px;
+  background: #f2f3f6;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 24px;
+`;
+
 const Contents = styled.View`
   flex: 1;
   width: 100%;
@@ -40,34 +53,8 @@ const QRCodeButton = styled.TouchableOpacity`
   width: 48px;
   height: 48px;
   background-color: ${({ theme }) => theme.colors.first};
+  border: 3px solid #aa8833;
   border-radius: 8px;
 `;
 
-const ButtonWrapper = styled.TouchableOpacity`
-  margin: 8px;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 64px;
-  height: 48px;
-  border-radius: 8px;
-  background: ${({ theme }) => theme.colors.first};
-`;
-
-const HideButton = styled.TouchableOpacity`
-  margin: 8px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 0;
-  bottom: ${(props) => (props.open ? props.order * 56 + 'px' : 0)};
-  width: 64px;
-  height: 48px;
-  border-radius: 8px;
-  background: ${({ theme }) => theme.colors.first};
-  z-index: ${(props) => (props.open ? 1 : -1)};
-`;
-
-export { Wrapper, Card, Contents, QRCodeButton, ButtonWrapper, HideButton, UserImage, UserStatus };
+export { Wrapper, TodoWrapper, Card, Contents, QRCodeButton, UserImage, UserStatus };
