@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ModalComponent from '@/components/ModalComponent';
+import ModalComponent from '@/components/common/ModalComponent';
 import { modalOpen } from '@/modules/modal';
 
 const ModalContainer = ({ active }) => {

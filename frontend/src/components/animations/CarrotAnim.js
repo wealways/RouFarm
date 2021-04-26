@@ -1,7 +1,7 @@
 import React from 'react';
 import LottieView from 'lottie-react-native';
 
-const Carrot = ({ style }) => {
+const CarrotAnim = ({ style }) => {
   return (
     <LottieView
       style={style}
@@ -12,4 +12,4 @@ const Carrot = ({ style }) => {
   );
 };
 
-export default Carrot;
+export default CarrotAnim;
