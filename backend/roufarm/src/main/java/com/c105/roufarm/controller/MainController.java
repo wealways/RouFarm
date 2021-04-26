@@ -10,6 +10,6 @@ public class MainController {
 
       @GetMapping("")
       public String Test() {
-            return "Hello";
+            return "Hello, Webhook!";
       }
 }
