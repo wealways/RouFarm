@@ -10,6 +10,7 @@ import {
 import styled from 'styled-components/native';
 
 import FailView from '@/components/Report/Fail'
+import CustomBarChart from '@/components/Report/CustomBarChart'
 
 
 const Wrapper = styled.View`
@@ -89,7 +90,7 @@ function ReportScreen() {
   const width = useWindowDimensions().width;
   const [rate,setRate] = useState(0);
   const [fails,setFails] = useState({});
-  
+
   useEffect(async ()=>{
     const Fails = {
       1:{
@@ -149,6 +150,7 @@ function ReportScreen() {
             <Card width={width}>
               <ChartView>
                 <Text>차트</Text>
+                <CustomBarChart />
               </ChartView>
             </Card>
           </View>
