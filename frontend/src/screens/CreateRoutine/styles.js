@@ -20,4 +20,14 @@ const Card = styled.View`
   background: ${({ theme }) => theme.colors.first};
 `;
 
-export { Wrapper, Card, Contents };
+const ButtonWrapper = styled.TouchableOpacity`
+  margin: 16px auto;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 48px;
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.navy};
+`;
+
+export { Wrapper, ButtonWrapper, Card, Contents };
