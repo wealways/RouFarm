@@ -37,6 +37,8 @@ function NavigationButton({ navigation }) {
     { id: 2, name: 'Report' },
     { id: 3, name: 'CreateRoutine' },
     { id: 4, name: 'Settings' },
+    { id: 5, name: 'Login' },
+    { id: 6, name: 'SelectMode' },
   ];
 
   const [open, setOpen] = useState(false);
