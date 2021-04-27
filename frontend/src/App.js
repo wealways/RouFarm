@@ -31,10 +31,10 @@ const App = () => {
       <Provider store={store}>
         <NavigationContainer>
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <Stack.Navigator component={Home}>
-            <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
-            <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
-            <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
+          <Stack.Navigator screenOptions={{ headerShown: false }} component={Home}>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Report" component={Report} />
+            <Stack.Screen name="QR" component={QR} />
             <Stack.Screen
               options={{ headerShown: false }}
               name="CreateRoutine"

@@ -1,69 +1,108 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, ScrollView, Text, View, TextInput } from 'react-native';
-import { Wrapper, ButtonWrapper, Card, Contents } from './styles';
+import {
+  Wrapper,
+  ButtonWrapper,
+  Card,
+  Contents,
+  SettingWrapper,
+  SettingTitle,
+  SettingButton,
+} from './styles';
 import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
-import { Calendar } from 'react-native-calendars';
+import { Calendar, Agenda } from 'react-native-calendars';
+import { Switch } from 'react-native-elements';
 
+// 컴포넌트
+import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 
 function CreateRoutineScreen({ navigation }) {
-  const routine = '운동';
+  // 모달
+  const [isReapeat, setIsReapeat] = useState(false);
+  const [isCalendar, setIsCalendar] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => {
+    setShowModal((prev) => !prev);
+  };
+
+  const routine = '나는 운동이 하고싶다...';
+  let date = new Date();
+  let today = date.getFullYear() + ' / ' + date.getMonth() + ' / ' + date.getDate();
+
   return (
     <Wrapper>
       <ScrollView>
+        {/* section 1 시작 */}
         <Contents>
           <View>
-            <Text style={styles.title}>루틴 이름</Text>
+            <Text style={styles.title}>퀘스트 이름</Text>
             <Card style={styles.cardWidth}>
               <TextInput
                 style={styles.textInput}
-                placeholder="어떤 루틴인가요?"
+                placeholder="어떤 퀘스트인가요?"
                 maxLength={20}></TextInput>
             </Card>
           </View>
         </Contents>
+        {/* section 1 끝 */}
+
+        {/* section 2 시작 */}
         <Contents>
-          <Card style={styles.cardWidth}>
-            {/* 반복 유무 */}
-            <View style={{ padding: 16, flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={styles.routineTitle}>반복</Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder="반복 없음"
-                maxLength={20}></TextInput>
-            </View>
+          <View>
+            <Text style={styles.title}>퀘스트 환경 설정</Text>
 
-            {/* 날짜 */}
-            <View style={{ padding: 16, flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={styles.routineTitle}>일시</Text>
-              <TextInput style={styles.textInput} placeholder="2021.04.26(월)"></TextInput>
-            </View>
+            <Card style={styles.cardWidth}>
+              {/* 반복 유무 */}
+              <SettingWrapper>
+                <SettingTitle>반복</SettingTitle>
+                <SettingButton onPress={openModal}>
+                  <Text style={{ opacity: 0.5 }}>반복 없음</Text>
+                </SettingButton>
+              </SettingWrapper>
 
-            {/* 달력(라이브러리 사용법 익히기) */}
-            <Calendar theme={{ calendarBackground: '#e3c668' }} />
+              {/* 날짜 */}
+              <SettingWrapper>
+                <SettingTitle>일시</SettingTitle>
+                <SettingButton onPress={openModal}>
+                  <Text style={{ opacity: 0.5 }}>{today}</Text>
+                </SettingButton>
+              </SettingWrapper>
 
-            {/* 알람 유무 */}
-            <View style={{ padding: 16, flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={styles.routineTitle}>알람</Text>
-              <TextInput style={styles.textInput} placeholder="알람 없음"></TextInput>
-            </View>
-          </Card>
+              {/* 알람 유무 */}
+              <SettingWrapper>
+                <SettingTitle>알람</SettingTitle>
+                <Switch value={false} color="orange"></Switch>
+              </SettingWrapper>
+            </Card>
+          </View>
         </Contents>
+        {/* section 2 끝 */}
+
         {/* 루틴을 생성하면 qr코드화면으로 넘어가게 + 루틴의  */}
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Image
             style={styles.qrImage}
             source={{
-              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${routine}.png`,
+              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${routine}`,
             }}
           />
         </View>
-        <ButtonWrapper>
-          <Text>루틴 생성</Text>
+        <ButtonWrapper
+          style={{ marginBottom: 50 }}
+          onPress={() => {
+            navigation.navigate('Home');
+          }}>
+          <Text style={{ color: 'white' }}>퀘스트 생성</Text>
         </ButtonWrapper>
       </ScrollView>
+      {/* 모달 */}
+      <ModalComponent showModal={showModal} setShowModal={setShowModal}>
+        <Calendar />
+        {/* <Agenda /> */}
+      </ModalComponent>
       <NavigationButton navigation={navigation} />
     </Wrapper>
   );
@@ -90,7 +129,7 @@ const styles = StyleSheet.create({
   },
   // 디바이스 크기가 커지면 더 많이 줄어들어야함
   cardWidth: {
-    width: deviceWidth - 40 * 1.5,
+    width: deviceWidth - 20 * 1.5,
   },
   textInput: {
     flex: 4,

@@ -1,37 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
 
-const ModalComponent = ({ active }) => {
-  const [modalVisible, setModalVisible] = useState(active);
-
-  useEffect(() => {
-    setModalVisible(active);
-  }, [active]);
-
-  console.log(active, modalVisible);
-
+const ModalComponent = ({
+  showModal,
+  setShowModal,
+  children, // 컴포넌트를 자식으로 넘겨받는다.
+}) => {
+  console.log(children);
   return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
+    <>
+      {showModal ? (
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
-          </View>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={showModal}
+            onRequestClose={() => {
+              setShowModal(!showModal);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>{children}</View>
+            </View>
+          </Modal>
         </View>
-      </Modal>
-    </View>
+      ) : null}
+    </>
   );
 };
 
