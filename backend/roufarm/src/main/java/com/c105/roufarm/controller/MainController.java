@@ -19,7 +19,7 @@ public class MainController {
 
       @GetMapping("")
       public String Helloworld(){
-            return "Hello, World! 어 뭐야?";
+            return "Hello? 전에 있던 자바는 죽었나요?";
       }
 
       // @GetMapping("/{name}")
