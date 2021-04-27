@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
-import { VictoryBar, VictoryChart, VictoryLegend,VictoryGroup } from "victory-native";
+import { VictoryBar, VictoryChart, VictoryLegend,VictoryGroup,VictoryArea } from "victory-native";
 
 const MeanData = [
   {x: "Mon", y: 59},
@@ -26,16 +26,18 @@ const CustomBarChart = () => {
   return (
     <View style={styles.container}>
       <VictoryChart 
-        width={width-80} 
-        domainPadding={{ x: [5, 5], y: [5, 0] }}
+        width={width-20} 
         domain={{ y: [0, 100] }}
         animate={{
           duration: 2000,
           onLoad: { duration: 1000 }
         }}
+        style={{
+          background: { fill: "#fff" }
+        }}
       >
         <VictoryLegend 
-          x = {140}
+          x = {180}
           orientation="horizontal"
           gutter={20}
           // style={{ border: { stroke: "black" } }}
@@ -44,7 +46,7 @@ const CustomBarChart = () => {
             { name: "평균" }, { name: "이번주" }
           ]}
         />
-        <VictoryGroup offset={5}>
+        <VictoryGroup offset={10}>
           <VictoryBar
             categories={{
               x: ["Mon", "Tue", "Wen", "Thu", "Fri", "Sat", 'Sun']
@@ -53,6 +55,8 @@ const CustomBarChart = () => {
             style={{
               data: { fill: "#6f95aa", fillOpacity: 0.6, }
             }}
+            barRatio={1}
+            barWidth={10}
           />
           <VictoryBar
             categories={{
@@ -62,6 +66,8 @@ const CustomBarChart = () => {
             style={{
               data: { fill: "#ff844b", fillOpacity: 0.6 }
             }}
+            barRatio={1}
+            barWidth={10}
           />
         </VictoryGroup>
       </VictoryChart>
@@ -74,7 +80,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5fcff"
+    // backgroundColor: "#f5fcff"
+    backgroundColor: "#fff"
   }
 });
 

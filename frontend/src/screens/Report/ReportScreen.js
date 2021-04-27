@@ -11,11 +11,12 @@ import styled from 'styled-components/native';
 
 import FailView from '@/components/Report/Fail'
 import CustomBarChart from '@/components/Report/CustomBarChart'
+import CustomPieChart from '@/components/Report/CustomPieChart'
 
 
 const Wrapper = styled.View`
   flex:1;
-  /* background:${({theme}) => theme.colors.second}; */
+  background:#dce8ef;
 
 `;
 const Contents = styled.View`
@@ -46,7 +47,7 @@ const Card = styled.View`
   padding: 16px;
   align-items:center;
   border-radius:8px;
-  background: ${({theme}) => theme.colors.first};
+  background: #fff;
   width: ${({width}) => width - 20}px;
   elevation: 12;
 `;
@@ -55,7 +56,6 @@ const Card = styled.View`
 const MonthChartView = styled.View`
   flex:5;
   background:#fff;
-  elevation:12;
   border-radius:8px;
   padding: 8px;
 `
@@ -148,10 +148,7 @@ function ReportScreen() {
           <SubtitleText>요일 별 달성률</SubtitleText>
           <View>
             <Card width={width}>
-              <ChartView>
-                <Text>차트</Text>
-                <CustomBarChart />
-              </ChartView>
+              <CustomBarChart />
             </Card>
           </View>
         </Contents>
@@ -160,9 +157,9 @@ function ReportScreen() {
           <SubtitleText>해쉬태그 별 달성률</SubtitleText>
           <View>
             <Card width={width}>
-              <ChartView>
-                <Text>차트</Text>
-              </ChartView>
+              <CustomPieChart 
+
+              />
             </Card>
           </View>
         </Contents>
