@@ -3,6 +3,7 @@ import {
   View,
   ScrollView,
   Text,
+  TextInput,
   StyleSheet,
   Dimensions,
   Image,
@@ -29,17 +30,30 @@ import { deviceWidth, deviceHeight } from '@/utils/devicesize';
 import { WithLocalSvg } from 'react-native-svg';
 import kakaoSymbol from '@/assets/images/Kakao_symbol.svg';
 
-function LoginPage({ navigation }) {
+function selectMode({ navigation }) {
 
   return (
     <Wrapper>
       {/* 닉네임 선택 */}
       <Content1>
         <Title>닉네임을 입력해주세요</Title>
+        <NicknameInput />
       </Content1>
       {/* 모드 선택 */}
       <Content2>
-        <Title>닉네임을 입력해주세요</Title>
+        <Title>모드 선택하기</Title>
+        <ModeList>
+          <Mode
+            source={require('../../assets/images/slave1.png')} />
+          <Mode
+            source={require('../../assets/images/slave1.png')} />
+        </ModeList>
+        {/* 각 모드 설명 */}
+        <Subtitle>소프트 모드는 루팜의 모든 기능을 선택해서 이용할 수 있습니다</Subtitle>
+        {/* 완료버튼 */}
+        <Submit>
+          <SubmitText>완료</SubmitText>
+        </Submit>
       </Content2>
     </Wrapper >
   );
@@ -51,57 +65,68 @@ const Wrapper = styled.View`
   background: #f4f4f4;
 `;
 
-// 각 섹션
+// 닉네임 선택 - 질문
 const Content1 = styled.View`
   flex: 1;
   justify-content: flex-end;
-  align-items: flex-start;
   margin: 15px;
   margin-left: 30px;
-  background: pink;
+  margin-bottom: 15%;
 `;
+// 닉네임 입력창
+const NicknameInput = styled.TextInput`
+  height: 40px;
+  margin-left: 8px;
+  margin-right: 8px;
+  border: #55f27c 2px;
+  border-radius: 14px;
+  background: #e8e8e8;
+`;
+// 모드 선택
+const Content2 = styled.View`
+  flex: 2;
+  justify-content: flex-start;
+  margin: 30px;
+  margin-top: 15px;
+`;
+
 // 선택지 질문
 const Title = styled.Text`
-  color: white;
   font-size: 18px;
   font-family: "NotoSansKR-Regular";
   color: #606c80;
+  margin-bottom: 10px;
 `;
+// 모드 리스트
+const ModeList = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+// 모드 이미지 스타일
+const Mode = styled.Image`
+  background: pink;
+  width: 150px;
+  height: 150px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+`;
+// 모드 설명 스타일
 const Subtitle = styled.Text`
-  align-self: center;
-  font-size: 12;
-  font-family: "NotoSansKR-Regular";
-  color: #606c80;
-`;
-
-// 중앙 - 설명, 로고
-const Content2 = styled.View`
-  flex: 2;
-  align-items: center;
-  justify-content: flex-start;
   margin: 20px;
-  margin-top: 40;
+  font-size: 14px;
 `;
-const Logo = styled.Image`
-`;
-// 카카오 로그인 - 규칙에 따라
-const Btn = styled.TouchableOpacity`
+// 완료 버튼
+const Submit = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
-  align-content: space-between;
-  margin-top: 40px;
-  background: #fee500;
-  padding: 15px;
-  border-radius: 12px;
-  width: 250px;
+  align-self: flex-end;
+  align-items: center;
+  background: #55f27c;
+  width: 60px;
+  height: 30px;
+  border-radius: 10px;
 `;
-const Symbol = styled.View`
-  width: 5px;
-  height: 5px;
+const SubmitText = styled.Text`
+  color: #fff;
 `;
-const BtnText = styled.Text`
-  margin-left: 15px;
-  color: #0f0f0f;
-
-`;
-export default LoginPage;
+export default selectMode;
