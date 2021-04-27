@@ -1,67 +1,81 @@
-import React from 'react';
-import { Dimensions } from "react-native";
+import React from "react";
+import { StyleSheet, View, Dimensions } from "react-native";
+import { VictoryBar, VictoryChart, VictoryLegend,VictoryGroup } from "victory-native";
 
-import {
-  BarChart,
-  PieChart,
-} from "react-native-chart-kit";
-
-const minValue = 0;
-
-function* yLabel() {
-  yield* [minValue, 25, 50, 75, 100];
-}
-
-const datapoints = [20, 45, 28, 80, 99, 43].map(
-  (datapoint) => datapoint - minValue - 1,
-);
-
-const data = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','Sat', 'Sun'],
-  datasets: [
-    {
-      data: datapoints,
-    },
-  ],
-};
-
+const MeanData = [
+  {x: "Mon", y: 59},
+  {x: "Tue", y: 70},
+  {x: "Wen", y: 69},
+  {x: "Thu", y: 100},
+  {x: "Fri", y: 30},
+  {x: "Sat", y: 100},
+  {x: "Sun", y: 100}
+]
+const NowData = [
+  {x: "Mon", y: 69},
+  {x: "Tue", y: 20},
+  {x: "Wen", y: 100},
+  {x: "Thu", y: 100},
+  {x: "Fri", y: 45},
+  {x: "Sat", y: 100},
+  {x: "Sun", y: 70}
+]
 
 const CustomBarChart = () => {
   const width = Dimensions.get("window").width;
-  const chartConfig = {
-    backgroundGradientFrom: "#1E2923",
-    backgroundGradientFromOpacity: 1,
-    backgroundGradientTo: "#08130D",
-    backgroundGradientToOpacity: 1,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 0.4,
-    useShadowColorFromDataset: false, // optional,
-    formatYLabel: () => yLabelIterator.next().value,
-    data: data.datasets,
-    
-
-  };
-  const yLabelIterator = yLabel();
-
-
-  
   return (
-    <BarChart
-      style={{
-        marginVertical: 10,
-        borderRadius: 16,
-        margin:-10,
-      }}
-      data={data}
-      width={width-80}
-      height={220}
-      verticalLabelRotation={0}
-      chartConfig={chartConfig}
-      fromZero={true}
-      
-    />
+    <View style={styles.container}>
+      <VictoryChart 
+        width={width-80} 
+        domainPadding={{ x: [5, 5], y: [5, 0] }}
+        domain={{ y: [0, 100] }}
+        animate={{
+          duration: 2000,
+          onLoad: { duration: 1000 }
+        }}
+      >
+        <VictoryLegend 
+          x = {140}
+          orientation="horizontal"
+          gutter={20}
+          // style={{ border: { stroke: "black" } }}
+          colorScale={[ "#6f95aa", "#ff844b" ]}
+          data={[
+            { name: "평균" }, { name: "이번주" }
+          ]}
+        />
+        <VictoryGroup offset={5}>
+          <VictoryBar
+            categories={{
+              x: ["Mon", "Tue", "Wen", "Thu", "Fri", "Sat", 'Sun']
+            }}
+            data={MeanData}
+            style={{
+              data: { fill: "#6f95aa", fillOpacity: 0.6, }
+            }}
+          />
+          <VictoryBar
+            categories={{
+              x: ["Mon", "Tue", "Wen", "Thu", "Fri", "Sat", 'Sun']
+            }}
+            data={NowData}
+            style={{
+              data: { fill: "#ff844b", fillOpacity: 0.6 }
+            }}
+          />
+        </VictoryGroup>
+      </VictoryChart>
+    </View>
   )
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5fcff"
+  }
+});
 
 export default CustomBarChart;
