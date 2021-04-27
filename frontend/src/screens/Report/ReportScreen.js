@@ -9,6 +9,7 @@ import {
 
 import styled from 'styled-components/native';
 
+import CustomHeatmapChart from '@/components/Report/CustomHeatmapChart'
 import FailView from '@/components/Report/Fail'
 import CustomBarChart from '@/components/Report/CustomBarChart'
 import CustomPieChart from '@/components/Report/CustomPieChart'
@@ -54,13 +55,13 @@ const Card = styled.View`
 
 // 월간 수확
 const MonthChartView = styled.View`
-  flex:5;
+  flex:4;
   background:#fff;
   border-radius:8px;
   padding: 8px;
 `
 const MonthTextView = styled.View`
-  flex:3;
+  flex:2;
   margin-left:8px;
   align-items:center;
   justify-content:center;
@@ -116,7 +117,7 @@ function ReportScreen() {
           <View>
             <Card width={width}>
               <MonthChartView>
-                <Text>잔디</Text>
+                <CustomHeatmapChart />
               </MonthChartView>
               <MonthTextView>
                 <Text>달성률</Text>
