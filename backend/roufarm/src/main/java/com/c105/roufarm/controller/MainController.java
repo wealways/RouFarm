@@ -10,6 +10,6 @@ public class MainController {
 
       @GetMapping("")
       public String Test() {
-            return "Hello, Webhook! and Good!";
+            return "Hello, Webhook은 master일때만 제발...";
       }
 }
