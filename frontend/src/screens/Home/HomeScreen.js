@@ -1,59 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-import {
-  Wrapper,
-  TodoWrapper,
-  Card,
-  Contents,
-  QRCodeButton,
-  UserImage,
-  UserStatus,
-} from './home.styles';
-
-import { CheckBox } from 'react-native-elements';
+import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './home.styles';
 
 // 컴포넌트
-import QRCodeAnim from '@/components/animations/QRCodeAnim';
-import CarrotAnim from '@/components/animations/CarrotAnim';
-import NavigationButton from '@/components/common/NavigationButton';
+import { QRCodeAnim, CarrotAnim } from '@/components/animations';
+import { NavigationButton } from '@/components/common';
+import { DailyQuest, EmergencyQuest } from '@/components/Home';
 
+import MyTabs from '../../navigators/HomeNavigator';
 // 리덕스
-import ModalContainer from '@/containers/ModalContainer';
+// import ModalContainer from '@/containers/ModalContainer';
 
 // 디바이스 사이즈
-import { deviceWidth, deviceHeight } from '@/utils/devicesize';
+import { deviceWidth } from '@/utils/devicesize';
 
-// 홈화면으로 오면 refresh되도록!
+// 페이지 리로드관련 hook
 import { useIsFocused } from '@react-navigation/native';
+import theme from '../../theme';
 
 function HomeScreen({ navigation }) {
-  const [active, setActive] = useState(false);
   const [qrOpen, setQROpen] = useState(false);
   const [up, setUp] = useState(0);
-
-  const [todos, setTodos] = useState({
-    1: { id: 1, content: '코딩 테스트 문제 풀기', checked: false },
-    2: { id: 2, content: 'javascript 공부하기', checked: false },
-    3: { id: 3, content: '책 읽기', checked: false },
-  });
-
-  let dailyQ = [
-    { id: 1, content: '코딩 테스트 문제 풀기', checked: false },
-    { id: 2, content: 'javascript 공부하기', checked: false },
-    { id: 3, content: '책 읽기', checked: false },
-  ];
-  let emergencyQ = [
-    { id: 1, content: '부모님에게 안부전화하기' },
-    { id: 2, content: '30분 산책하며 머리 식히기' },
-    { id: 3, content: '물 1L 마시기' },
-  ];
 
   // 네비게이션 리로드 테스트
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    // Put Your Code Here Which You Want To Refresh or Reload on Coming Back to This Screen.
+    // 이 페이지에 돌아올 때, 리로드할 로직을 넣기
     setUp(0);
   }, [isFocused]);
 
@@ -75,11 +49,11 @@ function HomeScreen({ navigation }) {
                 <Text style={[styles.title, { color: '#000' }]}>{up}</Text>
                 {/* 네비게이션 리로드 테스트 */}
                 <TouchableOpacity
-                  style={styles.border}
+                  style={styles.increaseButton}
                   onPress={() => {
                     setUp(up + 1);
                   }}>
-                  <Text style={styles.title}>숫자증가</Text>
+                  <Text style={{ color: '#fff' }}>리로드테스트</Text>
                 </TouchableOpacity>
               </UserStatus>
             </Card>
@@ -88,37 +62,10 @@ function HomeScreen({ navigation }) {
 
         {/* section 2 - 일일 퀘스트 */}
         <Contents>
-          {/* 모달 */}
-          <ModalContainer active={active} />
-
           <View>
             <Text style={styles.title}>일일 퀘스트</Text>
             <Card style={styles.cardWidth}>
-              {dailyQ.map((value) => (
-                <TodoWrapper key={value.id}>
-                  <TouchableOpacity onPress={() => {}}>
-                    <Text>{value.content}</Text>
-                  </TouchableOpacity>
-                  <CheckBox
-                    checkedIcon={
-                      <Image
-                        style={{ width: 16, height: 16 }}
-                        source={require('@/assets/images/check-box.png')}
-                      />
-                    }
-                    uncheckedIcon={
-                      <Image
-                        style={{ width: 16, height: 16 }}
-                        source={require('@/assets/images/blank-check-box.png')}
-                      />
-                    }
-                    checked={value.checked}
-                    onPress={() => {
-                      !value.checked;
-                    }}
-                  />
-                </TodoWrapper>
-              ))}
+              <DailyQuest />
             </Card>
           </View>
         </Contents>
@@ -128,15 +75,14 @@ function HomeScreen({ navigation }) {
           <View>
             <Text style={styles.title}>오늘의 긴급퀘스트</Text>
             <Card style={styles.cardWidth}>
-              {emergencyQ.map((value) => (
-                <TodoWrapper key={value.id}>
-                  <Text>{value.content}</Text>
-                </TodoWrapper>
-              ))}
+              <EmergencyQuest />
             </Card>
           </View>
         </Contents>
       </ScrollView>
+
+      {/* <MyTabs /> */}
+
       <QRCodeButton
         style={styles.android}
         onPress={() => {
@@ -145,6 +91,8 @@ function HomeScreen({ navigation }) {
         }}>
         <QRCodeAnim active={qrOpen} />
       </QRCodeButton>
+
+      {/* 네비게이션 버튼 */}
       <NavigationButton navigation={navigation} />
     </Wrapper>
   );
@@ -152,7 +100,7 @@ function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   title: {
     fontSize: 18,
-    color: '#fff',
+    color: '#2e2e2e',
     marginTop: 8,
     marginBottom: 8,
   },
@@ -169,10 +117,11 @@ const styles = StyleSheet.create({
   checkbox: {
     alignSelf: 'center',
   },
-  border: {
-    width: 100,
+
+  increaseButton: {
+    width: 150,
     height: 50,
-    backgroundColor: '#5c7152',
+    backgroundColor: theme.colors.first,
     justifyContent: 'center',
     alignItems: 'center',
   },

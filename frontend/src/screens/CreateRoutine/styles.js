@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 
 const Wrapper = styled.View`
   flex: 1;
-  background: ${({ theme }) => theme.colors.second};
+  background: ${({ theme }) => theme.colors.third};
 `;
 
 const Contents = styled.View`
@@ -17,7 +17,7 @@ const Card = styled.View`
   padding: 16px;
   align-items: center;
   border-radius: 8px;
-  background: ${({ theme }) => theme.colors.first};
+  background: ${({ theme }) => theme.colors.second};
 `;
 
 const ButtonWrapper = styled.TouchableOpacity`
@@ -27,7 +27,7 @@ const ButtonWrapper = styled.TouchableOpacity`
   width: 90%;
   height: 48px;
   border-radius: 8px;
-  background: ${({ theme }) => theme.colors.navy};
+  background: ${({ theme }) => theme.colors.first};
 `;
 
 const SettingWrapper = styled.View`

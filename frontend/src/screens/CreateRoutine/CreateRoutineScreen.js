@@ -74,8 +74,18 @@ function CreateRoutineScreen({ navigation }) {
               {/* 알람 유무 */}
               <SettingWrapper>
                 <SettingTitle>알람</SettingTitle>
-                <Switch value={false} color="orange"></Switch>
+                <Switch value={false} color="orange" />
               </SettingWrapper>
+
+              {/* QR 생성 여부 */}
+              <SettingWrapper>
+                <SettingTitle>QR 생성</SettingTitle>
+                <Switch value={false} color="orange" />
+              </SettingWrapper>
+              <TextInput
+                style={styles.qrTextInput}
+                placeholder="QR 코드의 이름을 기입해주세요"
+                maxLength={20}></TextInput>
             </Card>
           </View>
         </Contents>
@@ -111,7 +121,7 @@ function CreateRoutineScreen({ navigation }) {
 const styles = StyleSheet.create({
   title: {
     fontSize: 18,
-    color: '#fff',
+    color: '#000',
     marginTop: 8,
     marginBottom: 8,
   },
@@ -123,8 +133,8 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   qrImage: {
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
     borderRadius: 8,
   },
   // 디바이스 크기가 커지면 더 많이 줄어들어야함
@@ -137,6 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
+  qrTextInput: {},
 });
 
 export default CreateRoutineScreen;

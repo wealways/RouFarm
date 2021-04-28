@@ -12,7 +12,6 @@ const ButtonWrapper = styled.TouchableOpacity`
   width: 64px;
   height: 48px;
   border-radius: 8px;
-  border: 3px solid #aa8833;
   background: ${({ theme }) => theme.colors.first};
 `;
 
@@ -26,17 +25,16 @@ const HideButton = styled.TouchableOpacity`
   width: 64px;
   height: 48px;
   border-radius: 8px;
-  border: 3px solid #aa8833;
   background: ${({ theme }) => theme.colors.first};
   z-index: ${(props) => (props.open ? 1 : -1)};
 `;
 
 function NavigationButton({ navigation }) {
   const paths = [
-    { id: 1, name: 'Home' },
-    { id: 2, name: 'Report' },
-    { id: 3, name: 'CreateRoutine' },
-    { id: 4, name: 'Settings' },
+    { id: 1, path: 'Home', name: '홈' },
+    { id: 2, path: 'Report', name: '리포트' },
+    { id: 3, path: 'CreateRoutine', name: '퀘스트 생성' },
+    { id: 4, path: 'Settings', name: '환경설정' },
   ];
 
   const [open, setOpen] = useState(false);
@@ -48,18 +46,18 @@ function NavigationButton({ navigation }) {
         onPress={() => {
           setOpen(!open);
         }}>
-        <Text>Button</Text>
+        <Text style={styles.buttonText}>+</Text>
       </ButtonWrapper>
       {paths.map((value) => (
         <React.Fragment key={value.id}>
           <HideButton
             style={styles.android}
             onPress={() => {
-              navigation.navigate(value.name);
+              navigation.navigate(value.path);
             }}
             order={value.id}
             open={open}>
-            <Text>{value.name}</Text>
+            <Text style={styles.buttonText}>{value.name}</Text>
           </HideButton>
         </React.Fragment>
       ))}
@@ -70,6 +68,11 @@ function NavigationButton({ navigation }) {
 const styles = StyleSheet.create({
   android: {
     elevation: 8,
+  },
+  buttonText: {
+    color: '#f2f3f6',
+    textAlign: 'center',
+    // color: '#2e2e2e',
   },
 });
 
