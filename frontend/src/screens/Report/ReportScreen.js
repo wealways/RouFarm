@@ -9,6 +9,7 @@ import {
 
 import styled from 'styled-components/native';
 
+// components
 import CustomHeatmapChart from '@/components/Report/CustomHeatmapChart'
 import FailView from '@/components/Report/Fail'
 import CustomBarChart from '@/components/Report/CustomBarChart'
@@ -89,7 +90,6 @@ const ChartView = styled.View`
 function ReportScreen() {
 
   const width = useWindowDimensions().width;
-  const [rate,setRate] = useState(0);
   const [fails,setFails] = useState({});
 
   useEffect(async ()=>{
@@ -107,6 +107,31 @@ function ReportScreen() {
     await setFails(Fails)
   },[]);
 
+  // 월간 수확
+  const [monthdata,setMonthdata] = useState([-10,-10,-10,-10,-10,-10,-10,-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]) 
+  const [date,setdateCount] = useState(30);
+
+  useEffect(() => {
+    const data = {'2021-04':[-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0]}
+    const date = new Date(Object.keys(data)[0])
+    const day = date.getDay() - 1
+    const lastdate = new Date(date.getFullYear(),date.getMonth()+1,0).getDate();
+    setdateCount(lastdate)
+    const update = monthdata.map((d,i)=>{
+      if(i<day){
+        return d
+      }else if(i<lastdate+day){
+        return Object.values(data)[0][i-day]
+      }else{
+        return d
+      }
+    })
+    setMonthdata(update)
+  },[]);
+
+  const MonthRate = Math.round(monthdata.reduce((a,b) => a+b,0) / date,1)
+
+
   return (
     <Wrapper>
       <ScrollView>
@@ -117,11 +142,11 @@ function ReportScreen() {
           <View>
             <Card width={width}>
               <MonthChartView>
-                <CustomHeatmapChart />
+                <CustomHeatmapChart Monthdata={monthdata}/>
               </MonthChartView>
               <MonthTextView>
                 <Text>달성률</Text>
-                <Text>{rate} %</Text>
+                <Text style={{fontSize:30, margin:5,fontWeight:"600"}}>{MonthRate} %</Text>
               </MonthTextView>
             </Card>
           </View>
@@ -134,7 +159,7 @@ function ReportScreen() {
               <FailListView>
                 {Object.values(fails)
                   .map((day)=>(
-                    <View>
+                    <View key="day.date">
                       <Text>{day.date}</Text>
                       <FailView contents={day.content} />
                     </View>
