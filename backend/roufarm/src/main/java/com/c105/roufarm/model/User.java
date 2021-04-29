@@ -1,13 +1,15 @@
 package com.c105.roufarm.model;
 
+import java.util.HashSet;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Document("Person")
+@Document("User")
 @Data
-public class Person {
+public class User {
       private String id;
-      private String name;
-      private String job;
+      private Profile profile;
+      private HashSet<String> routines;
 }
