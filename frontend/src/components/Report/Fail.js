@@ -17,6 +17,7 @@ const FailView = styled.View`
   flex-direction:row;
   justify-content:space-between;
   align-items:center;
+  width:300px;
 `
 
 const Fail = (contents) => {
