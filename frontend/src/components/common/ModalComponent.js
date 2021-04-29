@@ -18,15 +18,7 @@ const ModalComponent = ({
             onRequestClose={() => {
               setShowModal(!showModal);
             }}>
-            <View
-              style={styles.centeredView}
-              // style={{
-              //   position: 'absolute',
-              //   top: '50%',
-              //   left: '50%',
-              //   transform: [{ translateX: '-50%%' }, { translateY: -50 }],
-              // }}
-            >
+            <View style={styles.centeredView}>
               <View style={styles.modalView}>{children}</View>
             </View>
           </Modal>

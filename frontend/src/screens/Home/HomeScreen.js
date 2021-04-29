@@ -7,10 +7,7 @@ import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
 import { DailyQuest, EmergencyQuest } from '@/components/Home';
-
-import MyTabs from '../../navigators/HomeNavigator';
-// 리덕스
-// import ModalContainer from '@/containers/ModalContainer';
+import MyTabs from '@/navigators/HomeNavigator';
 
 // 디바이스 사이즈
 import { deviceWidth } from '@/utils/devicesize';

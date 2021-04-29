@@ -37,6 +37,7 @@ const SettingWrapper = styled.View`
   margin: 16px 0;
   padding: 0 16px;
 `;
+
 const SettingTitle = styled.Text`
   flex: 2;
   align-items: center;
@@ -53,4 +54,22 @@ const SettingButton = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-export { Wrapper, ButtonWrapper, Card, Contents, SettingWrapper, SettingTitle, SettingButton };
+const SmallButton = styled.TouchableOpacity`
+  width: 45%;
+  height: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export {
+  Wrapper,
+  ButtonWrapper,
+  Card,
+  Contents,
+  SettingWrapper,
+  SettingTitle,
+  SettingButton,
+  SmallButton,
+};
