@@ -35,6 +35,10 @@ function NavigationButton({ navigation }) {
     { id: 2, path: 'Report', name: '리포트' },
     { id: 3, path: 'CreateRoutine', name: '퀘스트 생성' },
     { id: 4, path: 'Settings', name: '환경설정' },
+    // 스크린 테스트용 - 나중에 변경
+    { id: 5, path: 'Login', name: '로그인' },
+    { id: 6, path: 'SelectMode', name: '모드선택' },
+    { id: 7, path: 'FriendList', name: '친구목록' },
   ];
 
   const [open, setOpen] = useState(false);
