@@ -10,9 +10,9 @@ const fontSizes = {
 };
 
 const colors = {
-  first: '#e3c668',
-  second: '#5c7152',
-  third: '#d8d8d8',
+  first: '#382F9B',
+  second: '#F5F8FD',
+  third: '#D1DEFC',
   navy: '#4d426a',
   purpleOne: '#8653a8',
   purpleTwo: '#6f0d99',

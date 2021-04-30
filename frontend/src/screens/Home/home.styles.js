@@ -2,20 +2,7 @@ import styled from 'styled-components/native';
 
 const Wrapper = styled.View`
   flex: 1;
-  background: ${({ theme }) => theme.colors.second};
-`;
-
-const TodoWrapper = styled.View`
-  flex: 4;
-  margin: 8px;
-  padding: 0 16px;
-  width: 100%;
-  height: 60px;
-  background: #f2f3f6;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 24px;
+  background: ${({ theme }) => theme.colors.third};
 `;
 
 const Contents = styled.View`
@@ -30,13 +17,12 @@ const Card = styled.View`
   padding: 16px;
   align-items: center;
   border-radius: 8px;
-  background: ${({ theme }) => theme.colors.first};
+  background: ${({ theme }) => theme.colors.second};
 `;
 
 const UserImage = styled.View`
   flex: 2;
-  background: ${({ theme }) => theme.colors.navy};
-  border: 3px solid ${({ theme }) => theme.colors.purpleOne};
+  background: ${({ theme }) => theme.colors.first};
   border-radius: 8px;
 `;
 
@@ -53,8 +39,7 @@ const QRCodeButton = styled.TouchableOpacity`
   width: 48px;
   height: 48px;
   background-color: ${({ theme }) => theme.colors.first};
-  border: 3px solid #aa8833;
   border-radius: 8px;
 `;
 
-export { Wrapper, TodoWrapper, Card, Contents, QRCodeButton, UserImage, UserStatus };
+export { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus };
