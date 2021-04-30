@@ -11,11 +11,8 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
-<<<<<<< HEAD
     "@react-native-picker/picker": "^1.15.0",
-=======
     "@react-navigation/bottom-tabs": "5.11.10",
->>>>>>> 5397a010f8ed261a2df5deca8aaa12e217deb7ed
     "@react-navigation/native": "5.9.4",
     "@react-navigation/stack": "5.14.4",
     "@reduxjs/toolkit": "1.5.1",
