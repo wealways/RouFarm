@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 // styled-components
@@ -31,6 +32,20 @@ import { WithLocalSvg } from 'react-native-svg';
 import kakaoSymbol from '@/assets/images/Kakao_symbol.svg';
 
 function selectMode({ navigation }) {
+  // 모드 변경 감지
+  const [modes, setModes] = useState('');
+
+  // 모드 설명
+  const soft = '소프트 모드는 개인의 선택에 따라 서비스의 모든 기능을 취사 선택하여 이용할 수 있습니다';
+  const hard = '하드 모드는 루틴 만들기에 실패하는 사용자들을 위해 준비한 모드로 강력한 알람과 알림 기능을 제공합니다';
+  // 모드 변경 클릭 시
+  const selectSoft = () => {
+    setModes(soft);
+  };
+
+  const selectHard = () => {
+    setModes(hard);
+  };
 
   return (
     <Wrapper>
@@ -43,13 +58,17 @@ function selectMode({ navigation }) {
       <Content2>
         <Title>모드 선택하기</Title>
         <ModeList>
-          <Mode
-            source={require('../../assets/images/slave1.png')} />
-          <Mode
-            source={require('../../assets/images/slave1.png')} />
+          <TouchableOpacity onPress={selectSoft}>
+            <SoftMode
+              source={require('../../assets/images/slave1.png')} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={selectHard}>
+            <HardMode
+              source={require('../../assets/images/slave1.png')} />
+          </TouchableOpacity>
         </ModeList>
         {/* 각 모드 설명 */}
-        <Subtitle>소프트 모드는 루팜의 모든 기능을 선택해서 이용할 수 있습니다</Subtitle>
+        <Subtitle>{modes}</Subtitle>
         {/* 완료버튼 */}
         <Submit>
           <SubmitText>완료</SubmitText>
@@ -103,8 +122,16 @@ const ModeList = styled.View`
   justify-content: space-between;
 `;
 // 모드 이미지 스타일
-const Mode = styled.Image`
+const SoftMode = styled.Image`
   background: pink;
+  width: 150px;
+  height: 150px;
+  /* border: #55f27c 5px;  */
+  border-radius: 100px;
+  margin-bottom: 20px;
+`;
+const HardMode = styled.Image`
+  background: red;
   width: 150px;
   height: 150px;
   border-radius: 100px;

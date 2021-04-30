@@ -11,7 +11,7 @@ import { ThemeProvider } from 'styled-components/native';
 import theme from './theme/index';
 
 // 페이지
-import { Home, Report, QR, CreateRoutine, Login, SelectMode } from './screens/index';
+import { Home, Report, QR, CreateRoutine, Login, SelectMode, FriendList } from './screens/index';
 
 // 리덕스
 import { createStore } from 'redux';
@@ -39,6 +39,7 @@ const App = () => {
             {/* screen test 용 */}
             <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
             <Stack.Screen options={{ headerShown: false }} name="SelectMode" component={SelectMode} />
+            <Stack.Screen options={{ headerShown: false }} name="FriendList" component={FriendList} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
