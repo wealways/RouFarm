@@ -46,6 +46,7 @@ const SettingTitle = styled.Text`
 `;
 const SettingButton = styled.TouchableOpacity`
   flex: 4;
+  flex-direction: row;
   height: 100%;
   min-height: 48px;
   border: 1px solid rgba(0, 0, 0, 0.3);

@@ -38,7 +38,7 @@ function CreateRoutineScreen({ navigation }) {
   const [endTime, setEndTime] = useState('');
   const [isReapeat, setIsReapeat] = useState([]);
 
-  console.log(date, startTime, endTime, isReapeat);
+  // console.log(date, startTime, endTime, isReapeat);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -147,7 +147,13 @@ function CreateRoutineScreen({ navigation }) {
               <SettingWrapper>
                 <SettingTitle>반복</SettingTitle>
                 <SettingButton onPress={toggleModal} onCancel={() => console.log('@')}>
-                  <Text style={{ opacity: 0.5 }}>반복 없음</Text>
+                  {isReapeat.map((value, index) =>
+                    value ? (
+                      <Text key={index} style={{ opacity: 0.5 }}>
+                        {value}{' '}
+                      </Text>
+                    ) : null,
+                  )}
                 </SettingButton>
                 <ModalComponent showModal={showModal} setShowModal={setShowModal}>
                   <Reapreat setShowModal={setShowModal} setIsReapeat={setIsReapeat} />

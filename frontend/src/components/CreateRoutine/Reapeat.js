@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Text, View, Switch, Pressable, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, Switch, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 
 const ButtonWrapper = styled.View`
@@ -88,7 +88,7 @@ function Reapeat({ setIsReapeat, setShowModal }) {
             confirm={true}
             onPress={() => {
               setShowModal(false);
-              setIsReapeat(yoil);
+              setIsReapeat(yoil.map((value) => (value.checked ? value.day : null)));
             }}>
             <Text style={styles.confirm}>확인</Text>
           </ConfigButton>
