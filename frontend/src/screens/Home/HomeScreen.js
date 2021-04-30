@@ -1,52 +1,36 @@
-import React, { useState } from 'react';
-import styled from 'styled-components/native';
-import {
-  View,
-  ScrollView,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+
 import {
   Wrapper,
+  TodoWrapper,
   Card,
   Contents,
   QRCodeButton,
-  ButtonWrapper,
-  HideButton,
   UserImage,
   UserStatus,
 } from './home.styles';
 
 import { CheckBox } from 'react-native-elements';
 
-import QRCode from '@/components/animations/QRCode.js';
-import Carrot from '@/components/animations/Carrot.js';
+// 컴포넌트
+import QRCodeAnim from '@/components/animations/QRCodeAnim';
+import CarrotAnim from '@/components/animations/CarrotAnim';
+import NavigationButton from '@/components/common/NavigationButton';
 
+// 리덕스
 import ModalContainer from '@/containers/ModalContainer';
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+// 디바이스 사이즈
+import { deviceWidth, deviceHeight } from '@/utils/devicesize';
 
-const TodoWrapper = styled.View`
-  flex: 4;
-  margin: 8px;
-  padding: 0 16px;
-  width: 100%;
-  height: 60px;
-  background: #f2f3f6;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 24px;
-`;
+// 홈화면으로 오면 refresh되도록!
+import { useIsFocused } from '@react-navigation/native';
 
 function HomeScreen({ navigation }) {
-  const [open, setOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [qrOpen, setQROpen] = useState(false);
+  const [up, setUp] = useState(0);
 
   const [todos, setTodos] = useState({
     1: { id: 1, content: '코딩 테스트 문제 풀기', checked: false },
@@ -65,6 +49,14 @@ function HomeScreen({ navigation }) {
     { id: 3, content: '물 1L 마시기' },
   ];
 
+  // 네비게이션 리로드 테스트
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    // Put Your Code Here Which You Want To Refresh or Reload on Coming Back to This Screen.
+    setUp(0);
+  }, [isFocused]);
+
   return (
     <Wrapper>
       <ScrollView>
@@ -74,12 +66,21 @@ function HomeScreen({ navigation }) {
             <Text style={styles.title}>유저 이름</Text>
             <Card style={[styles.profile, styles.cardWidth]}>
               <UserImage>
-                <Carrot style={{ position: 'relative' }} />
+                <CarrotAnim style={{ position: 'relative' }} />
               </UserImage>
               <UserStatus>
                 <Text>HP: 50</Text>
                 <Text>MP: 50</Text>
                 <Text>EXP: 50</Text>
+                <Text style={[styles.title, { color: '#000' }]}>{up}</Text>
+                {/* 네비게이션 리로드 테스트 */}
+                <TouchableOpacity
+                  style={styles.border}
+                  onPress={() => {
+                    setUp(up + 1);
+                  }}>
+                  <Text style={styles.title}>숫자증가</Text>
+                </TouchableOpacity>
               </UserStatus>
             </Card>
           </View>
@@ -142,28 +143,9 @@ function HomeScreen({ navigation }) {
           navigation.navigate('QR');
           setQROpen(!qrOpen);
         }}>
-        <QRCode active={qrOpen} />
+        <QRCodeAnim active={qrOpen} />
       </QRCodeButton>
-
-      <ButtonWrapper
-        style={styles.android}
-        onPress={() => {
-          setOpen(!open);
-        }}>
-        <Text>Button</Text>
-      </ButtonWrapper>
-      <HideButton
-        style={styles.android}
-        onPress={() => {
-          navigation.navigate('Report');
-        }}
-        order={1}
-        open={open}>
-        <Text>Report</Text>
-      </HideButton>
-      <HideButton order={2} open={open} style={styles.android}>
-        <Text>Settings</Text>
-      </HideButton>
+      <NavigationButton navigation={navigation} />
     </Wrapper>
   );
 }
@@ -179,13 +161,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cardWidth: {
-    width: width - 20,
+    width: deviceWidth - 20,
   },
   android: {
     elevation: 12,
   },
   checkbox: {
     alignSelf: 'center',
+  },
+  border: {
+    width: 100,
+    height: 50,
+    backgroundColor: '#5c7152',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
