@@ -57,6 +57,6 @@ public class UserController {
       @PutMapping("/{id}")
       public ResponseEntity<User> editUser(@PathVariable String id, @RequestBody HashMap<String,Object> changeMassage){
             return new ResponseEntity<User>(userService.editUser(id, changeMassage),HttpStatus.OK);
-      }
+      } // 회원가입 및 수정
 
 }
