@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useCallback } from 'react';
 import { 
   Text, 
   View, 
@@ -32,22 +32,34 @@ function ReportScreen() {
 
   const width = useWindowDimensions().width;
   
-  // 월간 수확
+  // ============  월간 수확 컴포넌트
+  // 한달 데이터
   const [monthdata,setMonthdata] = useState([-10,-10,-10,-10,-10,-10,-10,-10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]) 
+  // 전체 날짜
+  const nowdate = new Date()
+  const nowyear = nowdate.getFullYear()
+  let nowmonth = nowdate.getMonth() + 1
+  nowmonth = nowmonth >= 10 ? nowmonth : '0'+nowmonth;
+  const [date, setDate] = useState(`${nowyear}-${nowmonth}`)
+  // 어떤 월?
   const [month,setMonth] = useState(1);
 
   useEffect(() => {
-    const data = {'2021-04':[-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0]}
-    const date = new Date(Object.keys(data)[0])
-    const day = date.getDay() - 1
-    setMonth(date.getMonth()+1)
-    const lastdate = new Date(date.getFullYear(),date.getMonth()+1,0).getDate();
+    const data = {
+      '2021-04':[-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0],
+      '2021-03':[-1, -1, -1, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0,1]
+    }
+    let dataInx = Object.keys(data).indexOf(date)
+    const Ddate = new Date(Object.keys(data)[dataInx])
+    const day = Ddate.getDay() - 1
+    setMonth(Ddate.getMonth()+1)
+    const lastdate = new Date(Ddate.getFullYear(),Ddate.getMonth()+1,0).getDate();
     
     const update = monthdata.map((d,i)=>{
       if(i<day){
         return d
       }else if(i<lastdate+day){
-        return Object.values(data)[0][i-day]
+        return Object.values(data)[dataInx][i-day]
       }else{
         return d
       }
@@ -55,10 +67,11 @@ function ReportScreen() {
     setMonthdata(update)
   },[]);
 
+  // 한달 달성률
   const now = new Date()
   const MonthRate = Math.round(monthdata.reduce((a,b) => a+b,0) / now.getDate(),1)
 
-  // 실패리스트
+  // =========================  실패리스트
   const [fails,setFails] = useState({});
 
   useEffect(async ()=>{
@@ -72,7 +85,6 @@ function ReportScreen() {
         ]
       }
     };
-
     await setFails(date)
   },[]);
 
@@ -83,9 +95,11 @@ function ReportScreen() {
         <TitleText> Report Page</TitleText>
         {/* section 1 - 월간 수확 */}
         <Contents>
-          <View style={{display:'flex',flexDirection:'row',width:width-20,justifyContent:'space-between',alignItems:'baseline',zIndex:10}}>
+          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
             <SubtitleText>월간 수확</SubtitleText>
-            <CustomDropdown />
+            <View>
+              <CustomDropdown />
+            </View>
           </View>
           <View>
             <Card width={width}>

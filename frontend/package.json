@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-picker/picker": "^1.15.0",
     "@react-navigation/native": "5.9.4",
     "@react-navigation/stack": "5.14.4",
     "@reduxjs/toolkit": "1.5.1",
@@ -32,6 +33,7 @@
     "react-redux": "7.2.3",
     "react-timer-mixin": "0.13.4",
     "redux": "4.0.5",
+    "redux-actions": "^2.6.5",
     "redux-devtools-extension": "2.13.9",
     "redux-persist": "6.0.0",
     "styled-components": "5.2.3",

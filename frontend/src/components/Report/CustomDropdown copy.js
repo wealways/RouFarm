@@ -3,7 +3,7 @@ import {View,Text,TouchableOpacity} from 'react-native'
 
 import {Picker} from '@react-native-picker/picker';
 
-const CustomDropdown = (onHeatmapChange) => {
+const CustomDropdown = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('2021-04');
   return (
     <Picker
