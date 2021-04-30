@@ -13,7 +13,6 @@ import {
 import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
-import { Calendar } from 'react-native-calendars';
 import { Switch } from 'react-native-elements';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
@@ -24,19 +23,22 @@ import Reapreat from '@/components/CreateRoutine/Reapeat';
 
 function CreateRoutineScreen({ navigation }) {
   const [showModal, setShowModal] = useState(false);
-  const openModal = () => {
+  const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
 
+  // 모달 상태
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [startTimeShow, setStartTimeShow] = useState(false);
   const [endTimeShow, setEndTimeShow] = useState(false);
 
+  // 생성시 넘길 데이터
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [isReapeat, setIsReapeat] = useState([]);
 
-  console.log(date, startTime, endTime);
+  console.log(date, startTime, endTime, isReapeat);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -107,7 +109,7 @@ function CreateRoutineScreen({ navigation }) {
     hideEndTimePicker();
   };
 
-  const routine = '나는 운동이 하고싶다...';
+  const qrName = '나는 운동이 하고싶다...';
   const now = new Date();
   const today =
     now.getFullYear() +
@@ -144,9 +146,12 @@ function CreateRoutineScreen({ navigation }) {
               {/* 반복 유무 */}
               <SettingWrapper>
                 <SettingTitle>반복</SettingTitle>
-                <SettingButton onPress={openModal}>
+                <SettingButton onPress={toggleModal} onCancel={() => console.log('@')}>
                   <Text style={{ opacity: 0.5 }}>반복 없음</Text>
                 </SettingButton>
+                <ModalComponent showModal={showModal} setShowModal={setShowModal}>
+                  <Reapreat setShowModal={setShowModal} setIsReapeat={setIsReapeat} />
+                </ModalComponent>
               </SettingWrapper>
 
               {/* 날짜 */}
@@ -219,7 +224,7 @@ function CreateRoutineScreen({ navigation }) {
           <Image
             style={styles.qrImage}
             source={{
-              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${routine}`,
+              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${qrName}`,
             }}
           />
         </View>
@@ -231,11 +236,7 @@ function CreateRoutineScreen({ navigation }) {
           <Text style={{ color: 'white' }}>퀘스트 생성</Text>
         </ButtonWrapper>
       </ScrollView>
-      {/* 모달 */}
-      <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-        <Reapreat />
-        {/* <Agenda /> */}
-      </ModalComponent>
+
       <NavigationButton navigation={navigation} />
     </Wrapper>
   );

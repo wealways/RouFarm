@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, StyleSheet, Pressable, View } from 'react-native';
+import { Modal, StyleSheet, View } from 'react-native';
 
 const ModalComponent = ({
   showModal,
@@ -11,12 +11,11 @@ const ModalComponent = ({
       {showModal ? (
         <View>
           <Modal
-            style={{ top: '50%', left: '50%' }}
             animationType="fade"
             transparent={true}
             visible={showModal}
             onRequestClose={() => {
-              setShowModal(!showModal);
+              setShowModal(false);
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>{children}</View>
@@ -35,10 +34,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 30,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
