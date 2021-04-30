@@ -30,4 +30,27 @@ const ButtonWrapper = styled.TouchableOpacity`
   background: ${({ theme }) => theme.colors.navy};
 `;
 
-export { Wrapper, ButtonWrapper, Card, Contents };
+const SettingWrapper = styled.View`
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 16px 0;
+  padding: 0 16px;
+`;
+const SettingTitle = styled.Text`
+  flex: 2;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+`;
+const SettingButton = styled.TouchableOpacity`
+  flex: 4;
+  height: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export { Wrapper, ButtonWrapper, Card, Contents, SettingWrapper, SettingTitle, SettingButton };

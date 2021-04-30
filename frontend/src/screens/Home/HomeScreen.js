@@ -1,13 +1,5 @@
-import React, { useState } from 'react';
-import {
-  View,
-  ScrollView,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 import {
   Wrapper,
@@ -32,9 +24,13 @@ import ModalContainer from '@/containers/ModalContainer';
 // 디바이스 사이즈
 import { deviceWidth, deviceHeight } from '@/utils/devicesize';
 
+// 홈화면으로 오면 refresh되도록!
+import { useIsFocused } from '@react-navigation/native';
+
 function HomeScreen({ navigation }) {
   const [active, setActive] = useState(false);
   const [qrOpen, setQROpen] = useState(false);
+  const [up, setUp] = useState(0);
 
   const [todos, setTodos] = useState({
     1: { id: 1, content: '코딩 테스트 문제 풀기', checked: false },
@@ -53,6 +49,14 @@ function HomeScreen({ navigation }) {
     { id: 3, content: '물 1L 마시기' },
   ];
 
+  // 네비게이션 리로드 테스트
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    // Put Your Code Here Which You Want To Refresh or Reload on Coming Back to This Screen.
+    setUp(0);
+  }, [isFocused]);
+
   return (
     <Wrapper>
       <ScrollView>
@@ -68,6 +72,15 @@ function HomeScreen({ navigation }) {
                 <Text>HP: 50</Text>
                 <Text>MP: 50</Text>
                 <Text>EXP: 50</Text>
+                <Text style={[styles.title, { color: '#000' }]}>{up}</Text>
+                {/* 네비게이션 리로드 테스트 */}
+                <TouchableOpacity
+                  style={styles.border}
+                  onPress={() => {
+                    setUp(up + 1);
+                  }}>
+                  <Text style={styles.title}>숫자증가</Text>
+                </TouchableOpacity>
               </UserStatus>
             </Card>
           </View>
@@ -155,6 +168,13 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     alignSelf: 'center',
+  },
+  border: {
+    width: 100,
+    height: 50,
+    backgroundColor: '#5c7152',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
