@@ -11,7 +11,7 @@ import { ThemeProvider } from 'styled-components/native';
 import theme from './theme/index';
 
 // 페이지
-import { Home, Report, QR, CreateRoutine } from './screens/index';
+import { Home, Report, QR, CreateRoutine, Login, SelectMode, FriendList } from './screens/index';
 
 // 리덕스
 import { createStore } from 'redux';
@@ -31,15 +31,15 @@ const App = () => {
       <Provider store={store}>
         <NavigationContainer>
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <Stack.Navigator screenOptions={{ headerShown: false }} component={Home}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Report" component={Report} />
-            <Stack.Screen name="QR" component={QR} />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="CreateRoutine"
-              component={CreateRoutine}
-            />
+          <Stack.Navigator component={Home}>
+            <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
+            <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
+            <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
+            <Stack.Screen options={{ headerShown: false }} name="CreateRoutine" component={CreateRoutine} />
+            {/* screen test 용 */}
+            <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+            <Stack.Screen options={{ headerShown: false }} name="SelectMode" component={SelectMode} />
+            <Stack.Screen options={{ headerShown: false }} name="FriendList" component={FriendList} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
