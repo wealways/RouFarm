@@ -88,7 +88,9 @@ function Reapeat({ setIsReapeat, setShowModal }) {
             confirm={true}
             onPress={() => {
               setShowModal(false);
-              setIsReapeat(yoil.map((value) => (value.checked ? value.day : null)));
+              setIsReapeat(
+                yoil.filter((value) => value.checked).map((value) => value && value.day),
+              );
             }}>
             <Text style={styles.confirm}>확인</Text>
           </ConfigButton>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, ScrollView, Text, View, TextInput } from 'react-native';
+
 import {
   Wrapper,
   ButtonWrapper,
@@ -21,6 +22,29 @@ import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Reapreat from '@/components/CreateRoutine/Reapeat';
 
+// 유틸
+import AsyncStorage from '@react-native-community/async-storage';
+
+const yoil = {
+  0: '일',
+  1: '월',
+  2: '화',
+  3: '수',
+  4: '목',
+  5: '금',
+  6: '토',
+};
+const now = new Date();
+const today =
+  now.getFullYear() +
+  '.' +
+  (now.getMonth() * 1 + 1).toString() +
+  '.' +
+  now.getDate() +
+  '(' +
+  yoil[now.getDay()] +
+  ')';
+
 function CreateRoutineScreen({ navigation }) {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
@@ -33,13 +57,50 @@ function CreateRoutineScreen({ navigation }) {
   const [endTimeShow, setEndTimeShow] = useState(false);
 
   // 생성시 넘길 데이터
-  const [date, setDate] = useState('');
+  const [questName, setQuestname] = useState('');
+  const [date, setDate] = useState(today);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [isReapeat, setIsReapeat] = useState([]);
+  const [qrName, setQRName] = useState('');
+  const [isQR, setIsQR] = useState(false);
 
-  // console.log(date, startTime, endTime, isReapeat);
+  // 퀘스트 생성
+  const handleCreate = () => {
+    var quest = AsyncStorage.getItem('quest');
+    console.log();
+    // 미래의 나에게..
+    /**
+     * Asnyc Storage는 JSON형식이다.
+     * 즉, 넣어줄때는 stringify로 스트링화하여 넣어야하고, 빼올때는 parse를 통해 빼올 수 있다.
+     * 우리는 특정 날짜에 해당하는 데이터들을 뽑아와야하니까 아래의 구조로 데이터를 넣어줘야할듯하다.
+     * {
+     * "date" : [
+     *     {
+     *     "key":"value",
+     *     "key":"value",
+     *     "key":"value",
+     *     "key":"value
+     *     },
+     *     {
+     *     "key":"value",
+     *     "key":"value",
+     *     "key":"value",
+     *     "key":"value
+     *     },
+     * ]
+     * }
+     */
+    AsyncStorage.setItem(
+      'quest',
+      quest
+        ? (quest += JSON.stringify([{ questName, date, startTime, endTime, isReapeat }]))
+        : [JSON.stringify([{ questName, date, startTime, endTime, isReapeat }])],
+      () => console.log('정보 저장 완료'),
+    );
+  };
 
+  // 모달 활성/비활성
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -60,16 +121,6 @@ function CreateRoutineScreen({ navigation }) {
   };
   const hideEndTimePicker = () => {
     setEndTimeShow(false);
-  };
-
-  const yoil = {
-    0: '일',
-    1: '월',
-    2: '화',
-    3: '수',
-    4: '목',
-    5: '금',
-    6: '토',
   };
 
   // 날짜 설정
@@ -109,18 +160,6 @@ function CreateRoutineScreen({ navigation }) {
     hideEndTimePicker();
   };
 
-  const qrName = '나는 운동이 하고싶다...';
-  const now = new Date();
-  const today =
-    now.getFullYear() +
-    '.' +
-    (now.getMonth() * 1 + 1).toString() +
-    '.' +
-    now.getDate() +
-    '(' +
-    yoil[now.getDay()] +
-    ')';
-
   return (
     <Wrapper>
       <ScrollView>
@@ -130,9 +169,10 @@ function CreateRoutineScreen({ navigation }) {
             <Text style={styles.title}>퀘스트 이름</Text>
             <Card style={styles.cardWidth}>
               <TextInput
+                onChangeText={(text) => setQuestname(text)}
                 style={styles.textInput}
                 placeholder="어떤 퀘스트인가요?"
-                maxLength={20}></TextInput>
+                maxLength={30}></TextInput>
             </Card>
           </View>
         </Contents>
@@ -214,7 +254,13 @@ function CreateRoutineScreen({ navigation }) {
               {/* QR 생성 여부 */}
               <SettingWrapper>
                 <SettingTitle>QR 생성</SettingTitle>
-                <Switch value={false} color="orange" />
+                <Switch
+                  onPress={() => {
+                    setIsQR(isQR);
+                  }}
+                  value={true}
+                  color="orange"
+                />
               </SettingWrapper>
               <TextInput
                 style={styles.qrTextInput}
@@ -237,6 +283,7 @@ function CreateRoutineScreen({ navigation }) {
         <ButtonWrapper
           style={{ marginBottom: 50 }}
           onPress={() => {
+            // handleCreate();
             navigation.navigate('Home');
           }}>
           <Text style={{ color: 'white' }}>퀘스트 생성</Text>
