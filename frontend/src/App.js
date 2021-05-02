@@ -35,11 +35,23 @@ const App = () => {
             <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
             <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
             <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
-            <Stack.Screen options={{ headerShown: false }} name="CreateRoutine" component={CreateRoutine} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="CreateRoutine"
+              component={CreateRoutine}
+            />
             {/* screen test 용 */}
             <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-            <Stack.Screen options={{ headerShown: false }} name="SelectMode" component={SelectMode} />
-            <Stack.Screen options={{ headerShown: false }} name="FriendList" component={FriendList} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="SelectMode"
+              component={SelectMode}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="FriendList"
+              component={FriendList}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

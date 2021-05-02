@@ -7,7 +7,9 @@ import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
 import { DailyQuest, EmergencyQuest } from '@/components/Home';
-import MyTabs from '@/navigators/HomeNavigator';
+
+// 유틸
+import AsyncStorage from '@react-native-community/async-storage';
 
 // 디바이스 사이즈
 import { deviceWidth } from '@/utils/devicesize';
@@ -17,6 +19,7 @@ import { useIsFocused } from '@react-navigation/native';
 import theme from '../../theme';
 
 function HomeScreen({ navigation }) {
+  const [quest, setQuest] = useState([]);
   const [qrOpen, setQROpen] = useState(false);
   const [up, setUp] = useState(0);
 
@@ -24,10 +27,16 @@ function HomeScreen({ navigation }) {
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    AsyncStorage.getItem('quest', (err, res) => {
+      console.log(res);
+      setQuest(res);
+      if (err) console.log(err);
+    });
     // 이 페이지에 돌아올 때, 리로드할 로직을 넣기
     setUp(0);
   }, [isFocused]);
 
+  console.log(quest);
   return (
     <Wrapper>
       <ScrollView>
