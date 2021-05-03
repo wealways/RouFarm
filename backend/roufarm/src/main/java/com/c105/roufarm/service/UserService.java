@@ -13,14 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
-      
+
       @Autowired
       UserMongoDBRepository userMongoDBRepository;
 
       @Transactional
-      public User saveUser(HashMap<String, Object> kakaoMassage){
-            String id = (String)kakaoMassage.get("id");
-            String nickname = (String)kakaoMassage.get("nickname");
+      public User saveUser(HashMap<String, Object> kakaoMassage) {
+            String id = (String) kakaoMassage.get("id");
+            String nickname = (String) kakaoMassage.get("nickname");
             User user = new User();
             user.setId(id);
             user.setProfile(new Profile(nickname));
@@ -29,16 +29,16 @@ public class UserService {
       }
 
       @Transactional
-      public User findUser(String id){
+      public User findUser(String id) throws Exception {
             return userMongoDBRepository.findById(id).get();
       }
 
       @Transactional
-      public User editUser(String id, HashMap<String, Object> changeMassage){
+      public User editUser(String id, HashMap<String, Object> changeMassage) {
             User user = userMongoDBRepository.findById(id).get();
-            Profile profile =  user.getProfile();
-            profile.setNickname((String)changeMassage.get("nickname"));
-            profile.setMode((String)changeMassage.get("mode"));
+            Profile profile = user.getProfile();
+            profile.setNickname((String) changeMassage.get("nickname"));
+            profile.setMode((String) changeMassage.get("mode"));
             user.setProfile(profile);
             return userMongoDBRepository.save(user);
       }

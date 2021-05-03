@@ -30,18 +30,11 @@ public class JwtFilter extends OncePerRequestFilter {
       @Autowired
       CustomUserDetailsService jwtUserDetailService;
 
-      private static final List<String> EXCLUDE_URL =
-            Collections.unmodifiableList(
-                  Arrays.asList(
-                        "/안쓰는 주소들",
-                        "/주소들"
-                  )
-            );
+      private static final List<String> EXCLUDE_URL = Collections.unmodifiableList(Arrays.asList("/user"));
 
       @Override
-      protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+      protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                  throws ServletException, IOException {
             final String requestTokenHeader = request.getHeader("Authorization");
 
             String username = null;
@@ -50,33 +43,33 @@ public class JwtFilter extends OncePerRequestFilter {
             if (requestTokenHeader != null) {
                   jwtToken = requestTokenHeader;
                   try {
-                  username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                        username = jwtTokenUtil.getUsernameFromToken(jwtToken);
                   } catch (IllegalArgumentException e) {
-                  System.out.println("JWT Token을 얻을 수 없었다.");
+                        System.out.println("JWT Token을 얻을 수 없었다.");
                   } catch (ExpiredJwtException e) {
-                  System.out.println("JWT Token이 만료되었다.");
+                        System.out.println("JWT Token이 만료되었다.");
                   }
             } else {
-            logger.warn("없다. JWTtoken");
+                  logger.warn("없다. JWTtoken");
             }
 
-            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                   UserDetails userDetails = this.jwtUserDetailService.loadUserByUsername(username);
 
-                  if(jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-                  UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null ,userDetails.getAuthorities());
+                  if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
 
-                  authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                  SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                  }
             }
-      }
-      filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
       }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
-    }
+      @Override
+      protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+            return EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
+      }
 
 }
