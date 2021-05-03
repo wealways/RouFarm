@@ -27,14 +27,17 @@ import CustomHeatmapRate from '@/components/Report/CustomHeatmapRate';
 import FailView from '@/components/Report/Fail';
 import CustomBarChart from '@/components/Report/CustomBarChart';
 import CustomPieChart from '@/components/Report/CustomPieChart';
+import CustomPieList from '@/components/Report/CustomPieList';
 import CustomDropdown from '@/components/Report/CustomDropdown';
 
+//Context API
 import {HeatmapProvider} from '@/contexts/Heatmap'
+import {PieProvider} from '@/contexts/Pie'
 
 function ReportScreen() {
 
   const width = useWindowDimensions().width;
-  
+
   // =========================  실패리스트
   const [fails,setFails] = useState({});
 
@@ -103,14 +106,17 @@ function ReportScreen() {
         </Contents>
         {/* section 4 - 해쉬태그 별 달성률 */}
         <Contents>
-          <SubtitleText>해쉬태그 별 달성률</SubtitleText>
-          <View>
-            <Card width={width}>
-              <CustomPieChart 
-
-              />
-            </Card>
-          </View>
+          <PieProvider>
+            <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
+            <View>
+              <Card width={width}>
+                <CustomPieChart />
+              </Card>
+              <Card width={width}>
+                <CustomPieList/>
+              </Card>
+            </View>
+          </PieProvider>
         </Contents>
       </ScrollView>
     </Wrapper>

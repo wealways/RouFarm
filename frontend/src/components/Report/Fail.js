@@ -20,6 +20,13 @@ const FailView = styled.View`
   width:300px;
 `
 
+const TagText = styled.Text`
+  padding:9px;
+  border-radius:10px;
+  background-color:${({name}) => name==="건강" ? "#6f95aa" : name==="자기개발" ? "#0c985e" : name==="일상" ? "#dce8ef" : "687396"};
+  color:${({name}) => name!="일상"?"white":"#000"};
+`
+
 const Fail = (contents) => {
   return (
     <View>
@@ -30,9 +37,7 @@ const Fail = (contents) => {
               <Text>
                 {item.routine}
               </Text>
-              <Text style={{backgroundColor:'blue', color: "white", padding:8, borderRadius:10}}>
-                {item.tag}
-              </Text>
+              <TagText name={item.tag}>{item.tag}</TagText>
             </FailView>
           ))
         ))
