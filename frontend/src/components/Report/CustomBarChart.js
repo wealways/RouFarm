@@ -40,7 +40,6 @@ const CustomBarChart = () => {
           x = {180}
           orientation="horizontal"
           gutter={20}
-          // style={{ border: { stroke: "black" } }}
           colorScale={[ "#6f95aa", "#ff844b" ]}
           data={[
             { name: "평균" }, { name: "이번주" }

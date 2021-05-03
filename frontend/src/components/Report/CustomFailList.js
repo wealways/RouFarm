@@ -50,10 +50,7 @@ const Fail = () => {
       { id: 4, routine: '게임3', checked: false, tag:'없음' },
     ]
   }
-  console.log(failList.date)
   const idx = Object.keys(contents).indexOf(failList.date)
-  console.log(idx)
-  console.log(Object.values(contents)[idx])
 
   return (
     <View>
