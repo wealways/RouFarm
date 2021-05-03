@@ -3,7 +3,7 @@ import {View,Text,TouchableOpacity} from 'react-native'
 
 import {Picker} from '@react-native-picker/picker';
 
-import HeatmapContext from '@/contexts/Heatmap';
+import HeatmapContext from '@/contexts/Report/Heatmap';
 
 const CustomDropdown = () => {
   const {heatmap,dateDispatch} = useContext(HeatmapContext);

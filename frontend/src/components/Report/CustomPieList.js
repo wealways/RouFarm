@@ -1,7 +1,7 @@
 import React,{useContext} from 'react';
 import {Text} from 'react-native';
 
-import PieContext from '@/contexts/Pie'
+import PieContext from '@/contexts/Report/Pie'
 
 const CustomHeatmapRate = () => {
   const {Pie} = useContext(PieContext);

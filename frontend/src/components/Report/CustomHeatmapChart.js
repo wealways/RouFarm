@@ -1,7 +1,7 @@
 import React,{useState, useEffect, useContext} from 'react';
 import {View, ScrollView,Text,TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
-import HeatmapContext from '@/contexts/Heatmap';
+import HeatmapContext from '@/contexts/Report/Heatmap';
 
 
 

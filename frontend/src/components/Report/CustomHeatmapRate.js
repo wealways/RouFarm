@@ -1,7 +1,7 @@
 import React,{useContext} from 'react';
 import {Text} from 'react-native';
 
-import HeatmapContext from '@/contexts/Heatmap'
+import HeatmapContext from '@/contexts/Report/Heatmap'
 
 const CustomHeatmapRate = () => {
   const {heatmap} = useContext(HeatmapContext);

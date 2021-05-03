@@ -3,7 +3,7 @@ import { StyleSheet, View,Text,useWindowDimensions } from "react-native";
 import { VictoryPie, VictoryLegend } from "victory-native";
 import Svg from 'react-native-svg';
 
-import PieContext from '@/contexts/Pie';
+import PieContext from '@/contexts/Report/Pie';
 
 
 const CustomPieChart = () => {
