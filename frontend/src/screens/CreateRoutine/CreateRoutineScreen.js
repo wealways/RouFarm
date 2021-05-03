@@ -68,7 +68,6 @@ function CreateRoutineScreen({ navigation }) {
   // 퀘스트 생성
   const handleCreate = () => {
     var quest = AsyncStorage.getItem('quest');
-    console.log();
     // 미래의 나에게..
     /**
      * Asnyc Storage는 JSON형식이다.

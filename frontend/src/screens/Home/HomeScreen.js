@@ -28,7 +28,7 @@ function HomeScreen({ navigation }) {
 
   useEffect(() => {
     AsyncStorage.getItem('quest', (err, res) => {
-      console.log(res);
+      // console.log(res);
       setQuest(res);
       if (err) console.log(err);
     });
@@ -36,7 +36,6 @@ function HomeScreen({ navigation }) {
     setUp(0);
   }, [isFocused]);
 
-  console.log(quest);
   return (
     <Wrapper>
       <ScrollView>
