@@ -3,6 +3,7 @@ package com.c105.roufarm.service;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import com.c105.roufarm.config.JwtTokenUtil;
 import com.c105.roufarm.model.Profile;
 import com.c105.roufarm.model.User;
 import com.c105.roufarm.repository.UserMongoDBRepository;
@@ -16,6 +17,9 @@ public class UserService {
 
       @Autowired
       UserMongoDBRepository userMongoDBRepository;
+
+      @Autowired
+      JwtTokenUtil jwtTokenUtil;
 
       @Transactional
       public User saveUser(HashMap<String, Object> kakaoMassage) {
@@ -34,8 +38,8 @@ public class UserService {
       }
 
       @Transactional
-      public User editUser(String id, HashMap<String, Object> changeMassage) {
-            User user = userMongoDBRepository.findById(id).get();
+      public User editUser(HashMap<String, Object> changeMassage) {
+            User user = userMongoDBRepository.findById(jwtTokenUtil.getId()).get();
             Profile profile = user.getProfile();
             profile.setNickname((String) changeMassage.get("nickname"));
             profile.setMode((String) changeMassage.get("mode"));

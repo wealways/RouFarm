@@ -2,8 +2,12 @@ package com.c105.roufarm.config;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -40,5 +44,13 @@ public class JwtTokenUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
+      }
+
+      public String getId(){
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                              .currentRequestAttributes()).getRequest();
+            String token = request.getHeader("Authorization");
+            String id = getUsernameFromToken(token);
+            return id;
       }
 }

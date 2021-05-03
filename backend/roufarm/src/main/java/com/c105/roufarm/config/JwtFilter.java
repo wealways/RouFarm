@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
       @Autowired
       CustomUserDetailsService jwtUserDetailService;
 
-      private static final List<String> EXCLUDE_URL = Collections.unmodifiableList(Arrays.asList("/user"));
+      private static final List<String> EXCLUDE_URL = Collections.unmodifiableList(Arrays.asList("/user","/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**"));
 
       @Override
       protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

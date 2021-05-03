@@ -9,10 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.c105.roufarm.service.CustomUserDetailsService;
 
@@ -51,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       @Override
       protected void configure(HttpSecurity http) throws Exception {
             http.csrf().disable() // csrf 보안 토큰을 disable
-                        .authorizeRequests().antMatchers("/user").permitAll() // 해당 url은 모든 유저에게 허용
+                        .authorizeRequests().antMatchers("/user","/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**").permitAll() // 해당 url은 모든 유저에게 허용
                         .anyRequest().authenticated() // 그외 url은 모두 불 허용
                         .and().exceptionHandling() // 예외가 발생하면 핸들링하겠다.
                         .authenticationEntryPoint(authenticationEntryPoint).and().sessionManagement() // 세션 조절 하는건데
