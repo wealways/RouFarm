@@ -11,7 +11,13 @@ const TagText = styled.Text`
   background-color:${({name}) => name==="건강" ? "#6f95aa" : name==="자기개발" ? "#0c985e" : name==="일상" ? "#dce8ef" : "#687396"};
   color:${({name}) => name!="일상"?"white":"#000"};
 `
-
+const ItemView= styled.View`
+  margin: 3px 3px;
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+`
 
 const CustomHeatmapRate = () => {
   const {Pie} = useContext(PieContext);
@@ -41,9 +47,12 @@ const CustomHeatmapRate = () => {
   }
   return (
     <View>
+      {list===undefined && <Text>
+        파이 한 조각을 클릭해주세요 🍩
+      </Text> }
       {list &&
       <>
-        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center', marginLeft:3,marginRight:3,width:300,marginTop:5,borderStyle:'solid',borderBottomWidth:1}}>
+        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'baseline', marginLeft:3,marginRight:3,width:300,marginTop:5,paddingBottom:5, borderStyle:'solid',borderBottomWidth:1}}>
           <TagText name={Pie.click}>#{Pie.click}</TagText>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
             <Text>개수</Text>
@@ -52,14 +61,20 @@ const CustomHeatmapRate = () => {
         </View>
         <View>
           {list.map((item,i)=>(
-            <Text key={i}>{item.content}</Text>
+            <ItemView key={i}>
+              <Text>{item.content}</Text>
+              <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
+                <Text>{item.cnt}</Text>
+                <Text>{item.rate}</Text>
+              </View>
+            </ItemView>
           ))}
         </View>
-        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginLeft:3,marginRight:3,width:300,marginTop:5,borderStyle:'solid',borderTopWidth:1}}>
+        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginLeft:3,marginRight:3,width:300,marginTop:5,borderStyle:'solid',borderColor:"#000066", borderTopWidth:2}}>
           <View></View>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
-            <Text>합</Text>
-            <Text>평균</Text>
+            <Text style={{fontSize:20}}>{list.reduce((acc,cur)=>acc+cur.cnt,0)}</Text>
+            <Text style={{fontSize:20}}>{(list.reduce((acc,cur)=>acc+cur.rate,0)/list.length).toFixed(1)}</Text>
           </View>
         </View>
       </>

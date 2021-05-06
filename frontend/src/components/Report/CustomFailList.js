@@ -54,13 +54,16 @@ const Fail = () => {
 
   return (
     <View>
+      {
+        idx===-1 && <Text>실패한 루틴이 하나도 없는 날이에요 👍</Text>
+      }
       {idx!=-1 && Object.values(contents)[idx]
       .map((item) => (
         <FailView key={item.id}>
           <Text>
             {item.routine}
           </Text>
-          <TagText name={item.tag}>{item.tag}</TagText>
+          <TagText name={item.tag}>#{item.tag}</TagText>
         </FailView>
       ))}
       {/* {Object.values(contents)
