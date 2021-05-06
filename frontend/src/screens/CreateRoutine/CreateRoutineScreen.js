@@ -61,15 +61,22 @@ function CreateRoutineScreen({ navigation }) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [startTimeShow, setStartTimeShow] = useState(false);
   const [endTimeShow, setEndTimeShow] = useState(false);
+  const [alarmTimeShow, setAlarmTimeShow] = useState(false);
 
   // 생성시 넘길 데이터
   const [questName, setQuestname] = useState('');
   const [date, setDate] = useState(today);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [alarmTime, setAlarmTime] = useState('');
   const [isReapeat, setIsReapeat] = useState([]);
   const [qrName, setQRName] = useState('');
+
+  // 스위치 상태
   const [isQR, setIsQR] = useState(false);
+  const [isAlarm, setIsAlarm] = useState(false);
+
+  const [fireDate, setFireDate] = useState('');
 
   // 퀘스트 생성
   const handleCreate = () => {
@@ -109,27 +116,37 @@ function CreateRoutineScreen({ navigation }) {
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
-
   const showStartTimePicker = () => {
     setStartTimeShow(true);
   };
   const showEndTimePicker = () => {
     setEndTimeShow(true);
   };
+  const showAlarmTimePicker = () => {
+    setAlarmTimeShow(true);
+  };
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
-
   const hideStartTimePicker = () => {
     setStartTimeShow(false);
   };
   const hideEndTimePicker = () => {
     setEndTimeShow(false);
   };
+  const hideAlarmTimePicker = () => {
+    setAlarmTimeShow(false);
+  };
 
   // 날짜 설정
   const handleConfirm = (element) => {
+    console.log(element);
+    let temp = JSON.stringify(element).slice(1, 11);
+    temp = temp.split('-');
+    temp = temp[2] + '-' + temp[1] + '-' + temp[0];
+    setFireDate(temp);
+
     setDate(
       element.getFullYear() +
         '.' +
@@ -165,6 +182,24 @@ function CreateRoutineScreen({ navigation }) {
 
     hideEndTimePicker();
   };
+
+  // 알람시간 설정
+  const handleAlarmConfirm = (element) => {
+    let time = JSON.stringify(element);
+    time = time.slice(12, 20);
+    setAlarmTime(time);
+    hideAlarmTimePicker();
+  };
+
+  // function setFireDate() {
+  //   let date = date;
+  //   let time = alarmTime;
+  // }
+
+  // function _setAlarm() {
+  //   if (isAlarm) {
+  //   }
+  // }
 
   return (
     <Wrapper>
@@ -254,24 +289,38 @@ function CreateRoutineScreen({ navigation }) {
               {/* 알람 유무 */}
               <SettingWrapper>
                 <SettingTitle>알람</SettingTitle>
-                <Switch value={false} color="orange" />
+                <Switch value={isAlarm} onValueChange={() => setIsAlarm(!isAlarm)} color="orange" />
               </SettingWrapper>
+              {isAlarm ? (
+                <>
+                  <SettingButton onPress={showAlarmTimePicker}>
+                    <Text style={{ opacity: 0.5, fontSize: 12 }}>
+                      {!alarmTime ? '알람 시간 설정' : alarmTime}
+                    </Text>
+                  </SettingButton>
+                  <DateTimePickerModal
+                    isVisible={alarmTimeShow}
+                    // is24Hour={true}
+                    mode="time"
+                    onConfirm={handleAlarmConfirm}
+                    onCancel={hideAlarmTimePicker}
+                  />
+                </>
+              ) : null}
 
               {/* QR 생성 여부 */}
               <SettingWrapper>
                 <SettingTitle>QR 생성</SettingTitle>
-                <Switch
-                  onPress={() => {
-                    setIsQR(isQR);
-                  }}
-                  value={true}
-                  color="orange"
-                />
+                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
               </SettingWrapper>
-              <TextInput
-                style={styles.qrTextInput}
-                placeholder="QR 코드의 이름을 기입해주세요"
-                maxLength={20}></TextInput>
+              {isQR ? (
+                <>
+                  <TextInput
+                    style={styles.qrTextInput}
+                    placeholder="QR 코드의 이름을 기입해주세요"
+                    maxLength={20}></TextInput>
+                </>
+              ) : null}
             </Card>
           </View>
         </Contents>
@@ -291,14 +340,12 @@ function CreateRoutineScreen({ navigation }) {
           onPress={() => {
             // handleCreate();
             navigation.navigate('Home');
-            return <AlarmTest props={props} />;
           }}>
           <Text style={{ color: 'white' }}>퀘스트 생성</Text>
         </ButtonWrapper>
       </ScrollView>
 
       <NavigationButton navigation={navigation} />
-      <AlarmTest />
     </Wrapper>
   );
 }
