@@ -19,11 +19,14 @@ import java.util.List;
 // lottie animation
 import com.airbnb.android.react.lottie.LottiePackage;
 
+// alarm-notification
+import com.emekalites.react.alarm.notification.ANPackage;
+
 // firebase
-import io.invertase.firebase.RNFirebasePackage;
-import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+// import io.invertase.firebase.RNFirebasePackage;
+// import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
+// import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+// import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -41,9 +44,8 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           packages.add(new LottiePackage());
-          packages.add(new RNFirebaseAnalyticsPackage());
-          packages.add(new RNFirebaseMessagingPackage());
-          packages.add(new RNFirebaseNotificationsPackage());
+          // packages.add(new ANPackage());
+          
           return packages;
         }
 

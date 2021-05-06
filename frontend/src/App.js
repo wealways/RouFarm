@@ -12,9 +12,7 @@ import theme from './theme/index';
 
 // 페이지
 import { Home, Report, QR, CreateRoutine, Login, SelectMode, FriendList } from './screens/index';
-
-// firebase
-import FCMContainer from '@/components/FCMContainer';
+import AlarmTest from './screens/AlarmTest';
 
 // 리덕스
 import { createStore } from 'redux';
@@ -35,35 +33,34 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <FCMContainer>
-        <Provider store={store}>
-          <NavigationContainer>
-            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-            <Stack.Navigator component={Home}>
-              <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
-              <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
-              <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
-              <Stack.Screen
-                options={{ headerShown: false }}
-                name="CreateRoutine"
-                component={CreateRoutine}
-              />
-              {/* screen test 용 */}
-              <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-              <Stack.Screen
-                options={{ headerShown: false }}
-                name="SelectMode"
-                component={SelectMode}
-              />
-              <Stack.Screen
-                options={{ headerShown: false }}
-                name="FriendList"
-                component={FriendList}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </Provider>
-      </FCMContainer>
+      <Provider store={store}>
+        <NavigationContainer>
+          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+          <Stack.Navigator component={Home}>
+            <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
+            <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
+            <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
+            <Stack.Screen options={{ headerShown: false }} name="AlarmTest" component={AlarmTest} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="CreateRoutine"
+              component={CreateRoutine}
+            />
+            {/* screen test 용 */}
+            <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="SelectMode"
+              component={SelectMode}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="FriendList"
+              component={FriendList}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
     </ThemeProvider>
   );
 };

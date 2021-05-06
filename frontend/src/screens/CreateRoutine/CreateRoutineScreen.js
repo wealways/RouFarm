@@ -21,6 +21,12 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Reapreat from '@/components/CreateRoutine/Reapeat';
+import {
+  setAlarm,
+  viewAlarms,
+  deleteAlarm,
+  stopAlarmSound,
+} from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
@@ -144,7 +150,7 @@ function CreateRoutineScreen({ navigation }) {
         ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
         : 'AM ' + element.getHours() + ':' + element.getMinutes();
     setStartTime(time);
-
+    console.log(time);
     hideStartTimePicker();
   };
 
@@ -155,6 +161,7 @@ function CreateRoutineScreen({ navigation }) {
         ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
         : 'AM ' + element.getHours() + ':' + element.getMinutes();
     setEndTime(time);
+    console.log(time);
 
     hideEndTimePicker();
   };
@@ -284,12 +291,14 @@ function CreateRoutineScreen({ navigation }) {
           onPress={() => {
             // handleCreate();
             navigation.navigate('Home');
+            return <AlarmTest props={props} />;
           }}>
           <Text style={{ color: 'white' }}>퀘스트 생성</Text>
         </ButtonWrapper>
       </ScrollView>
 
       <NavigationButton navigation={navigation} />
+      <AlarmTest />
     </Wrapper>
   );
 }

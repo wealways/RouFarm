@@ -195,11 +195,14 @@ dependencies {
     implementation project(':lottie-react-native')
 
     // firebase
-    implementation 'com.google.android.gms:play-services-base:17.2.1'
-    implementation 'com.google.firebase:firebase-core:17.0.0'
-    implementation "com.google.firebase:firebase-messaging:20.0.0"
-    implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
-    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    // implementation 'com.google.android.gms:play-services-base:17.2.1'
+    // implementation 'com.google.firebase:firebase-core:17.0.0'
+    // implementation "com.google.firebase:firebase-messaging:20.0.0"
+    // implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
+    // implementation platform('com.google.firebase:firebase-bom:27.1.0')
+
+    // alarm-notification
+    // implementation project(':react-native-alarm-notification')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
