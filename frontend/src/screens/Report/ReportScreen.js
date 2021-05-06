@@ -11,15 +11,15 @@ import {
 //styled
 import styled from 'styled-components/native';
 import {
-  Wrapper, 
-  Contents, 
-  TitleText, 
-  SubtitleText, 
-  Card, 
-  MonthChartView, 
-  MonthTextView, 
-  FailListView, 
-  ChartView
+  Wrapper,
+  Contents,
+  TitleText,
+  SubtitleText,
+  Card,
+  MonthChartView,
+  MonthTextView,
+  FailListView,
+  ChartView,
 } from './Report.styles';
 
 // components
@@ -38,7 +38,6 @@ import {PieProvider} from '@/contexts/Report/Pie';
 import {FailListProvider} from '@/contexts/Report/FailList';
 
 function ReportScreen() {
-
   const width = useWindowDimensions().width;
 
   // =========================  실패리스트
@@ -130,6 +129,5 @@ function ReportScreen() {
     </Wrapper>
   );
 }
-
 
 export default ReportScreen;
