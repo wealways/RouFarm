@@ -5,6 +5,7 @@ import {
   Button,
   TextInput,
   StyleSheet,
+  ScrollView,
   ToastAndroid,
   Platform,
   NativeEventEmitter,
@@ -261,7 +262,9 @@ class App extends Component {
         <View style={styles.margin}>
           <Button onPress={this.viewAlarms} title="See all active alarms" color="#841584" />
         </View>
-        <Text>{JSON.stringify(update, null, 2)}</Text>
+        <ScrollView>
+          <Text>{JSON.stringify(update, null, 2)}</Text>
+        </ScrollView>
       </View>
     );
   }

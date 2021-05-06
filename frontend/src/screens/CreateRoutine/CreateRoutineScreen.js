@@ -31,6 +31,21 @@ import {
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
 
+const dayOfMonth = {
+  1: 31,
+  2: 28,
+  3: 31,
+  4: 30,
+  5: 31,
+  6: 30,
+  7: 31,
+  8: 31,
+  9: 30,
+  10: 31,
+  11: 30,
+  12: 31,
+};
+
 const yoil = {
   0: '일',
   1: '월',
@@ -40,6 +55,17 @@ const yoil = {
   5: '금',
   6: '토',
 };
+
+const yoilReverse = {
+  일: 0,
+  월: 1,
+  화: 2,
+  수: 3,
+  목: 4,
+  금: 5,
+  토: 6,
+};
+
 const now = new Date();
 const today =
   now.getFullYear() +
@@ -187,19 +213,59 @@ function CreateRoutineScreen({ navigation }) {
   const handleAlarmConfirm = (element) => {
     let time = JSON.stringify(element);
     time = time.slice(12, 20);
+    setFireDate(fireDate + ' ' + time);
     setAlarmTime(time);
     hideAlarmTimePicker();
   };
 
-  // function setFireDate() {
-  //   let date = date;
-  //   let time = alarmTime;
-  // }
+  // 알람 생성
+  const makeAlarm = () => {
+    // 알람이 있을때 -> 반복 유/무에 따라 결과가 달라짐
+    if (isAlarm) {
+      if (isReapeat.length === 0) {
+        console.log('is Repeat!!@@@@@@@@@@@@@@@');
+        setAlarm({
+          fire_date: fireDate,
+          title: questName,
+          message: questName,
+        });
+      } else if (isReapeat.length > 0) {
+        console.log('@@@@@@@@@@@@@@@@@@@@@@');
+        let day = parseInt(fireDate.slice(0, 2));
+        let month = parseInt(fireDate.slice(3, 5));
+        let restOfFireDate = fireDate.slice(5);
+        let yoilNumber = yoilReverse[date.slice(-2, -1)]; // 현재 요일을 숫자로 변환(일~토 -> 0~6)
 
-  // function _setAlarm() {
-  //   if (isAlarm) {
-  //   }
-  // }
+        console.log(yoilNumber);
+
+        // 반복 요일별로 순회하면서 각 요일에 해당하는 알람을 설정
+        isReapeat.map((value) => {
+          // 가장 가까운 반복 요일(숫자) - 현재 요일(숫자)
+          let gap = yoilReverse[value] - yoilNumber;
+          console.log(gap);
+          let tempDay = day;
+          let tempMonth = month;
+
+          // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
+          // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
+          gap <= 0 ? (tempDay += gap + 7) : (tempDay += gap);
+          if (dayOfMonth[month] < tempDay) {
+            tempDay -= dayOfMonth[month];
+            if (month === 12) {
+              tempMonth = 1;
+            } else tempMonth++;
+          }
+          let tempFireDate = tempDay.toString() + '-' + tempMonth.toString() + restOfFireDate;
+          setAlarm({
+            fire_date: tempFireDate,
+            title: questName,
+            message: questName,
+            schedule_type: 'repeat',
+          });
+        });
+      }
+    }
+  };
 
   return (
     <Wrapper>
@@ -339,6 +405,7 @@ function CreateRoutineScreen({ navigation }) {
           style={{ marginBottom: 50 }}
           onPress={() => {
             // handleCreate();
+            makeAlarm();
             navigation.navigate('Home');
           }}>
           <Text style={{ color: 'white' }}>퀘스트 생성</Text>

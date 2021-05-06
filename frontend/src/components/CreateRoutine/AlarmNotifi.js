@@ -1,7 +1,7 @@
 import ReactNativeAN from 'react-native-alarm-notification';
 
 const alarmNotifData = {
-  fireDate: ReactNativeAN.parseDate(new Date(Date.now())),
+  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
   vibrate: true,
   play_sound: true,
   schedule_type: 'once',
@@ -12,7 +12,7 @@ const alarmNotifData = {
 };
 
 const repeatAlarmNotifData = {
-  fireDate: ReactNativeAN.parseDate(new Date(Date.now())),
+  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
   vibrate: true,
   play_sound: true,
   schedule_type: 'repeat',
@@ -24,7 +24,8 @@ const repeatAlarmNotifData = {
   interval_value: 1, // repeat after 5 minutes
 };
 
-export const setAlarm = (props) => async () => {
+export const setAlarm = async (props) => {
+  console.log('@@@@@@@@@@@@@@@', props, '@@@@@@@@@@@@@@@@');
   // 반복 O
   if (props.schedule_type === 'repeat') {
     const details = {
