@@ -3,10 +3,8 @@ package com.c105.roufarm.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.c105.roufarm.model.Routine;
 import com.c105.roufarm.model.RoutineLog;
 import com.c105.roufarm.repository.RoutineLogMongoDBRepository;
-import com.c105.roufarm.repository.RoutineMongoDBRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +22,22 @@ public class RoutineLogService {
             return routineLogMongoDBRepository.findById(id).get();
       }
       
-      // 2. 루틴 리스트로 해당하는 루틴로그 리스트 가져오기
-      // @Transactional
-      // public List<RoutineLog> findRoutineLogMonth(List<Routine> routineList){
-      //      List<RoutineLog> routineLogList = new ArrayList<RoutineLog>();
-      //      for(Routine routine : routineList){
-                  
-      //      }
-      // }
+      // 2. 루틴아이디 리스트에 해당하는 루틴로그들 리스트 가져오기
+      @Transactional
+      public List<RoutineLog> findRoutineLogList(List<String> routineLogIds){
+           List<RoutineLog> routineLogList = new ArrayList<RoutineLog>();
+           for(String logId : routineLogIds){
+                  RoutineLog routineLog = routineLogMongoDBRepository.findById(logId).get();
+                  routineLogList.add(routineLog);
+           }
+           return routineLogList;
+      }
+
+      // 3. 루틴로그 생성 (루틴 로그와)
+      @Transactional
+      public RoutineLog saveRoutineLog(RoutineLog routineLog){
+            routineLogMongoDBRepository.save(routineLog);
+            return routineLogMongoDBRepository.findById(routineLog.getId()).get();
+      }
 
 }

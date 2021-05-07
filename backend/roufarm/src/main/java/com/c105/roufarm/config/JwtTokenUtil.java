@@ -18,7 +18,7 @@ public class JwtTokenUtil {
 
       private static final String secret = "jwtpassword";
 
-      public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+      public static final long JWT_TOKEN_VALIDITY = 30 * 24 * 60 * 60;
 
       public Claims getClaim(String token) {
             return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();

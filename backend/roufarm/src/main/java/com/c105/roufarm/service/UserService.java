@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import com.c105.roufarm.config.JwtTokenUtil;
 import com.c105.roufarm.model.Profile;
+import com.c105.roufarm.model.Routine;
 import com.c105.roufarm.model.User;
 import com.c105.roufarm.repository.UserMongoDBRepository;
 
@@ -21,6 +22,7 @@ public class UserService {
       @Autowired
       JwtTokenUtil jwtTokenUtil;
 
+      // 1. 유저 등록
       @Transactional
       public User saveUser(HashMap<String, Object> kakaoMassage) {
             String id = (String) kakaoMassage.get("id");
@@ -32,11 +34,13 @@ public class UserService {
             return userMongoDBRepository.save(user);
       }
 
+      // 2. Id로 유저 찾기
       @Transactional
       public User findUser(String id) throws Exception {
             return userMongoDBRepository.findById(id).get();
       }
 
+      // 3. User 모드 수정
       @Transactional
       public User editUser(HashMap<String, Object> changeMassage) {
             User user = userMongoDBRepository.findById(jwtTokenUtil.getId()).get();
@@ -44,6 +48,15 @@ public class UserService {
             profile.setNickname((String) changeMassage.get("nickname"));
             profile.setMode((String) changeMassage.get("mode"));
             user.setProfile(profile);
+            return userMongoDBRepository.save(user);
+      }
+
+      @Transactional
+      public User addUserRoutine(Routine routine){
+            User user = userMongoDBRepository.findById(jwtTokenUtil.getId()).get();
+            HashSet<String> routines = user.getRoutines();
+            routines.add(routine.getId());
+            user.setRoutines(routines);
             return userMongoDBRepository.save(user);
       }
 }
