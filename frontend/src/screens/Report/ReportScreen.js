@@ -37,7 +37,7 @@ import {HeatmapProvider} from '@/contexts/Report/Heatmap';
 import {PieProvider} from '@/contexts/Report/Pie';
 import {FailListProvider} from '@/contexts/Report/FailList';
 
-function ReportScreen() {
+function ReportScreen({navigation}) {
 
   const width = useWindowDimensions().width;
 
@@ -102,7 +102,7 @@ function ReportScreen() {
               <View>
                 <Card width={width}>
                   <MonthChartView>
-                    <CustomHeatmapChart/>
+                    <CustomHeatmapChart navigation={navigation}/>
                   </MonthChartView>
                   <MonthTextView>
                     <CustomHeatmapRate/>

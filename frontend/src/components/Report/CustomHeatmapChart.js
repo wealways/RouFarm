@@ -3,8 +3,7 @@ import {View, ScrollView,Text,TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import HeatmapContext from '@/contexts/Report/Heatmap';
 
-import ModalComponent from '@/components/common/ModalComponent';
-import DailyReport from '@/components/Report/DailyReport';
+
 
 const Custombox = styled.TouchableOpacity`
   border-radius:5px;
@@ -21,12 +20,12 @@ const Weekline = styled.View`
 `
 
 // 한달 데이터 -10은 아예 없는 날 / -1는 루틴 안만든 날 / 0은 루틴 하나도 안한 날
-const INITIAL_MONTHDATA = [-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]
-const CustomHeatmapChart = () => {
-
+const INITIAL_MONTHDATA = [-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]
+const CustomHeatmapChart = ({navigation}) => {
   
   const [monthdata,setMonthdata] = useState(INITIAL_MONTHDATA);
   const {heatmap,rateDispatch} = useContext(HeatmapContext);
+  const [tempD,setTempD] = useState(0);
   
 
   useEffect(() => {
@@ -40,6 +39,7 @@ const CustomHeatmapChart = () => {
     let dataInx = Object.keys(data).indexOf(heatmap.date)
     const Ddate = new Date(Object.keys(data)[dataInx])
     const day = Ddate.getDay() - 1
+    setTempD(day)
     const lastdate = new Date(Ddate.getFullYear(),Ddate.getMonth()+1,0).getDate();
     let sumV = 0
     let cnt = 0
@@ -62,17 +62,15 @@ const CustomHeatmapChart = () => {
   },[heatmap.date]);
 
   
-  const month = [0,1,2,3,4]
+  const month = [0,1,2,3,4,5]
   const week = [0,1,2,3,4,5,6]
 
   // 일일 리포트
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = (w,d) => {
-    setShowModal((prev) => !prev);
-
-    console.log(`${w}_${d}클릭\n`)
-    console.log(w*7 +d)
-    console.log('----')
+  const _onPress = (w,d) => {
+    
+    let day = w*7+d-tempD+1 ;
+    day = day>=10 ? day : '0'+day; 
+    navigation.navigate('Detail',{date:`${heatmap.date}-${day}`});
   };
 
   
@@ -84,15 +82,12 @@ const CustomHeatmapChart = () => {
           <Weekline key={wIdx}>
             {week.map((d,dIdx) =>(
               <>
-                {<Custombox onPress={() => toggleModal(w,d)} key={dIdx} boxColor={monthdata[w*7+d]}/>}
+                {<Custombox onPress={() => _onPress(w,d)} key={dIdx} boxColor={monthdata[w*7+d]}/>}
               </>
             ))}
           </Weekline>
         ))}
       </View>
-      <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-        <DailyReport yearMonth={heatmap.date}/>
-      </ModalComponent>
     </ScrollView>
   )
 };
