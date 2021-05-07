@@ -29,13 +29,13 @@ function HomeScreen({ navigation }) {
   useEffect(() => {
     AsyncStorage.getItem('quest', (err, res) => {
       // console.log(res);
-      setQuest(res);
+      setQuest(JSON.parse(res));
       if (err) console.log(err);
     });
     // 이 페이지에 돌아올 때, 리로드할 로직을 넣기
     setUp(0);
   }, [isFocused]);
-
+  // console.log(quest);
   return (
     <Wrapper>
       <ScrollView>

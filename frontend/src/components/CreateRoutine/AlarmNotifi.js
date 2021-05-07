@@ -5,7 +5,7 @@ const alarmNotifData = {
   vibrate: true,
   play_sound: true,
   schedule_type: 'once',
-  channel: "i'll be back",
+  channel: 'wakeup',
   volume: 0.9,
   loop_sound: true,
   has_button: true,
@@ -16,7 +16,7 @@ const repeatAlarmNotifData = {
   vibrate: true,
   play_sound: true,
   schedule_type: 'repeat',
-  channel: "i'll be back",
+  channel: 'wakeup',
   volume: 0.9,
   loop_sound: true,
   has_button: true,
@@ -31,11 +31,9 @@ export const setAlarm = async (props) => {
     const details = {
       ...repeatAlarmNotifData,
       ...props,
-      color: 'blue',
     };
     try {
-      const alarm = await ReactNativeAN.scheduleAlarm(details);
-      console.log(alarm);
+      await ReactNativeAN.scheduleAlarm(details);
     } catch (e) {
       console.log(e);
     }
@@ -44,16 +42,24 @@ export const setAlarm = async (props) => {
     const details = {
       ...alarmNotifData,
       ...props,
-      color: 'blue',
     };
     try {
-      const alarm = await ReactNativeAN.scheduleAlarm(details);
-      console.log(alarm);
+      await ReactNativeAN.scheduleAlarm(details);
     } catch (e) {
       console.log(e);
     }
   }
 };
+
+export const deleteQuestAlarm = (uuid) => {
+  const list = await ReactNativeAN.getScheduledAlarms();
+  list.map((quest) => {
+    if (quest.data.uuid === uuid) {
+      deleteAlarm(quest.id);
+    }
+  });
+};
+
 export const viewAlarms = async () => {
   const list = await ReactNativeAN.getScheduledAlarms();
   console.log(list);

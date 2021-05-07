@@ -20,16 +20,18 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 // 컴포넌트
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
-import Reapreat from '@/components/CreateRoutine/Reapeat';
+import Repreat from '@/components/CreateRoutine/Repeat';
 import {
   setAlarm,
   viewAlarms,
   deleteAlarm,
   stopAlarmSound,
 } from '@/components/CreateRoutine/AlarmNotifi';
+import ReactNativeAN from 'react-native-alarm-notification';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
 const dayOfMonth = {
   1: 31,
@@ -97,6 +99,7 @@ function CreateRoutineScreen({ navigation }) {
   const [alarmTime, setAlarmTime] = useState('');
   const [isReapeat, setIsReapeat] = useState([]);
   const [qrName, setQRName] = useState('');
+  const [alarmId, setAlarmId] = useState([]);
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
@@ -106,36 +109,23 @@ function CreateRoutineScreen({ navigation }) {
 
   // 퀘스트 생성
   const handleCreate = () => {
-    var quest = AsyncStorage.getItem('quest');
-    // 미래의 나에게..
-    /**
-     * Asnyc Storage는 JSON형식이다.
-     * 즉, 넣어줄때는 stringify로 스트링화하여 넣어야하고, 빼올때는 parse를 통해 빼올 수 있다.
-     * 우리는 특정 날짜에 해당하는 데이터들을 뽑아와야하니까 아래의 구조로 데이터를 넣어줘야할듯하다.
-     * {
-     * "date" : [
-     *     {
-     *     "key":"value",
-     *     "key":"value",
-     *     "key":"value",
-     *     "key":"value
-     *     },
-     *     {
-     *     "key":"value",
-     *     "key":"value",
-     *     "key":"value",
-     *     "key":"value
-     *     },
-     * ]
-     * }
-     */
-    AsyncStorage.setItem(
-      'quest',
-      quest
-        ? (quest += JSON.stringify([{ questName, date, startTime, endTime, isReapeat }]))
-        : [JSON.stringify([{ questName, date, startTime, endTime, isReapeat }])],
-      () => console.log('정보 저장 완료'),
-    );
+    let quest = {};
+    let uuid = parseInt(Math.random() * Math.pow(10, 16));
+
+    let repeatDate = [];
+    isReapeat.map((v) => {
+      repeatDate.push(setRepeatDate(date, v));
+    });
+
+    AsyncStorage.getItem('quest', (err, res) => {
+      quest = JSON.parse(res);
+      quest[uuid] = { questName, date, startTime, endTime, repeatDate, isReapeat, alarmId };
+      AsyncStorage.setItem('quest', JSON.stringify(quest), () => console.log('정보 저장 완료'));
+      if (err) console.log(err);
+      // console.log(quest);
+    });
+
+    makeAlarm(uuid);
   };
 
   // 모달 활성/비활성
@@ -167,11 +157,11 @@ function CreateRoutineScreen({ navigation }) {
 
   // 날짜 설정
   const handleConfirm = (element) => {
-    console.log(element);
-    let temp = JSON.stringify(element).slice(1, 11);
-    temp = temp.split('-');
-    temp = temp[2] + '-' + temp[1] + '-' + temp[0];
-    setFireDate(temp);
+    // console.log(element);
+    // let temp = JSON.stringify(element).slice(1, 11);
+    // temp = temp.split('-');
+    // temp = temp[2] + '-' + temp[1] + '-' + temp[0];
+    // setFireDate(temp);
 
     setDate(
       element.getFullYear() +
@@ -211,60 +201,67 @@ function CreateRoutineScreen({ navigation }) {
 
   // 알람시간 설정
   const handleAlarmConfirm = (element) => {
-    let time = JSON.stringify(element);
-    time = time.slice(12, 20);
-    setFireDate(fireDate + ' ' + time);
+    const time = element.getHours() + ':' + element.getMinutes() + ':0';
+    console.log(time);
+    // setFireDate(fireDate + ' ' + time);
     setAlarmTime(time);
     hideAlarmTimePicker();
   };
 
   // 알람 생성
-  const makeAlarm = () => {
+  const makeAlarm = (uuid) => {
     // 알람이 있을때 -> 반복 유/무에 따라 결과가 달라짐
+
     if (isAlarm) {
+      let [tempYear, tempMonth, tempDay] = [...date.split('.')];
+      tempDay = tempDay.split('(')[0];
+      let tempDate = tempDay + '-' + tempMonth + '-' + tempYear + ' ';
+
       if (isReapeat.length === 0) {
-        console.log('is Repeat!!@@@@@@@@@@@@@@@');
         setAlarm({
-          fire_date: fireDate,
+          fire_date: tempDate + alarmTime,
           title: questName,
           message: questName,
+          data: { uuid },
         });
       } else if (isReapeat.length > 0) {
-        console.log('@@@@@@@@@@@@@@@@@@@@@@');
-        let day = parseInt(fireDate.slice(0, 2));
-        let month = parseInt(fireDate.slice(3, 5));
-        let restOfFireDate = fireDate.slice(5);
-        let yoilNumber = yoilReverse[date.slice(-2, -1)]; // 현재 요일을 숫자로 변환(일~토 -> 0~6)
-
-        console.log(yoilNumber);
-
-        // 반복 요일별로 순회하면서 각 요일에 해당하는 알람을 설정
         isReapeat.map((value) => {
-          // 가장 가까운 반복 요일(숫자) - 현재 요일(숫자)
-          let gap = yoilReverse[value] - yoilNumber;
-          console.log(gap);
-          let tempDay = day;
-          let tempMonth = month;
-
-          // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
-          // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
-          gap <= 0 ? (tempDay += gap + 7) : (tempDay += gap);
-          if (dayOfMonth[month] < tempDay) {
-            tempDay -= dayOfMonth[month];
-            if (month === 12) {
-              tempMonth = 1;
-            } else tempMonth++;
-          }
-          let tempFireDate = tempDay.toString() + '-' + tempMonth.toString() + restOfFireDate;
           setAlarm({
-            fire_date: tempFireDate,
+            fire_date: setRepeatDate(date, value) + ' ' + alarmTime,
             title: questName,
             message: questName,
             schedule_type: 'repeat',
+            data: { uuid },
           });
         });
       }
     }
+  };
+
+  const setRepeatDate = (startDate, repeatYoil) => {
+    let [year, month, dayNyoil] = [...startDate.split('.')];
+    let [day, yoil] = [...dayNyoil.split('(')];
+    yoil = yoil.slice(0, 1);
+
+    let gap = yoilReverse[repeatYoil] - yoilReverse[yoil];
+    let tempDay = parseInt(day);
+    let tempMonth = parseInt(month);
+    let tempYear = parseInt(year);
+
+    console.log(gap, tempDay);
+
+    // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
+    // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
+    gap <= 0 ? (tempDay += gap + 7) : (tempDay += gap);
+    if (dayOfMonth[month] < tempDay) {
+      tempDay -= dayOfMonth[month];
+      if (month === 12) {
+        tempMonth = 1;
+        tempYear += 1;
+      } else tempMonth++;
+    }
+
+    return tempDay.toString() + '-' + tempMonth.toString() + '-' + tempYear.toString();
   };
 
   return (
@@ -303,7 +300,7 @@ function CreateRoutineScreen({ navigation }) {
                   )}
                 </SettingButton>
                 <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-                  <Reapreat setShowModal={setShowModal} setIsReapeat={setIsReapeat} />
+                  <Repreat setShowModal={setShowModal} setIsReapeat={setIsReapeat} />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -404,8 +401,7 @@ function CreateRoutineScreen({ navigation }) {
         <ButtonWrapper
           style={{ marginBottom: 50 }}
           onPress={() => {
-            // handleCreate();
-            makeAlarm();
+            handleCreate();
             navigation.navigate('Home');
           }}>
           <Text style={{ color: 'white' }}>퀘스트 생성</Text>

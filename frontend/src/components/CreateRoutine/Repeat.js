@@ -22,17 +22,17 @@ const ConfigButton = styled.TouchableOpacity`
   border-radius: 8px;
 `;
 
-function Reapeat({ setIsReapeat, setShowModal }) {
+function Repeat({ setIsReapeat, setShowModal }) {
   const [switchToggle, setSwitchToggle] = useState(false);
 
   const [yoil, setYoil] = useState([
+    { id: 0, day: '일', checked: false },
     { id: 1, day: '월', checked: false },
     { id: 2, day: '화', checked: false },
     { id: 3, day: '수', checked: false },
     { id: 4, day: '목', checked: false },
     { id: 5, day: '금', checked: false },
     { id: 6, day: '토', checked: false },
-    { id: 7, day: '일', checked: false },
   ]);
 
   // 개별 toggle
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Reapeat;
+export default Repeat;
