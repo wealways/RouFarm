@@ -41,48 +41,94 @@ function ReportScreen() {
 
   const width = useWindowDimensions().width;
 
-  // =========================  실패리스트
-  // const [fails,setFails] = useState({});
+  const TopTab = ({
+    tabs:['월간 리포트','주간 리포트'],
+    lineColor:'#000066',
+    noSelectedStyled:{color:'black',fontSize:15},
+    selectedStyle:{color:'black',fontWeight:'bold'},
+    tabStyle:{paddingTop:12,paddingBottom:14}
+  })
 
-  // useEffect(async ()=>{
-  //   const date = {
-  //     1:{
-  //       date:'2020.04.19',
-  //       content:[
-  //         { id: 1, routine: '코딩 테스트 문제 풀기', checked: false, tag:'자기개발' },
-  //         { id: 2, routine: '헬스장 가기', checked: false, tag:'건강' },
-  //         { id: 3, routine: '명상하기', checked: false, tag:'일상' },
-  //       ]
-  //     }
-  //   };
-  //   await setFails(date)
-  // },[]);
-  // console.log(width)
-  
+  const [showIndex,setShowIndex] = useState(0);
+  const [loading,setLoading] = useState(false);
+  useEffect(()=>{
+    setLoading(true);
+    console.log(111)
+  })
+
   return (
     <Wrapper>
       <ScrollView>
         <TitleText> Report Page</TitleText>
-        {/* section 1 - 월간 수확 */}
-        <Contents>
-          <HeatmapProvider>
-            <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-              <SubtitleText>월간 수확</SubtitleText> 
-              <CustomDropdown />
+        <View style={{flexDirection:'row',justifyContent:'space-around'}}>
+        {TopTab.tabs.map((d,idx)=>{
+          return (
+            <View
+              key={idx}
+              onTouchStart={()=>{
+                if(showIndex!==idx){
+                  setLoading(false);
+                  setShowIndex(idx);
+                }
+              }}
+              style={{
+                borderBottomWidth:showIndex===idx?1:0,
+                borderBottomColor:TopTab.lineColor,
+                width:width/2,
+                alignItems:'center'
+              }}
+            >
+              <Text
+                style={[
+                  showIndex===idx?TopTab.selectedStyle:TopTab.noSelectedStyled,
+                  TopTab.tabStyle
+                ]}
+              >
+                {d}
+              </Text>
             </View>
-            <View>
-              <Card width={width}>
-                <MonthChartView>
-                  <CustomHeatmapChart/>
-                </MonthChartView>
-                <MonthTextView>
-                  <CustomHeatmapRate/>
-                </MonthTextView>
-              </Card>
-            </View>
-          </HeatmapProvider>
-        </Contents>
-
+          )
+        })}
+        </View>
+        { showIndex===0 && 
+        <>
+          {/* section 1 - 월간 수확 */}
+          <Contents>
+            <HeatmapProvider>
+              <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+                <SubtitleText>월간 수확</SubtitleText> 
+                <CustomDropdown />
+              </View>
+              <View>
+                <Card width={width}>
+                  <MonthChartView>
+                    <CustomHeatmapChart/>
+                  </MonthChartView>
+                  <MonthTextView>
+                    <CustomHeatmapRate/>
+                  </MonthTextView>
+                </Card>
+              </View>
+            </HeatmapProvider>
+          </Contents>
+          {/* section 4 - 해쉬태그 별 달성률 */}
+          <Contents>
+            <PieProvider>
+              <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
+              <View>
+                <Card width={width}>
+                  <CustomPieChart />
+                </Card>
+                <Card width={width}>
+                  <CustomPieList/>
+                </Card>
+              </View>
+            </PieProvider>
+          </Contents>
+        </>
+        }
+        {showIndex===1 &&
+        <>
         {/* section 2 - 실패 리스트 */}
         <Contents>
           <FailListProvider>
@@ -112,20 +158,10 @@ function ReportScreen() {
             </Card>
           </View>
         </Contents>
-        {/* section 4 - 해쉬태그 별 달성률 */}
-        <Contents>
-          <PieProvider>
-            <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
-            <View>
-              <Card width={width}>
-                <CustomPieChart />
-              </Card>
-              <Card width={width}>
-                <CustomPieList/>
-              </Card>
-            </View>
-          </PieProvider>
-        </Contents>
+        </>
+        }
+
+        
       </ScrollView>
     </Wrapper>
   );
