@@ -45,18 +45,18 @@ public class RoutineService {
             return routineList;
       }
 
-      // 3. 월별 루틴 검색 (토큰으로)
-      @Transactional
-      public List<Routine> findRoutinebyMonth(String month) throws Exception{
-            List<Routine> routineList = findRoutine();
-            List<Routine> routineListMonth = new ArrayList<Routine>();
-            for(Routine routine : routineList){
-                  if(routine.getStartTime().substring(3, 5).equals(month)){ // "06-05-2021 14:17:15" // 에서 달만 자른다.
-                        routineListMonth.add(routine);
-                  }
-            }
-            return routineListMonth;
-      }
+      // 3. 월별 루틴 검색 (토큰으로) 생각해보니 시작시간이 달인 것은 의미 없다.
+      // @Transactional
+      // public List<Routine> findRoutinebyMonth(String month) throws Exception{
+      //       List<Routine> routineList = findRoutine();
+      //       List<Routine> routineListMonth = new ArrayList<Routine>();
+      //       for(Routine routine : routineList){
+      //             if(routine.getStartTime().substring(3, 5).equals(month)){ // "06-05-2021 14:17:15" // 에서 달만 자른다.
+      //                   routineListMonth.add(routine);
+      //             }
+      //       }
+      //       return routineListMonth;
+      // }
 
       
 }
