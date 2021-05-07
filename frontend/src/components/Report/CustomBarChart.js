@@ -11,6 +11,7 @@ const MeanData = [
   {x: "Sat", y: 100},
   {x: "Sun", y: 100}
 ]
+
 const NowData = [
   {x: "Mon", y: 69},
   {x: "Tue", y: 20},

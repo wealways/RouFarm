@@ -32,22 +32,22 @@ const Fail = () => {
   const {failList} = useContext(FailListContext);
   const contents = {
     '2021-05-01':[
-      { id: 1, routine: '코딩 테스트 문제 풀기1', checked: false, tag:'자기개발' },
-      { id: 2, routine: '헬스장 가기1', checked: false, tag:'건강' },
-      { id: 3, routine: '명상하기1', checked: false, tag:'일상' },
-      { id: 4, routine: '게임1', checked: false, tag:'없음' },
-      { id: 5, routine: '게임1', checked: false, tag:'없음' },
+      { id: 1, routine: '코딩 테스트 문제 풀기1', tag:'자기개발' },
+      { id: 2, routine: '헬스장 가기1', tag:'건강' },
+      { id: 3, routine: '명상하기1', tag:'일상' },
+      { id: 4, routine: '게임1', tag:'없음' },
+      { id: 5, routine: '게임1', tag:'없음' },
     ],
     '2021-05-02':[
-      { id: 1, routine: '코딩 테스트 문제 풀기', checked: false, tag:'자기개발' },
-      { id: 2, routine: '헬스장 가기', checked: false, tag:'건강' },
-      { id: 3, routine: '명상하기', checked: false, tag:'일상' },
+      { id: 1, routine: '코딩 테스트 문제 풀기', tag:'자기개발' },
+      { id: 2, routine: '헬스장 가기', tag:'건강' },
+      { id: 3, routine: '명상하기', tag:'일상' },
     ],
     '2021-05-03':[
-      { id: 1, routine: '코딩 테스트 문제 풀기3', checked: false, tag:'자기개발' },
-      { id: 2, routine: '헬스장 가기3', checked: false, tag:'건강' },
-      { id: 3, routine: '명상하기3', checked: false, tag:'일상' },
-      { id: 4, routine: '게임3', checked: false, tag:'없음' },
+      { id: 1, routine: '코딩 테스트 문제 풀기3', tag:'자기개발' },
+      { id: 2, routine: '헬스장 가기3', tag:'건강' },
+      { id: 3, routine: '명상하기3', tag:'일상' },
+      { id: 4, routine: '게임3', tag:'없음' },
     ]
   }
   const idx = Object.keys(contents).indexOf(failList.date)

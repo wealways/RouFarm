@@ -3,7 +3,8 @@ import {View, ScrollView,Text,TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import HeatmapContext from '@/contexts/Report/Heatmap';
 
-
+import ModalComponent from '@/components/common/ModalComponent';
+import DailyReport from '@/components/Report/DailyReport';
 
 const Custombox = styled.TouchableOpacity`
   border-radius:5px;
@@ -29,6 +30,7 @@ const CustomHeatmapChart = () => {
   
 
   useEffect(() => {
+    // 한달 데이터  -1는 루틴 안만든 날 / 0~100은 루틴 하나도 안한 날 API
     const data = {
       '2021-05':[100, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1,-1,-1,-1,-1],
       '2021-04':[-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0],
@@ -59,15 +61,20 @@ const CustomHeatmapChart = () => {
     rateDispatch(Math.round(sumV / cnt))
   },[heatmap.date]);
 
-  // 한달 달성률
+  
   const month = [0,1,2,3,4]
   const week = [0,1,2,3,4,5,6]
 
-  const _onPress = (w,d) => {
+  // 일일 리포트
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = (w,d) => {
+    setShowModal((prev) => !prev);
+
     console.log(`${w}_${d}클릭\n`)
     console.log(w*7 +d)
     console.log('----')
-  }
+  };
+
   
   return (
     <ScrollView>
@@ -76,11 +83,16 @@ const CustomHeatmapChart = () => {
         {month.map((w,wIdx)=>(
           <Weekline key={wIdx}>
             {week.map((d,dIdx) =>(
-              <Custombox onPress={() => _onPress(w,d)} key={dIdx} boxColor={monthdata[w*7+d]}/>
+              <>
+                {<Custombox onPress={() => toggleModal(w,d)} key={dIdx} boxColor={monthdata[w*7+d]}/>}
+              </>
             ))}
           </Weekline>
         ))}
       </View>
+      <ModalComponent showModal={showModal} setShowModal={setShowModal}>
+        <DailyReport yearMonth={heatmap.date}/>
+      </ModalComponent>
     </ScrollView>
   )
 };
