@@ -23,6 +23,7 @@ import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
 import {
   setAlarm,
+  setNofication,
   viewAlarms,
   deleteAlarm,
   stopAlarmSound,
@@ -32,6 +33,7 @@ import ReactNativeAN from 'react-native-alarm-notification';
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import { CommonActions } from '@react-navigation/native';
 
 const dayOfMonth = {
   1: 31,
@@ -108,8 +110,11 @@ function CreateRoutineScreen({ navigation }) {
   const [fireDate, setFireDate] = useState('');
 
   // 퀘스트 생성
-  const handleCreate = () => {
+  const handleCreate = async () => {
+    const alarmIdList = await makeAlarm();
+    const notifiIdList = await makeNotifi();
     let quest = {};
+
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
 
     let repeatDate = [];
@@ -117,15 +122,29 @@ function CreateRoutineScreen({ navigation }) {
       repeatDate.push(setRepeatDate(date, v));
     });
 
-    AsyncStorage.getItem('quest', (err, res) => {
+    AsyncStorage.getItem('quest', async (err, res) => {
       quest = JSON.parse(res);
-      quest[uuid] = { questName, date, startTime, endTime, repeatDate, isReapeat, alarmId };
-      AsyncStorage.setItem('quest', JSON.stringify(quest), () => console.log('정보 저장 완료'));
-      if (err) console.log(err);
-      // console.log(quest);
-    });
+      // quest가 null값인지 아닌지 체크해야함. 그렇지 않으면 다음과 같은 오류 뿜음
+      // null is not an object.
+      if (quest === null) quest = {};
+      quest[uuid] = {
+        questName,
+        date,
+        startTime,
+        endTime,
+        repeatDate,
+        isReapeat,
+        alarmIdList,
+        notifiIdList,
+      };
 
-    makeAlarm(uuid);
+      await AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
+        console.log('정보 저장 완료');
+        navigation.navigate('Home');
+      });
+
+      if (err) console.log(err);
+    });
   };
 
   // 모달 활성/비활성
@@ -178,62 +197,87 @@ function CreateRoutineScreen({ navigation }) {
 
   // 시작시간 설정
   const handleStartConfirm = (element) => {
-    const time =
-      element.getHours() > 12
-        ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
-        : 'AM ' + element.getHours() + ':' + element.getMinutes();
-    setStartTime(time);
-    console.log(time);
+    setStartTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    // const time =
+    //   element.getHours() > 12
+    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
+    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
+    // console.log(time);
     hideStartTimePicker();
   };
 
   // 종료시간 설정
   const handleEndConfirm = (element) => {
-    const time =
-      element.getHours() > 12
-        ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
-        : 'AM ' + element.getHours() + ':' + element.getMinutes();
-    setEndTime(time);
-    console.log(time);
-
+    setEndTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    // const time =
+    //   element.getHours() > 12
+    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
+    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
     hideEndTimePicker();
   };
 
   // 알람시간 설정
   const handleAlarmConfirm = (element) => {
-    const time = element.getHours() + ':' + element.getMinutes() + ':0';
-    console.log(time);
-    // setFireDate(fireDate + ' ' + time);
-    setAlarmTime(time);
+    setAlarmTime(element.getHours() + ':' + element.getMinutes() + ':0');
     hideAlarmTimePicker();
   };
 
-  // 알람 생성
-  const makeAlarm = (uuid) => {
-    // 알람이 있을때 -> 반복 유/무에 따라 결과가 달라짐
+  const makeNotifi = async () => {
+    let [tempYear, tempMonth, tempDay] = [...date.split('.')];
+    tempDay = tempDay.split('(')[0];
+    let tempDate = tempDay + '-' + tempMonth + '-' + tempYear + ' ';
 
+    if (isReapeat.length === 0) {
+      const alarmId = await setNofication({
+        fire_date: tempDate + startTime,
+        title: questName,
+        message: questName,
+      });
+      return [alarmId.id];
+    } else if (isReapeat.length > 0) {
+      const alarmIdList = await Promise.all(
+        isReapeat.map((value) => {
+          const alarmId = setNofication({
+            fire_date: setRepeatDate(date, value) + ' ' + startTime,
+            title: questName,
+            message: questName,
+            schedule_type: 'repeat',
+          });
+          return alarmId;
+        }),
+      );
+      return alarmIdList.map((v) => v.id);
+    }
+  };
+
+  // 알람 생성
+  const makeAlarm = async () => {
+    // 알람이 있을때 -> 반복 유/무에 따라 결과가 달라짐
     if (isAlarm) {
       let [tempYear, tempMonth, tempDay] = [...date.split('.')];
       tempDay = tempDay.split('(')[0];
       let tempDate = tempDay + '-' + tempMonth + '-' + tempYear + ' ';
 
       if (isReapeat.length === 0) {
-        setAlarm({
+        const alarmId = await setAlarm({
           fire_date: tempDate + alarmTime,
           title: questName,
           message: questName,
-          data: { uuid },
         });
+        return [alarmId.id];
       } else if (isReapeat.length > 0) {
-        isReapeat.map((value) => {
-          setAlarm({
-            fire_date: setRepeatDate(date, value) + ' ' + alarmTime,
-            title: questName,
-            message: questName,
-            schedule_type: 'repeat',
-            data: { uuid },
-          });
-        });
+        const alarmIdList = await Promise.all(
+          isReapeat.map((value) => {
+            const alarmId = setAlarm({
+              fire_date: setRepeatDate(date, value) + ' ' + alarmTime,
+              title: questName,
+              message: questName,
+              schedule_type: 'repeat',
+            });
+            return alarmId;
+          }),
+        );
+        return alarmIdList.map((v) => v.id);
       }
     }
   };
@@ -247,8 +291,6 @@ function CreateRoutineScreen({ navigation }) {
     let tempDay = parseInt(day);
     let tempMonth = parseInt(month);
     let tempYear = parseInt(year);
-
-    console.log(gap, tempDay);
 
     // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
     // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
@@ -402,7 +444,6 @@ function CreateRoutineScreen({ navigation }) {
           style={{ marginBottom: 50 }}
           onPress={() => {
             handleCreate();
-            navigation.navigate('Home');
           }}>
           <Text style={{ color: 'white' }}>퀘스트 생성</Text>
         </ButtonWrapper>

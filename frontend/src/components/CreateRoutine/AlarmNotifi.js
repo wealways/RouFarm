@@ -24,8 +24,47 @@ const repeatAlarmNotifData = {
   interval_value: 1, // repeat after 5 minutes
 };
 
+const notifData = {
+  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
+  vibrate: true,
+  schedule_type: 'once',
+  channel: 'wakeup',
+};
+
+const repeatNotifData = {
+  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
+  vibrate: true,
+  schedule_type: 'repeat',
+  channel: 'wakeup',
+};
+
+export const setNofication = async (props) => {
+  // 반복 O
+  if (props.schedule_type === 'repeat') {
+    const details = {
+      ...repeatNotifData,
+      ...props,
+    };
+    try {
+      return await ReactNativeAN.scheduleAlarm(details);
+    } catch (e) {
+      console.log(e);
+    }
+  } else {
+    // 반복 X
+    const details = {
+      ...notifData,
+      ...props,
+    };
+    try {
+      return await ReactNativeAN.scheduleAlarm(details);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};
+
 export const setAlarm = async (props) => {
-  console.log('@@@@@@@@@@@@@@@', props, '@@@@@@@@@@@@@@@@');
   // 반복 O
   if (props.schedule_type === 'repeat') {
     const details = {
@@ -33,7 +72,7 @@ export const setAlarm = async (props) => {
       ...props,
     };
     try {
-      await ReactNativeAN.scheduleAlarm(details);
+      return await ReactNativeAN.scheduleAlarm(details);
     } catch (e) {
       console.log(e);
     }
@@ -44,20 +83,11 @@ export const setAlarm = async (props) => {
       ...props,
     };
     try {
-      await ReactNativeAN.scheduleAlarm(details);
+      return await ReactNativeAN.scheduleAlarm(details);
     } catch (e) {
       console.log(e);
     }
   }
-};
-
-export const deleteQuestAlarm = (uuid) => {
-  const list = await ReactNativeAN.getScheduledAlarms();
-  list.map((quest) => {
-    if (quest.data.uuid === uuid) {
-      deleteAlarm(quest.id);
-    }
-  });
 };
 
 export const viewAlarms = async () => {

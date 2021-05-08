@@ -7,6 +7,7 @@ import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
 import { DailyQuest, EmergencyQuest } from '@/components/Home';
+import { ModalComponent } from '@/components/common';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,24 +19,44 @@ import { deviceWidth } from '@/utils/devicesize';
 import { useIsFocused } from '@react-navigation/native';
 import theme from '../../theme';
 
-function HomeScreen({ navigation }) {
-  const [quest, setQuest] = useState([]);
+// 알람
+import {
+  setAlarm,
+  setNofication,
+  viewAlarms,
+  deleteAlarm,
+  stopAlarmSound,
+} from '@/components/CreateRoutine/AlarmNotifi';
+
+function HomeScreen({ navigation, route }) {
+  // 모달
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => {
+    setShowModal((prev) => !prev);
+  };
+
+  const [quest, setQuest] = useState({});
   const [qrOpen, setQROpen] = useState(false);
   const [up, setUp] = useState(0);
 
-  // 네비게이션 리로드 테스트
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    AsyncStorage.getItem('quest', (err, res) => {
-      // console.log(res);
-      setQuest(JSON.parse(res));
+  const getAsyncStorage = (storageName, setData) => {
+    AsyncStorage.getItem(storageName, (err, res) => {
+      let data = JSON.parse(res);
+      setData(data);
+      console.log(data);
       if (err) console.log(err);
     });
-    // 이 페이지에 돌아올 때, 리로드할 로직을 넣기
+  };
+
+  // 네비게이션 리로드 테스트
+  const isFocused = useIsFocused();
+  route.params ? console.log(route.params) : null;
+
+  useEffect(() => {
+    getAsyncStorage('quest', setQuest);
     setUp(0);
   }, [isFocused]);
-  // console.log(quest);
+
   return (
     <Wrapper>
       <ScrollView>
@@ -70,7 +91,16 @@ function HomeScreen({ navigation }) {
           <View>
             <Text style={styles.title}>일일 퀘스트</Text>
             <Card style={styles.cardWidth}>
-              <DailyQuest />
+              {Object.keys(quest).map((value) => (
+                <React.Fragment key={value}>
+                  <View>
+                    <TouchableOpacity onPress={openModal}>
+                      <Text>{quest[value].date}</Text>
+                      <Text>{quest[value].questName}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </React.Fragment>
+              ))}
             </Card>
           </View>
         </Contents>
@@ -86,7 +116,24 @@ function HomeScreen({ navigation }) {
         </Contents>
       </ScrollView>
 
-      {/* <MyTabs /> */}
+      {/* 모달 */}
+      <ModalComponent showModal={showModal} setShowModal={setShowModal}>
+        <TouchableOpacity>
+          <Text>수정</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={(uuid) => {
+            console.log(quest[uuid], uuid);
+            quest[uuid].alarmIdList.filter((v) => deleteAlarm(v));
+            quest[uuid].notifiIdList.filter((v) => deleteAlarm(v));
+            delete quest[uuid];
+            AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
+              console.log('정보 삭제 완료');
+            });
+          }}>
+          <Text>삭제</Text>
+        </TouchableOpacity>
+      </ModalComponent>
 
       <QRCodeButton
         style={styles.android}
