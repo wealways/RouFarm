@@ -36,7 +36,7 @@ const ListView = styled.View`
   flex-direction:row;
   /* justify-content:space-between; */
   align-items:center;
-  width:280px;
+  width:270px;
 `
 const TagText = styled.Text`
   padding:5px;
@@ -67,7 +67,6 @@ const Detail = ({route}) =>{
   ]
   const completed = res.filter(r=>r.completed)
   const notCompleted = res.filter(r=>!r.completed)
-  console.log(notCompleted)
   return (
     <LinearGradient
       colors={['#dce8ef','#fff']}
@@ -80,7 +79,7 @@ const Detail = ({route}) =>{
           <Text style={styles.date}>{year}년 {month}월 {day}일</Text>
           <ScrollView>
             <Text style={{fontSize:20,marginTop:5,marginBottom:5}}>🎉 성공</Text>
-            <View style={{marginLeft:20,width:width-50}}>
+            <View style={{marginLeft:20, width:width-50}}>
               {completed.map((data,idx)=>(
                 <ListView key={idx}>
                   <TagText name={data.tag}>#{data.tag}</TagText>
