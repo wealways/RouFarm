@@ -7,7 +7,7 @@ import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
 import { DailyQuest, EmergencyQuest } from '@/components/Home';
-import { ModalComponent } from '@/components/common';
+import GetRoutine from '@/components/CreateRoutine/GetRoutine';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
@@ -29,6 +29,14 @@ import {
 } from '@/components/CreateRoutine/AlarmNotifi';
 
 function HomeScreen({ navigation }) {
+  // 선택된 날짜보다 이전에 시작되었는지 검사 (이미 시작된 루틴인지 검사)
+  const isStartedQuest = (questDate, selectedDate) => {
+    // quest.data 파싱
+    let [year, month, dayNyoil] = [...questDate.split('.')];
+    let [day, yoil] = [...dayNyoil.split('(')];
+    yoil = yoil.slice(0, 1);
+  };
+
   // 모달
   const [showModal, setShowModal] = useState(false);
   const openModal = () => {
@@ -37,7 +45,6 @@ function HomeScreen({ navigation }) {
 
   const [quest, setQuest] = useState({});
   const [qrOpen, setQROpen] = useState(false);
-  const [up, setUp] = useState(0);
   const [clickedUuid, setClickedUuid] = useState('');
 
   const getAsyncStorage = (storageName, setData) => {
@@ -49,7 +56,7 @@ function HomeScreen({ navigation }) {
     });
   };
 
-  // 네비게이션 리로드 테스트
+  // 리로드 변수
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -61,31 +68,18 @@ function HomeScreen({ navigation }) {
     <Wrapper>
       <ScrollView>
         {/* section 1 - 프로필 */}
-        {/* <Contents>
+        <Contents>
           <View>
             <Text style={styles.title}>유저 이름</Text>
             <Card style={[styles.profile, styles.cardWidth]}>
               <UserImage>
                 <CarrotAnim style={{ position: 'relative' }} />
               </UserImage>
-              <UserStatus>
-                <Text>HP: 50</Text>
-                <Text>MP: 50</Text>
-                <Text>EXP: 50</Text>
-                <Text style={[styles.title, { color: '#000' }]}>{up}</Text>
-                <TouchableOpacity
-                  style={styles.increaseButton}
-                  onPress={() => {
-                    setUp(up + 1);
-                  }}>
-                  <Text style={{ color: '#fff' }}>리로드테스트</Text>
-                </TouchableOpacity>
-              </UserStatus>
             </Card>
           </View>
-        </Contents> */}
-
-        {/* section 2 - 일일 퀘스트 */}
+        </Contents>
+        <GetRoutine />
+        {/* section 1 - 일일 퀘스트 */}
         <Contents>
           <View>
             <Text style={styles.title}>일일 퀘스트</Text>
