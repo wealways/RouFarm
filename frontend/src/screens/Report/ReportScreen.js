@@ -5,7 +5,7 @@ import {
   useWindowDimensions,
   ScrollView,
   TouchableOpacity,
-
+  StyleSheet
 } from 'react-native';
 
 //styled
@@ -21,6 +21,7 @@ import {
   FailListView, 
   ChartView
 } from './Report.styles';
+import LinearGradient from 'react-native-linear-gradient'
 
 // components
 import CustomHeatmapChart from '@/components/Report/CustomHeatmapChart';
@@ -53,13 +54,17 @@ function ReportScreen({navigation}) {
   const [loading,setLoading] = useState(false);
   useEffect(()=>{
     setLoading(true);
-    console.log(111)
   })
 
   return (
-    <Wrapper>
+    <LinearGradient
+      colors={['#dce8ef','#fff']}
+      start={{x:0,y:0}}
+      end={{x:0,y:1}}
+      style={styles.container}
+    >
       <ScrollView>
-        <TitleText> Report Page</TitleText>
+        {/* <TitleText> Report Page</TitleText> */}
         <View style={{flexDirection:'row',justifyContent:'space-around'}}>
         {TopTab.tabs.map((d,idx)=>{
           return (
@@ -137,15 +142,7 @@ function ReportScreen({navigation}) {
               <CustomFailPicker/>
             </View>
             <Card width={width}>
-              {/* {Object.values(fails)
-                .map((day)=>(
-                  <View key={day.date}>
-                    <Text></Text>
-                    <Text>{day.date}</Text> */}
-                    <FailView />
-                  {/* </View>
-                ))
-              } */}
+              <FailView />
             </Card>
           </FailListProvider>
         </Contents>
@@ -163,9 +160,13 @@ function ReportScreen({navigation}) {
 
         
       </ScrollView>
-    </Wrapper>
+    </LinearGradient>
   );
 }
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+})
 
 export default ReportScreen;

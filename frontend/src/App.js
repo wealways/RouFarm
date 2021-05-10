@@ -41,7 +41,9 @@ const App = () => {
             <Stack.Screen options={{ headerShown: false }} name="SelectMode" component={SelectMode} />
             <Stack.Screen options={{ headerShown: false }} name="FriendList" component={FriendList} />
             {/* 리포트 디테일 페이지 */}
-            <Stack.Screen name="Detail" component={Detail} />
+            <Stack.Screen options={{headerStyle:{
+              backgroundColor:'#dce8ef'
+            }}} name="Daily" component={Detail} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

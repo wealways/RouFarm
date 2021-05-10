@@ -70,7 +70,7 @@ const CustomHeatmapChart = ({navigation}) => {
     
     let day = w*7+d-tempD+1 ;
     day = day>=10 ? day : '0'+day; 
-    navigation.navigate('Detail',{date:`${heatmap.date}-${day}`});
+    navigation.navigate('Daily',{date:`${heatmap.date}-${day}`});
   };
 
   

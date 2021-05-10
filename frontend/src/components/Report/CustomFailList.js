@@ -12,8 +12,8 @@ const FailView = styled.View`
   border-bottom-color:#000;
   border-bottom-width: 2px;
   border-radius: 5px;
-  margin:8px;
-  padding:8px;
+  margin:5px;
+  padding:5px;
   display:flex;
   flex-direction:row;
   justify-content:space-between;
@@ -22,7 +22,7 @@ const FailView = styled.View`
 `
 
 const TagText = styled.Text`
-  padding:9px;
+  padding:5px;
   border-radius:10px;
   background-color:${({name}) => name==="건강" ? "#6f95aa" : name==="자기개발" ? "#0c985e" : name==="일상" ? "#dce8ef" : "#687396"};
   color:${({name}) => name!="일상"?"white":"#000"};

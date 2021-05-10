@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 const Wrapper = styled.View`
   flex:1;
   background:#dce8ef;
-
 `;
 const Contents = styled.View`
   flex: 1;
