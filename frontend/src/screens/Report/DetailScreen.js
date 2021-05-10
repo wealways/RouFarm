@@ -54,8 +54,8 @@ const Detail = ({route}) =>{
 
   const date = route.params.date.split('-')
   const year = date[0]
-  const month = date[1].replace(/0/,"")
-  const day = date[2].replace(/0/,"")
+  const month = date[1]
+  const day = date[2]
   
 
   const res = [

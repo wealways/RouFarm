@@ -69,13 +69,12 @@ const CustomHeatmapChart = ({navigation}) => {
   const _onPress = (w,d) => {
     
     let day = w*7+d-tempD+1 ;
-    day = day>=10 ? day : '0'+day;
+    day = day>=10 ? `${day}` : '0'+day;
     const date = `${heatmap.date}-${day}`
-    
     if(isNaN(new Date(date))){
       return
     }else{
-      navigation.navigate('Daily',{date:`${heatmap.date}-${day}`});
+      navigation.navigate('Daily',{date});
     }
   };
 
