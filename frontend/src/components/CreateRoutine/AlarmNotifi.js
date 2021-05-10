@@ -92,14 +92,12 @@ export const setAlarm = async (props) => {
 
 export const viewAlarms = async () => {
   const list = await ReactNativeAN.getScheduledAlarms();
-  console.log(list);
+  // console.log(list);
 };
 
-export const deleteAlarm = (alarmId) => async () => {
-  if (alarmId !== '') {
-    console.log(`delete alarm: ${alarmId}`);
-    ReactNativeAN.deleteAlarm(alarmId);
-  }
+export const deleteAlarm = async (alarmId) => {
+  console.log(`delete alarm: ${alarmId}`);
+  await ReactNativeAN.deleteAlarm(alarmId);
 };
 // QR 발동 !
 export const stopAlarmSound = () => {

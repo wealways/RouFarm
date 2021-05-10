@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 
 import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './home.styles';
 
@@ -28,7 +28,7 @@ import {
   stopAlarmSound,
 } from '@/components/CreateRoutine/AlarmNotifi';
 
-function HomeScreen({ navigation, route }) {
+function HomeScreen({ navigation }) {
   // 모달
   const [showModal, setShowModal] = useState(false);
   const openModal = () => {
@@ -38,30 +38,30 @@ function HomeScreen({ navigation, route }) {
   const [quest, setQuest] = useState({});
   const [qrOpen, setQROpen] = useState(false);
   const [up, setUp] = useState(0);
+  const [clickedUuid, setClickedUuid] = useState('');
 
   const getAsyncStorage = (storageName, setData) => {
     AsyncStorage.getItem(storageName, (err, res) => {
       let data = JSON.parse(res);
-      setData(data);
-      console.log(data);
+      // null 에러 처리
+      setData(data === null ? {} : data);
       if (err) console.log(err);
     });
   };
 
   // 네비게이션 리로드 테스트
   const isFocused = useIsFocused();
-  route.params ? console.log(route.params) : null;
 
   useEffect(() => {
     getAsyncStorage('quest', setQuest);
-    setUp(0);
+    // setUp(0);
   }, [isFocused]);
 
   return (
     <Wrapper>
       <ScrollView>
         {/* section 1 - 프로필 */}
-        <Contents>
+        {/* <Contents>
           <View>
             <Text style={styles.title}>유저 이름</Text>
             <Card style={[styles.profile, styles.cardWidth]}>
@@ -73,7 +73,6 @@ function HomeScreen({ navigation, route }) {
                 <Text>MP: 50</Text>
                 <Text>EXP: 50</Text>
                 <Text style={[styles.title, { color: '#000' }]}>{up}</Text>
-                {/* 네비게이션 리로드 테스트 */}
                 <TouchableOpacity
                   style={styles.increaseButton}
                   onPress={() => {
@@ -84,19 +83,63 @@ function HomeScreen({ navigation, route }) {
               </UserStatus>
             </Card>
           </View>
-        </Contents>
+        </Contents> */}
 
         {/* section 2 - 일일 퀘스트 */}
         <Contents>
           <View>
             <Text style={styles.title}>일일 퀘스트</Text>
             <Card style={styles.cardWidth}>
-              {Object.keys(quest).map((value) => (
-                <React.Fragment key={value}>
+              {Object.keys(quest).map((uuid) => (
+                <React.Fragment key={uuid}>
                   <View>
-                    <TouchableOpacity onPress={openModal}>
-                      <Text>{quest[value].date}</Text>
-                      <Text>{quest[value].questName}</Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setClickedUuid(uuid);
+                        openModal();
+                      }}>
+                      <Text>{quest[uuid].date}</Text>
+                      <Text>{quest[uuid].questName}</Text>
+                      <>
+                        {showModal ? (
+                          <View>
+                            <Modal
+                              animationType="fade"
+                              transparent={true}
+                              visible={showModal}
+                              onRequestClose={() => {
+                                setShowModal(false);
+                              }}>
+                              <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      console.log(clickedUuid);
+                                      navigation.navigate('UpdateRoutine', {
+                                        uuid: clickedUuid,
+                                        quest: quest[clickedUuid],
+                                      });
+                                    }}>
+                                    <Text>수정</Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      console.log(clickedUuid);
+                                      quest[clickedUuid].alarmIdList.map((v) => deleteAlarm(v));
+                                      quest[clickedUuid].notifiIdList.map((v) => deleteAlarm(v));
+                                      delete quest[clickedUuid];
+                                      AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
+                                        console.log('정보 삭제 완료');
+                                      });
+                                    }}>
+                                    <Text>삭제</Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            </Modal>
+                          </View>
+                        ) : null}
+                      </>
                     </TouchableOpacity>
                   </View>
                 </React.Fragment>
@@ -116,25 +159,6 @@ function HomeScreen({ navigation, route }) {
         </Contents>
       </ScrollView>
 
-      {/* 모달 */}
-      <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-        <TouchableOpacity>
-          <Text>수정</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={(uuid) => {
-            console.log(quest[uuid], uuid);
-            quest[uuid].alarmIdList.filter((v) => deleteAlarm(v));
-            quest[uuid].notifiIdList.filter((v) => deleteAlarm(v));
-            delete quest[uuid];
-            AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
-              console.log('정보 삭제 완료');
-            });
-          }}>
-          <Text>삭제</Text>
-        </TouchableOpacity>
-      </ModalComponent>
-
       <QRCodeButton
         style={styles.android}
         onPress={() => {
@@ -149,7 +173,27 @@ function HomeScreen({ navigation, route }) {
     </Wrapper>
   );
 }
+
 const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   title: {
     fontSize: 18,
     color: '#2e2e2e',

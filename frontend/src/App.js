@@ -11,7 +11,16 @@ import { ThemeProvider } from 'styled-components/native';
 import theme from './theme/index';
 
 // 페이지
-import { Home, Report, QR, CreateRoutine, Login, SelectMode, FriendList } from './screens/index';
+import {
+  Home,
+  Report,
+  QR,
+  CreateRoutine,
+  UpdateRoutine,
+  Login,
+  SelectMode,
+  FriendList,
+} from './screens/index';
 import AlarmTest from './screens/AlarmTest';
 
 // 리덕스
@@ -45,6 +54,11 @@ const App = () => {
               options={{ headerShown: false }}
               name="CreateRoutine"
               component={CreateRoutine}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="UpdateRoutine"
+              component={UpdateRoutine}
             />
             {/* screen test 용 */}
             <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />

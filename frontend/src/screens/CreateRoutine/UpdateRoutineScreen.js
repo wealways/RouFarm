@@ -21,13 +21,12 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
-import { setAlarm, setNofication } from '@/components/CreateRoutine/AlarmNotifi';
+import { setAlarm, setNofication, deleteAlarm } from '@/components/CreateRoutine/AlarmNotifi';
 import ReactNativeAN from 'react-native-alarm-notification';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-import { CommonActions } from '@react-navigation/native';
 
 const dayOfMonth = {
   1: 31,
@@ -75,7 +74,8 @@ const today =
   yoil[now.getDay()] +
   ')';
 
-function CreateRoutineScreen({ navigation }) {
+function UpdateRoutineScreen({ navigation, route }) {
+  console.log(route.params);
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal((prev) => !prev);
@@ -88,29 +88,34 @@ function CreateRoutineScreen({ navigation }) {
   const [alarmTimeShow, setAlarmTimeShow] = useState(false);
 
   // 생성시 넘길 데이터
-  const [questName, setQuestname] = useState('');
-  const [date, setDate] = useState(today);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [alarmTime, setAlarmTime] = useState('');
-  const [isReapeat, setIsReapeat] = useState([]);
+  const [questName, setQuestname] = useState(route.params.quest.questName);
+  const [date, setDate] = useState(route.params.quest.date);
+  const [startTime, setStartTime] = useState(route.params.quest.startTime);
+  const [endTime, setEndTime] = useState(route.params.quest.endTime);
+  const [alarmTime, setAlarmTime] = useState(route.params.quest.alarmTime);
+  const [isReapeat, setIsReapeat] = useState(route.params.quest.isReapeat);
   const [qrName, setQRName] = useState('');
-  const [alarmId, setAlarmId] = useState([]);
+  const [alarmId, setAlarmId] = useState(route.params.quest.alarmIdList);
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
-  const [isAlarm, setIsAlarm] = useState(false);
+  const [isAlarm, setIsAlarm] = useState(alarmTime === '' ? false : true);
 
   const [fireDate, setFireDate] = useState('');
 
+  console.log(alarmTime);
+
   // 퀘스트 생성
   const handleCreate = async () => {
+    // 기존의 알림과 알람 제거
+    await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
+    await route.params.quest.notifiIdList.map((v) => deleteAlarm(v));
+
+    // 새로운 알림과 알람 생성
     const alarmIdList = await makeAlarm();
     const notifiIdList = await makeNotifi();
+
     let quest = {};
-
-    let uuid = parseInt(Math.random() * Math.pow(10, 16));
-
     let repeatDate = [];
     isReapeat.map((v) => {
       repeatDate.push(setRepeatDate(date, v));
@@ -118,17 +123,15 @@ function CreateRoutineScreen({ navigation }) {
 
     AsyncStorage.getItem('quest', async (err, res) => {
       quest = JSON.parse(res);
-      // quest가 null값인지 아닌지 체크해야함. 그렇지 않으면 다음과 같은 오류 뿜음
-      // null is not an object.
       if (quest === null) quest = {};
-      quest[uuid] = {
+      quest[route.params.uuid] = {
         questName,
         date,
         startTime,
         endTime,
         alarmTime,
-        isReapeat,
         repeatDate,
+        isReapeat,
         alarmIdList,
         notifiIdList,
       };
@@ -171,12 +174,6 @@ function CreateRoutineScreen({ navigation }) {
 
   // 날짜 설정
   const handleConfirm = (element) => {
-    // console.log(element);
-    // let temp = JSON.stringify(element).slice(1, 11);
-    // temp = temp.split('-');
-    // temp = temp[2] + '-' + temp[1] + '-' + temp[0];
-    // setFireDate(temp);
-
     setDate(
       element.getFullYear() +
         '.' +
@@ -315,7 +312,9 @@ function CreateRoutineScreen({ navigation }) {
                 onChangeText={(text) => setQuestname(text)}
                 style={styles.textInput}
                 placeholder="어떤 퀘스트인가요?"
-                maxLength={30}></TextInput>
+                maxLength={30}>
+                {questName}
+              </TextInput>
             </Card>
           </View>
         </Contents>
@@ -397,7 +396,7 @@ function CreateRoutineScreen({ navigation }) {
                 <>
                   <SettingButton onPress={showAlarmTimePicker}>
                     <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {!alarmTime ? '알람 시간 설정' : alarmTime}
+                      {alarmTime === '' ? '알람 시간 설정' : alarmTime}
                     </Text>
                   </SettingButton>
                   <DateTimePickerModal
@@ -483,4 +482,4 @@ const styles = StyleSheet.create({
   qrTextInput: {},
 });
 
-export default CreateRoutineScreen;
+export default UpdateRoutineScreen;
