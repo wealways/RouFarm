@@ -11,6 +11,7 @@ const Contents = styled.View`
   height: 100%; */
   /* align-items: center; */
   margin: 10px;
+  justify-content:space-between;
 `;
 const Card = styled.View`
   display:flex;
@@ -67,6 +68,7 @@ const Detail = ({route}) =>{
   ]
   const completed = res.filter(r=>r.completed)
   const notCompleted = res.filter(r=>!r.completed)
+  const rate = completed.length/res.length*100
   return (
     <LinearGradient
       colors={['#dce8ef','#fff']}
@@ -102,13 +104,31 @@ const Detail = ({route}) =>{
             </View>
           </ScrollView>
         </Card>
-        <View>
-          <Text>
-            달성률 알려주기
-          </Text>
-          <Text>
-            잘하고 있어요 조금만 더 노력합시다!
-          </Text>
+        <View style={styles.result}>
+          {rate==100 && 
+            <Text style={styles.comment}>
+              훌륭합니다!! 👍👍
+            </Text>
+          }
+          {rate>=50 && rate<100 && 
+            <Text style={styles.comment}>
+              잘하고 있어요.
+               조금만 더 노력합시다! 🤜
+            </Text>
+          }
+          {rate<50 && 
+            <Text style={styles.comment}>
+              뭐함? 왜케 안함 👿
+            </Text>
+          }
+          <View style={styles.rate}>
+            <Text style={{fontSize:20,borderBottomWidth:1,paddingRight:10}}>
+              달성 : 
+            </Text>
+            <Text style={{fontSize:30,borderBottomWidth:1}}>
+              {rate.toFixed(1)}%
+            </Text>
+          </View>
         </View>
       </Contents>
     </LinearGradient>
@@ -125,6 +145,21 @@ const styles = StyleSheet.create({
     fontSize:15,
     fontWeight:'bold',
     marginBottom:10
+  },
+  result:{
+    margin:15,
+    justifyContent:'space-between',
+    minHeight:100
+  },
+  comment:{
+    marginLeft:'auto',
+    marginRight:'auto',
+    fontSize:15,
+  },
+  rate:{
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'flex-end',
   }
 })
 
