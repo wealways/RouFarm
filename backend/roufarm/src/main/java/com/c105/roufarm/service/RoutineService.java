@@ -28,6 +28,7 @@ public class RoutineService {
       // 1. 루틴 등록
       @Transactional
       public Routine saveRoutine(Routine routine){
+            routine.setIsActivate("true");
             return routineMongoDBRepository.save(routine);
       }
 
@@ -39,12 +40,40 @@ public class RoutineService {
             List<Routine> routineList = new ArrayList<Routine>();
             for(String routineId:user.getRoutines()){
                   Routine routine = routineMongoDBRepository.findById(routineId).get();
+                  if(routine.getIsActivate().equals("false")){
+                        continue;
+                  }
                   routineList.add(routine);
             }
             return routineList;
       }
 
-      
+      // 3. 본인 루틴 삭제
+      @Transactional
+      public Routine deleteRoutine(String routineId){
+            Routine routine = routineMongoDBRepository.findById(routineId).get();
+            routine.setIsActivate("false");
+            routineMongoDBRepository.save(routine);
+            return routine;
+      }
 
+      // 4. 본인 루틴 확인
+      @Transactional
+      public Routine findRoutineById(String routineId){
+            return routineMongoDBRepository.findById(routineId).get();
+      }
+
+      // 5. 본인 루틴의 루틴 Id들을 조회
+      @Transactional
+      public List<String> getRoutineId(){
+            List<Routine> routines = findRoutine();
+            List<String> routineList = new ArrayList<String>();
+            for(Routine routine : routines){
+                  for(String routineLogId : routine.getRoutineLog()){
+                        routineList.add(routineLogId);
+                  }
+            }
+            return routineList;
+      }
       
 }
