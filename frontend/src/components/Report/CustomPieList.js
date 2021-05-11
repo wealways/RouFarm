@@ -1,8 +1,8 @@
 import React,{useContext} from 'react';
 import {Text, View} from 'react-native';
 import styled from 'styled-components/native';
-import PieContext from '@/contexts/Report/Pie';
 
+import HeatmapContext from '@/contexts/Report/Heatmap';
 
 const TagText = styled.Text`
   padding:7px;
@@ -20,8 +20,8 @@ const ItemView= styled.View`
 `
 
 const CustomHeatmapRate = () => {
-  const {Pie} = useContext(PieContext);
-
+  const {heatmap} = useContext(HeatmapContext);
+  
   const data ={
     '건강':[
       {id:1,content:'조깅',cnt:20,rate:0.7},
@@ -42,8 +42,8 @@ const CustomHeatmapRate = () => {
     ]
   }
   let list
-  if(Pie.click != ''){
-    list = data[Pie.click]
+  if(heatmap.pieClick != ''){
+    list = data[heatmap.pieClick]
   }
   return (
     <View>
@@ -53,7 +53,7 @@ const CustomHeatmapRate = () => {
       {list &&
       <>
         <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'baseline', marginLeft:3,marginRight:3,width:300,marginTop:5,paddingBottom:5, borderStyle:'solid',borderBottomWidth:1}}>
-          <TagText name={Pie.click}>#{Pie.click}</TagText>
+          <TagText name={heatmap.pieClick}>#{heatmap.pieClick}</TagText>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
             <Text>개수</Text>
             <Text>달성률</Text>

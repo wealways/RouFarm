@@ -54,6 +54,9 @@ function ReportScreen({navigation}) {
     setLoading(true);
   })
 
+  // 월간
+  const date = ['2021-05','2021-04','2021-03']
+
   return (
     <LinearGradient
       colors={['#dce8ef','#fff']}
@@ -95,41 +98,41 @@ function ReportScreen({navigation}) {
         </View>
         { showIndex===0 && 
           <>
+            <HeatmapProvider>
             {/* section 1 - 월간 수확 */}
-            <Contents>
-              <HeatmapProvider>
-              <View style={{flexDirection:'row',justifyContent:'center'}}>
-                <CustomDropdown />
-              </View>
-                <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-                  <SubtitleText>월간 수확</SubtitleText>
+              <Contents>
+                <View style={{flexDirection:'row',justifyContent:'center'}}>
+                  <CustomDropdown date={date}/>
                 </View>
-                <View>
-                  <Card width={width}>
-                    <MonthChartView>
-                      <CustomHeatmapChart navigation={navigation}/>
-                    </MonthChartView>
-                    <MonthTextView>
-                      <CustomHeatmapRate/>
-                    </MonthTextView>
-                  </Card>
-                </View>
-              </HeatmapProvider>
-            </Contents>
-            {/* section 4 - 해쉬태그 별 달성률 */}
-            <Contents>
-              <PieProvider>
-                <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
-                <View>
-                  <Card width={width}>
-                    <CustomPieChart />
-                  </Card>
-                  <Card width={width}>
-                    <CustomPieList/>
-                  </Card>
-                </View>
-              </PieProvider>
-            </Contents>
+                  <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+                    <SubtitleText>월간 수확</SubtitleText>
+                  </View>
+                  <View>
+                    <Card width={width}>
+                      <MonthChartView>
+                        <CustomHeatmapChart navigation={navigation}/>
+                      </MonthChartView>
+                      <MonthTextView>
+                        <CustomHeatmapRate/>
+                      </MonthTextView>
+                    </Card>
+                  </View>
+              </Contents>
+              {/* section 4 - 해쉬태그 별 달성률 */}
+              <Contents>
+                {/* <PieProvider> */}
+                  <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
+                  <View>
+                    <Card width={width}>
+                      <CustomPieChart date={date}/>
+                    </Card>
+                    <Card width={width}>
+                      <CustomPieList/>
+                    </Card>
+                  </View>
+                {/* </PieProvider> */}
+              </Contents>
+            </HeatmapProvider>
           </>
         }
         {showIndex===1 &&
@@ -137,9 +140,11 @@ function ReportScreen({navigation}) {
           {/* section 2 - 실패 리스트 */}
             <Contents>
               <FailListProvider>
+                <View style={{flexDirection:'row',justifyContent:'center'}}>
+                  <CustomFailPicker/>
+                </View>
                 <View style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between', width:330}}>
                   <SubtitleText>실패리스트</SubtitleText>
-                  <CustomFailPicker/>
                 </View>
                 <Card width={width}>
                   <FailView />

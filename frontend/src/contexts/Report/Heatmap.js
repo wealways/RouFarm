@@ -3,9 +3,10 @@ import React,{createContext,useState} from 'react';
 
 
 const HeatmapContext = createContext({
-  heatmap:{date:'',rate:''},
+  heatmap:{date:'',rate:'',pieClick:''},
   dateDispatch: () => {},
   rateDispatch: () => {},
+  pieClickDispatch: () => {},
 });
 
 
@@ -17,12 +18,14 @@ const HeatmapProvider = ({children}) => {
   nowmonth = nowmonth >= 10 ? nowmonth : '0'+nowmonth;
   const [date, setDate] = useState(`${nowyear}-${nowmonth}`);
   const [rate, setRate] = useState(0);
+  const [pieClick,setpieClick] = useState('')
   
 
   const value = {
-    heatmap:{date,rate},
+    heatmap:{date,rate,pieClick},
     dateDispatch:setDate,
     rateDispatch:setRate,
+    pieClickDispatch:setpieClick,
   };
 
 

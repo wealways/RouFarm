@@ -5,7 +5,7 @@ import Modal from '@/components/common/ModalComponent'
 
 import HeatmapContext from '@/contexts/Report/Heatmap';
 
-const CustomDropdown = () => {
+const CustomDropdown = ({date}) => {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal((prev) => !prev);
@@ -14,7 +14,7 @@ const CustomDropdown = () => {
     dateDispatch(item);
     setShowModal((prev) => !prev);
   }
-  const date = ['2021-05','2021-04','2021-03']
+  
 
   const {heatmap,dateDispatch} = useContext(HeatmapContext);
   return (
