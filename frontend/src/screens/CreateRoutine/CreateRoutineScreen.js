@@ -26,43 +26,8 @@ import ReactNativeAN from 'react-native-alarm-notification';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import { dayOfMonth, yoilReverse, yoil } from '@/utils/parsedate';
 import axios from 'axios';
-import { CommonActions } from '@react-navigation/native';
-
-const dayOfMonth = {
-  1: 31,
-  2: 28,
-  3: 31,
-  4: 30,
-  5: 31,
-  6: 30,
-  7: 31,
-  8: 31,
-  9: 30,
-  10: 31,
-  11: 30,
-  12: 31,
-};
-
-const yoil = {
-  0: '일',
-  1: '월',
-  2: '화',
-  3: '수',
-  4: '목',
-  5: '금',
-  6: '토',
-};
-
-const yoilReverse = {
-  일: 0,
-  월: 1,
-  화: 2,
-  수: 3,
-  목: 4,
-  금: 5,
-  토: 6,
-};
 
 const now = new Date();
 const today =
@@ -109,21 +74,38 @@ function CreateRoutineScreen({ navigation }) {
     const notifiIdList = await makeNotifi();
     let quest = {};
 
+    // 퀘스트 uuid 생성
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
 
+    // date 파싱
+    let [year, month, dayNyoil] = [...date.split('.')];
+    let [day, yoil] = [...dayNyoil.split('(')];
+    yoil = yoil.slice(0, 1);
+
+    // 반복일 계산
     let repeatDate = [];
     isReapeat.map((v) => {
       repeatDate.push(setRepeatDate(date, v));
     });
 
+    // 반복일 오름차순 정렬
+    repeatDate &&
+      repeatDate.sort((a, b) => {
+        const [dayA, monthA, yearA] = a.split('-');
+        const [dayB, monthB, yearB] = b.split('-');
+
+        return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
+      });
+
+    // 메모리에 저장
     AsyncStorage.getItem('quest', async (err, res) => {
       quest = JSON.parse(res);
       // quest가 null값인지 아닌지 체크해야함. 그렇지 않으면 다음과 같은 오류 뿜음
       // null is not an object.
       if (quest === null) quest = {};
       quest[uuid] = {
+        startDate: repeatDate.length ? repeatDate[0] : day + '-' + month + '-' + year,
         questName,
-        date,
         startTime,
         endTime,
         alarmTime,

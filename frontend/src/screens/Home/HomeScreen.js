@@ -11,6 +11,7 @@ import GetRoutine from '@/components/CreateRoutine/GetRoutine';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import { dayOfMonth, yoilReverse, yoil } from '@/utils/parsedate';
 
 // 디바이스 사이즈
 import { deviceWidth } from '@/utils/devicesize';
@@ -29,14 +30,6 @@ import {
 } from '@/components/CreateRoutine/AlarmNotifi';
 
 function HomeScreen({ navigation }) {
-  // 선택된 날짜보다 이전에 시작되었는지 검사 (이미 시작된 루틴인지 검사)
-  const isStartedQuest = (questDate, selectedDate) => {
-    // quest.data 파싱
-    let [year, month, dayNyoil] = [...questDate.split('.')];
-    let [day, yoil] = [...dayNyoil.split('(')];
-    yoil = yoil.slice(0, 1);
-  };
-
   // 모달
   const [showModal, setShowModal] = useState(false);
   const openModal = () => {
@@ -52,9 +45,42 @@ function HomeScreen({ navigation }) {
       let data = JSON.parse(res);
       // null 에러 처리
       setData(data === null ? {} : data);
+      console.log(data);
       if (err) console.log(err);
     });
   };
+
+  const getDailyQuest = (date) => {
+    const [day1, month1, year1] = date.split('-');
+
+    let uuidList = Object.keys(quest).filter((uuid) => {
+      if (!quest[uuid].repeatDate.length) {
+        return date === quest[uuid].startDate;
+      } else {
+        const [day2, month2, year2] = quest[uuid].startDate.split('-');
+        // 시작한 루틴인지 확인
+        if (new Date(year2, month2 - 1, day2) <= new Date(year1, month1 - 1, day1)) {
+          const yoil1 = new Date(year1, month1 - 1, day1).getDay();
+
+          // 같은 요일 루틴인지 확인
+          const result = quest[uuid].isReapeat.filter((yoil2) => {
+            if (yoil1 === yoilReverse[yoil2]) {
+              return true;
+            }
+            return false;
+          });
+
+          return result === null ? false : true;
+        }
+
+        return false;
+      }
+    });
+
+    uuidList = uuidList === null ? [] : uuidList;
+    return uuidList;
+  };
+  console.log(getDailyQuest('13-5-2021'));
 
   // 리로드 변수
   const isFocused = useIsFocused();
@@ -92,8 +118,8 @@ function HomeScreen({ navigation }) {
                         setClickedUuid(uuid);
                         openModal();
                       }}>
-                      <Text>{quest[uuid].date}</Text>
                       <Text>{quest[uuid].questName}</Text>
+                      <Text>{quest[uuid].startDate}</Text>
                       <>
                         {showModal ? (
                           <View>
