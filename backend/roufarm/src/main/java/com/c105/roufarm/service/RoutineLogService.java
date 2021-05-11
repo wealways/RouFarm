@@ -22,6 +22,9 @@ public class RoutineLogService {
       RoutineMongoDBRepository routineMongoDBRepository;
 
       @Autowired
+      UserLogService userLogService;
+
+      @Autowired
       RoutineService routineService;
 
       // 1. 루틴 로그 id로 루틴 로그 검색
@@ -41,7 +44,7 @@ public class RoutineLogService {
            return routineLogList;
       }
 
-      // 3. 루틴로그 생성 (루틴 로그를 생성 / 해당 루틴의 로그들을 조회)
+      // 3. 루틴로그 생성 (루틴 로그를 생성 / 해당 루틴의 로그들을 조회 / 유저로그에 추가)
       @Transactional
       public RoutineLog saveRoutineLog(RoutineLog routineLog){
             routineLogMongoDBRepository.save(routineLog);
@@ -51,6 +54,7 @@ public class RoutineLogService {
             routineLogs.add(getRoutineLog.getId());
             routine.setRoutineLog(routineLogs);
             routineMongoDBRepository.save(routine);
+            userLogService.saveLog(getRoutineLog);
             return routineLogMongoDBRepository.findById(routineLog.getId()).get();
       }
 
