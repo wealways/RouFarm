@@ -18,6 +18,13 @@ const Weekline = styled.View`
   flex-direction:row;
 
 `
+const SubtitleText = styled.Text`
+  font-size:${({theme}) => theme.fontSizes.lg}px;
+  color: #000;
+  margin: 8px 0;
+`
+
+
 
 // 한달 데이터 -10은 아예 없는 날 / -1는 루틴 안만든 날 / 0은 루틴 하나도 안한 날
 const INITIAL_MONTHDATA = [-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]
@@ -80,7 +87,8 @@ const CustomHeatmapChart = ({navigation}) => {
 
   
   return (
-    <ScrollView>
+    <View>
+      {/* <SubtitleText>월간 수확</SubtitleText> */}
       <Text>  월    화    수    목    금    토    일</Text>
       <View>
         {month.map((w,wIdx)=>(
@@ -93,7 +101,7 @@ const CustomHeatmapChart = ({navigation}) => {
           </Weekline>
         ))}
       </View>
-    </ScrollView>
+    </View>
   )
 };
 
