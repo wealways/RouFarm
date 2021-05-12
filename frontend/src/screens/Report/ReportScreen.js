@@ -56,6 +56,8 @@ function ReportScreen({navigation}) {
 
   // 월간
   const date = ['2021-05','2021-04','2021-03']
+  // 주간
+  const weekDate = ['2021-05-w1','2021-05-w2','2021-05-w3']
 
   return (
     <LinearGradient
@@ -64,6 +66,7 @@ function ReportScreen({navigation}) {
       end={{x:0,y:1}}
       style={styles.container}
     >
+      <HeatmapProvider>
       <ScrollView>
         {/* <TitleText> Report Page</TitleText> */}
         <View style={{flexDirection:'row',justifyContent:'center'}}>
@@ -102,7 +105,7 @@ function ReportScreen({navigation}) {
             {/* section 1 - 월간 수확 */}
               <Contents>
                 <View style={{flexDirection:'row',justifyContent:'center'}}>
-                  <CustomDropdown date={date}/>
+                  <CustomDropdown date={date} flag={'month'}/>
                 </View>
                   <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                     <SubtitleText>월간 수확</SubtitleText>
@@ -141,7 +144,7 @@ function ReportScreen({navigation}) {
             <Contents>
               <FailListProvider>
                 <View style={{flexDirection:'row',justifyContent:'center'}}>
-                  <CustomFailPicker/>
+                  <CustomDropdown date={weekDate} flag={'week'}/>
                 </View>
                 <View style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between', width:330}}>
                   <SubtitleText>실패리스트</SubtitleText>
@@ -165,6 +168,7 @@ function ReportScreen({navigation}) {
 
         
       </ScrollView>
+      </HeatmapProvider>
     </LinearGradient>
   );
 }

@@ -1,24 +1,42 @@
 import React,{useState,useContext} from 'react';
-import {View,Text,TouchableOpacity} from 'react-native'
+import {View,Text,TouchableOpacity,ScrollView} from 'react-native'
 
-import {Picker} from '@react-native-picker/picker';
+import Modal from '@/components/common/ModalComponent'
 
 import HeatmapContext from '@/contexts/Report/Heatmap';
 
-const CustomDropdown = () => {
+const CustomDropdown = ({date}) => {
   const {heatmap,dateDispatch} = useContext(HeatmapContext);
+  console.log('히트맵',heatmap)
+
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => {
+    setShowModal((prev) => !prev);
+  };
+  const onValueChange = (item) => {
+    dateDispatch(item);
+    setShowModal((prev) => !prev);
+  }
+  
+
   return (
-    <Picker
-      style={{height:30,width:150}}
-      selectedValue={heatmap.date}
-      onValueChange={(itemValue, itemIndex) =>
-        dateDispatch(itemValue)
-      }
-    >
-      <Picker.Item label="2021-05" value="2021-05" />
-      <Picker.Item label="2021-04" value="2021-04" />
-      <Picker.Item label="2021-03" value="2021-03" />
-    </Picker>
+    <>
+      <TouchableOpacity onPress={toggleModal} style={{padding:5}}>
+        <Text style={{fontSize:15,fontWeight:'bold'}}>{heatmap.date.split('-')[0]}년 {heatmap.date.split('-')[1]}월 </Text>
+      </TouchableOpacity>
+      <Modal showModal={showModal} setShowModal={setShowModal}>
+        <Text>날짜 선택 📆</Text>
+        <ScrollView style={{maxHeight:100}}>
+        {
+          date.map((d,idx)=>(
+            <TouchableOpacity key={idx} onPress={() => onValueChange(d)} style={{width:150,alignItems:'center'}}>
+              <Text style={{fontSize:20,margin:5}}>{d}</Text>
+            </TouchableOpacity>
+          ))
+        }
+        </ScrollView>
+      </Modal>
+    </>
   )
 }
 

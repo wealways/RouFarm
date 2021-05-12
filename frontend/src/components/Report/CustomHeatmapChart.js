@@ -42,6 +42,74 @@ const CustomHeatmapChart = ({navigation}) => {
       '2021-04':[-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0],
       '2021-03':[-1, -1, -1, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0,1]
     }
+
+    const monthAPI = {
+      '2021-05':{
+        '월간수확':[100, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1,-1,-1,-1,-1],
+        '해쉬태그별':{
+          '건강':[
+            {id:1,content:'조깅',cnt:20,rate:0.7},
+            {id:2,content:'필라테스가기',cnt:4,rate:1},
+          ],
+          '자기개발':[
+            {id:1,content:'1일1커밋',cnt:30,rate:0.8},
+            {id:2,content:'독서',cnt:8,rate:0.5},
+          ],
+          '일상':[
+            {id:1,content:'빨래',cnt:4,rate:1},
+            {id:2,content:'아침에 바로 일어나기',cnt:30,rate:0.8},
+            {id:2,content:'야식안먹기',cnt:30,rate:0.4},
+          ],
+          '없음':[
+            {id:1,content:'멍때리기',cnt:30,rate:1},
+            {id:2,content:'숨쉬기',cnt:30,rate:0.8},
+          ]
+        }
+      }
+    }
+
+    const weekAPI = {
+      '2021-05-w1':{
+        '실패리스트':[
+          { id: 1, routine: '코딩 테스트 문제 풀기1', tag:'자기개발' },
+          { id: 2, routine: '헬스장 가기1', tag:'건강' },
+          { id: 3, routine: '명상하기1', tag:'일상' },
+          { id: 4, routine: '게임1', tag:'없음' },
+          { id: 4, routine: '게임1', tag:'없음' },
+        ],
+        '요일별평균':{
+          '전체평균':[
+            {x: "Mon", y: 59},
+            {x: "Tue", y: 70},
+            {x: "Wen", y: 69},
+            {x: "Thu", y: 100},
+            {x: "Fri", y: 30},
+            {x: "Sat", y: 100},
+            {x: "Sun", y: 100}
+          ],
+          '평균':[
+            {x: "Mon", y: 69},
+            {x: "Tue", y: 20},
+            {x: "Wen", y: 100},
+            {x: "Thu", y: 100},
+            {x: "Fri", y: 45},
+            {x: "Sat", y: 100},
+            {x: "Sun", y: 70}
+          ]
+        }
+      }
+    }
+
+    const dailyAPI = [
+      { id: 1, routine: '코딩 테스트 문제 풀기', tag:'자기개발',completed:false },
+      { id: 2, routine: '헬스장 가기', tag:'건강',completed:true },
+      { id: 3, routine: '명상하기', tag:'일상',completed:true },
+      { id: 3, routine: '명상하기', tag:'일상',completed:true },
+      { id: 3, routine: '명상하기', tag:'일상',completed:true },
+    ]
+     
+
+    
     
     let dataInx = Object.keys(data).indexOf(heatmap.date)
     const Ddate = new Date(Object.keys(data)[dataInx])
