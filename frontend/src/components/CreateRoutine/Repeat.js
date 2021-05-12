@@ -15,7 +15,6 @@ const Button = styled.TouchableOpacity`
   border: 3px solid ${({ theme }) => theme.colors.third};
   border-radius: 8px;
 `;
-
 const ConfigButton = styled.TouchableOpacity`
   background: ${(props) => (props.confirm ? '#382F9B' : '#fff')};
   padding: 8px 16px;

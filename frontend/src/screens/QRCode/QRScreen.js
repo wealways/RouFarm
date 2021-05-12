@@ -17,7 +17,13 @@ import theme from '@/theme';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import { setAlarm, setNofication, deleteAlarm } from '@/components/CreateRoutine/AlarmNotifi';
+import {
+  makeAlarm,
+  makeNotifi,
+  makeRepeatDate,
+  deleteAlarm,
+} from '@/components/CreateRoutine/AlarmNotifi';
+import { yoilReverse } from '@/utils/parsedate';
 
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
@@ -50,13 +56,7 @@ function QRScreen({ navigation }) {
     });
   };
 
-  const onSuccess = (e) => {
-    // const check = e.data.substring(0, 4);
-    // console.log('scanned data' + check);
-    // 링크에 연결할 수 있으면 링크 열기
-    // if (check === 'http') {
-    //   Linking.openURL(e.data).catch((err) => console.error('An error occured', err));
-    // }
+  const onSuccess = async (e) => {
     setResult(e);
     setScan(false);
     setScanResult(true);
@@ -64,13 +64,77 @@ function QRScreen({ navigation }) {
     const uuid = e.data;
     let quest = quests[uuid];
 
-    let [date, month, year] = quest.startDate.split('-');
-    if (new Date(year, month, date) <= new Date()) {
-      quest.repeatDate.map((v, i) => {
-        [date, month, year] = v.startDate.split('-');
-        if (new Date(year, month, date).getDay() === new Date().getDay()) {
-          // 알람 삭제, 추가
+    if (quest !== null) {
+      let [date, month, year] = quest.startDate.split('-');
+      if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
+        console.log('startDate 통과!');
+        if (quest.repeatYoilList.length === 0) {
+          console.log('일회성 퀘스트 QR 스캔!');
+
+          // 기존 알림 삭제
+          if (quest.alarmIdList.length) {
+            deleteAlarm(quest.alarmIdList[0]);
+            quest.alarmIdList = [];
+          }
+          deleteAlarm(quest.notifiIdList[0]);
+          quest.notifiIdList = [];
+
+          console.log(quest.notifiIdList);
+        } else {
+          console.log('반복성 퀘스트 QR 스캔!');
+          await Promise.all(
+            quest.repeatYoilList.map(async (v, i) => {
+              if (yoilReverse[v] === new Date().getDay()) {
+                console.log('index: ', i);
+                console.log(v, yoilReverse[v]);
+                // 기존 알람/알림 삭제
+                if (quest.alarmIdList.length) {
+                  await deleteAlarm(quest.alarmIdList[i]);
+                }
+                await deleteAlarm(quest.notifiIdList[i]);
+
+                // 향후 알람/알림 추가
+                const startDate = await makeRepeatDate(
+                  new Date().getDate() +
+                    '-' +
+                    (new Date().getMonth() * 1 + 1).toString() +
+                    '-' +
+                    new Date().getFullYear(),
+                  v,
+                );
+                console.log(startDate);
+                quest.repeatDateList[i] = startDate;
+
+                if (quest.alarmIdList.length) {
+                  const alarmId = await makeAlarm(
+                    startDate,
+                    [quest.repeatYoilList[i]],
+                    quest.questName,
+                    quest.alarmTime,
+                  );
+                  console.log(alarmId);
+                  quest.alarmIdList[i] = alarmId[0];
+                }
+
+                const notifiId = await makeNotifi(
+                  startDate,
+                  [quest.repeatYoilList[i]],
+                  quest.questName,
+                  quest.startTime,
+                );
+                console.log(notifiId);
+                quest.notifiIdList[i] = notifiId[0];
+              }
+            }),
+          );
         }
+      }
+
+      // 메모리에 저장
+      quests[uuid] = quest;
+      await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
+        console.log('정보 저장 완료');
+        navigation.navigate('Home');
       });
     }
   };

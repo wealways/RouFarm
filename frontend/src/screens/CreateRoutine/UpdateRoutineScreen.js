@@ -25,7 +25,7 @@ import {
   deleteAlarm,
   makeNotifi,
   makeAlarm,
-  makeRepeatDateList,
+  makeRepeatDate,
 } from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
@@ -83,7 +83,7 @@ function UpdateRoutineScreen({ navigation, route }) {
     // 반복일 계산
     let repeatDateList = [];
     repeatYoilList.map((v) => {
-      repeatDateList.push(makeRepeatDateList(startDate, v));
+      repeatDateList.push(makeRepeatDate(startDate, v));
     });
 
     // 반복일 오름차순 정렬

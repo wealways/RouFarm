@@ -21,7 +21,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
-import { makeAlarm, makeNotifi, makeRepeatDateList } from '@/components/CreateRoutine/AlarmNotifi';
+import { makeAlarm, makeNotifi, makeRepeatDate } from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
 import axios from 'axios';
@@ -76,7 +76,7 @@ function CreateRoutineScreen({ navigation }) {
     // 반복일 계산
     let repeatDateList = [];
     repeatYoilList.map((v) => {
-      repeatDateList.push(makeRepeatDateList(startDate, v));
+      repeatDateList.push(makeRepeatDate(startDate, v));
     });
 
     // 반복일 오름차순 정렬

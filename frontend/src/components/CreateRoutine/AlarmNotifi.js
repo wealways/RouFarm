@@ -100,15 +100,13 @@ const deleteAlarm = async (alarmId) => {
   console.log(`delete alarm: ${alarmId}`);
   await ReactNativeAN.deleteAlarm(alarmId);
 };
+
 // QR 발동 !
 const stopAlarmSound = () => {
   ReactNativeAN.stopAlarmSound();
 };
 
 const makeNotifi = async (startDate, repeatYoilList, questName, startTime) => {
-  // date : fire_date 형식 (년-월-일)
-  console.log('makeNotifi', startDate, repeatYoilList, questName, startTime);
-
   if (repeatYoilList.length === 0) {
     const alarmId = await setNofication({
       fire_date: startDate + ' ' + startTime,
@@ -120,7 +118,7 @@ const makeNotifi = async (startDate, repeatYoilList, questName, startTime) => {
     const alarmIdList = await Promise.all(
       repeatYoilList.map((value) => {
         const alarmId = setNofication({
-          fire_date: makeRepeatDateList(startDate, value) + ' ' + startTime,
+          fire_date: makeRepeatDate(startDate, value) + ' ' + startTime,
           title: questName,
           message: questName,
           schedule_type: 'repeat',
@@ -136,8 +134,6 @@ const makeNotifi = async (startDate, repeatYoilList, questName, startTime) => {
 const makeAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
   // 년.월.일(요일)
   // 알람이 있을때 -> 반복 유/무에 따라 결과가 달라짐
-  console.log('makeAlarm', startDate, repeatYoilList, questName, alarmTime);
-
   if (repeatYoilList.length === 0) {
     const alarmId = await setAlarm({
       fire_date: startDate + ' ' + alarmTime,
@@ -149,7 +145,7 @@ const makeAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
     const alarmIdList = await Promise.all(
       repeatYoilList.map((value) => {
         const alarmId = setAlarm({
-          fire_date: makeRepeatDateList(startDate, value) + ' ' + alarmTime,
+          fire_date: makeRepeatDate(startDate, value) + ' ' + alarmTime,
           title: questName,
           message: questName,
           schedule_type: 'repeat',
@@ -161,7 +157,7 @@ const makeAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
   }
 };
 
-const makeRepeatDateList = (startDate, repeatYoil) => {
+const makeRepeatDate = (startDate, repeatYoil) => {
   let [date, month, year] = startDate.split('-');
   let yoil = new Date(year, month * 1 - 1, date).getDay();
 
@@ -192,5 +188,5 @@ export {
   stopAlarmSound,
   makeNotifi,
   makeAlarm,
-  makeRepeatDateList,
+  makeRepeatDate,
 };
