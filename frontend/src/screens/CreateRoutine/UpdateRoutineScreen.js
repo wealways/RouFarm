@@ -21,58 +21,23 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
-import { setAlarm, setNofication, deleteAlarm } from '@/components/CreateRoutine/AlarmNotifi';
-import ReactNativeAN from 'react-native-alarm-notification';
+import {
+  deleteAlarm,
+  makeNotifi,
+  makeAlarm,
+  makeRepeatDateList,
+} from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
-import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
-const dayOfMonth = {
-  1: 31,
-  2: 28,
-  3: 31,
-  4: 30,
-  5: 31,
-  6: 30,
-  7: 31,
-  8: 31,
-  9: 30,
-  10: 31,
-  11: 30,
-  12: 31,
-};
-
-const yoil = {
-  0: '일',
-  1: '월',
-  2: '화',
-  3: '수',
-  4: '목',
-  5: '금',
-  6: '토',
-};
-
-const yoilReverse = {
-  일: 0,
-  월: 1,
-  화: 2,
-  수: 3,
-  목: 4,
-  금: 5,
-  토: 6,
-};
-
-const now = new Date();
 const today =
-  now.getFullYear() +
-  '.' +
-  (now.getMonth() * 1 + 1).toString() +
-  '.' +
-  now.getDate() +
-  '(' +
-  yoil[now.getDay()] +
-  ')';
+  new Date().getDate() +
+  '-' +
+  (new Date().getMonth() * 1 + 1).toString() +
+  '-' +
+  new Date().getFullYear();
 
 function UpdateRoutineScreen({ navigation, route }) {
   console.log(route.params);
@@ -88,59 +53,69 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [alarmTimeShow, setAlarmTimeShow] = useState(false);
 
   // 생성시 넘길 데이터
-  const [questName, setQuestname] = useState(route.params.quest.questName);
-  const [date, setDate] = useState(route.params.quest.date);
-  const [startTime, setStartTime] = useState(route.params.quest.startTime);
-  const [endTime, setEndTime] = useState(route.params.quest.endTime);
-  const [alarmTime, setAlarmTime] = useState(route.params.quest.alarmTime);
-  const [isReapeat, setIsReapeat] = useState(route.params.quest.isReapeat);
-  const [qrName, setQRName] = useState('');
-  const [alarmId, setAlarmId] = useState(route.params.quest.alarmIdList);
+  const [questName, setQuestname] = useState(route.params.quests.questName);
+  const [startDate, setStartDate] = useState(route.params.quests.date);
+  const [startTime, setStartTime] = useState(route.params.quests.startTime);
+  const [endTime, setEndTime] = useState(route.params.quests.endTime);
+  const [alarmTime, setAlarmTime] = useState(route.params.quests.alarmTime);
+  const [repeatYoilList, setRepeatYoilList] = useState(route.params.quests.isReapeat);
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
   const [isAlarm, setIsAlarm] = useState(alarmTime === '' ? false : true);
 
-  const [fireDate, setFireDate] = useState('');
-
-  console.log(alarmTime);
-
   // 퀘스트 생성
   const handleCreate = async () => {
     // 기존의 알림과 알람 제거
-    await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
-    await route.params.quest.notifiIdList.map((v) => deleteAlarm(v));
+    await route.params.quests.alarmIdList.map((v) => deleteAlarm(v));
+    await route.params.quests.notifiIdList.map((v) => deleteAlarm(v));
+
+    // 새로운 퀘스트를 담을 Object 생성
+    let quests = {};
 
     // 새로운 알림과 알람 생성
-    const alarmIdList = await makeAlarm();
-    const notifiIdList = await makeNotifi();
+    let alarmIdList = [];
+    if (isAlarm) {
+      alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
+    }
+    const notifiIdList = await makeNotifi(startDate, repeatYoilList, questName, startTime);
 
-    let quest = {};
-    let repeatDate = [];
-    isReapeat.map((v) => {
-      repeatDate.push(setRepeatDate(date, v));
+    // 반복일 계산
+    let repeatDateList = [];
+    repeatYoilList.map((v) => {
+      repeatDateList.push(makeRepeatDateList(startDate, v));
     });
 
-    AsyncStorage.getItem('quest', async (err, res) => {
-      quest = JSON.parse(res);
-      if (quest === null) quest = {};
-      quest[route.params.uuid] = {
+    // 반복일 오름차순 정렬
+    let tempRepeatDate = [].concat(repeatDateList);
+
+    tempRepeatDate &&
+      tempRepeatDate.sort((a, b) => {
+        const [dayA, monthA, yearA] = a.split('-');
+        const [dayB, monthB, yearB] = b.split('-');
+        return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
+      });
+
+    // 메모리에 저장
+    AsyncStorage.getItem('quests', async (err, res) => {
+      quests = JSON.parse(res);
+      if (quests === null) quests = {};
+      quests[route.params.uuid] = {
+        startDate: tempRepeatDate.length ? tempRepeatDate[0] : startDate,
         questName,
-        date,
+        alarmTime,
         startTime,
         endTime,
-        alarmTime,
-        repeatDate,
-        isReapeat,
-        alarmIdList,
-        notifiIdList,
+        repeatDateList, // 반복일자 리스크 (string, 일-월-년)
+        repeatYoilList, // 반복요일 리스트 (string, 월 ~ 일)
+        alarmIdList, // 알람id 리스트 (int 타입)
+        notifiIdList, // 알림id 리스트 (int 타입)
       };
 
-      await AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
+      await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
         console.log('정보 저장 완료');
         navigation.navigate('Home');
       });
-
       if (err) console.log(err);
     });
   };
@@ -174,15 +149,12 @@ function UpdateRoutineScreen({ navigation, route }) {
 
   // 날짜 설정
   const handleConfirm = (element) => {
-    setDate(
-      element.getFullYear() +
-        '.' +
+    setStartDate(
+      element.getDate() +
+        '-' +
         (element.getMonth() * 1 + 1).toString() +
-        '.' +
-        element.getDate() +
-        '(' +
-        yoil[element.getDay()] +
-        ')',
+        '-' +
+        element.getFullYear(),
     );
     hideDatePicker();
   };
@@ -190,21 +162,12 @@ function UpdateRoutineScreen({ navigation, route }) {
   // 시작시간 설정
   const handleStartConfirm = (element) => {
     setStartTime(element.getHours() + ':' + element.getMinutes() + ':0');
-    // const time =
-    //   element.getHours() > 12
-    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
-    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
-    // console.log(time);
     hideStartTimePicker();
   };
 
   // 종료시간 설정
   const handleEndConfirm = (element) => {
     setEndTime(element.getHours() + ':' + element.getMinutes() + ':0');
-    // const time =
-    //   element.getHours() > 12
-    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
-    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
     hideEndTimePicker();
   };
 
@@ -212,92 +175,6 @@ function UpdateRoutineScreen({ navigation, route }) {
   const handleAlarmConfirm = (element) => {
     setAlarmTime(element.getHours() + ':' + element.getMinutes() + ':0');
     hideAlarmTimePicker();
-  };
-
-  const makeNotifi = async () => {
-    let [tempYear, tempMonth, tempDay] = [...date.split('.')];
-    tempDay = tempDay.split('(')[0];
-    let tempDate = tempDay + '-' + tempMonth + '-' + tempYear + ' ';
-
-    if (isReapeat.length === 0) {
-      const alarmId = await setNofication({
-        fire_date: tempDate + startTime,
-        title: questName,
-        message: questName,
-      });
-      return [alarmId.id];
-    } else if (isReapeat.length > 0) {
-      const alarmIdList = await Promise.all(
-        isReapeat.map((value) => {
-          const alarmId = setNofication({
-            fire_date: setRepeatDate(date, value) + ' ' + startTime,
-            title: questName,
-            message: questName,
-            schedule_type: 'repeat',
-          });
-          return alarmId;
-        }),
-      );
-      return alarmIdList.map((v) => v.id);
-    }
-  };
-
-  // 알람 생성
-  const makeAlarm = async () => {
-    // 알람이 있을때 -> 반복 유/무에 따라 결과가 달라짐
-    if (isAlarm) {
-      let [tempYear, tempMonth, tempDay] = [...date.split('.')];
-      tempDay = tempDay.split('(')[0];
-      let tempDate = tempDay + '-' + tempMonth + '-' + tempYear + ' ';
-
-      if (isReapeat.length === 0) {
-        const alarmId = await setAlarm({
-          fire_date: tempDate + alarmTime,
-          title: questName,
-          message: questName,
-        });
-        return [alarmId.id];
-      } else if (isReapeat.length > 0) {
-        const alarmIdList = await Promise.all(
-          isReapeat.map((value) => {
-            const alarmId = setAlarm({
-              fire_date: setRepeatDate(date, value) + ' ' + alarmTime,
-              title: questName,
-              message: questName,
-              schedule_type: 'repeat',
-            });
-            return alarmId;
-          }),
-        );
-        return alarmIdList.map((v) => v.id);
-      }
-    } else {
-      return [];
-    }
-  };
-
-  const setRepeatDate = (startDate, repeatYoil) => {
-    let [year, month, dayNyoil] = [...startDate.split('.')];
-    let [day, yoil] = [...dayNyoil.split('(')];
-    yoil = yoil.slice(0, 1);
-
-    let gap = yoilReverse[repeatYoil] - yoilReverse[yoil];
-    let tempDay = parseInt(day);
-    let tempMonth = parseInt(month);
-    let tempYear = parseInt(year);
-
-    // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
-    // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
-    gap <= 0 ? (tempDay += gap + 7) : (tempDay += gap);
-    if (dayOfMonth[month] < tempDay) {
-      tempDay -= dayOfMonth[month];
-      if (month === 12) {
-        tempMonth = 1;
-        tempYear += 1;
-      } else tempMonth++;
-    }
-
-    return tempDay.toString() + '-' + tempMonth.toString() + '-' + tempYear.toString();
   };
 
   return (
@@ -329,7 +206,7 @@ function UpdateRoutineScreen({ navigation, route }) {
               <SettingWrapper>
                 <SettingTitle>반복</SettingTitle>
                 <SettingButton onPress={toggleModal} onCancel={() => console.log('@')}>
-                  {isReapeat.map((value, index) =>
+                  {repeatYoilList.map((value, index) =>
                     value ? (
                       <Text key={index} style={{ opacity: 0.5 }}>
                         {value}{' '}
@@ -338,7 +215,7 @@ function UpdateRoutineScreen({ navigation, route }) {
                   )}
                 </SettingButton>
                 <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-                  <Repreat setShowModal={setShowModal} setIsReapeat={setIsReapeat} />
+                  <Repreat setShowModal={setShowModal} setIsReapeat={setRepeatYoilList} />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -346,7 +223,7 @@ function UpdateRoutineScreen({ navigation, route }) {
               <SettingWrapper style={{ marginBottom: 0 }}>
                 <SettingTitle>일시</SettingTitle>
                 <SettingButton onPress={showDatePicker}>
-                  <Text style={{ opacity: 0.5 }}>{!date ? today : date}</Text>
+                  <Text style={{ opacity: 0.5 }}>{!startDate ? today : startDate}</Text>
                 </SettingButton>
                 <DateTimePickerModal
                   isVisible={isDatePickerVisible}
@@ -432,7 +309,7 @@ function UpdateRoutineScreen({ navigation, route }) {
           <Image
             style={styles.qrImage}
             source={{
-              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${qrName}`,
+              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${startTime}`,
             }}
           />
         </View>

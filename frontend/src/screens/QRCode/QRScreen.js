@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import {
   View,
@@ -15,6 +15,10 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Dimensions } from 'react-native';
 import theme from '@/theme';
 
+// 유틸
+import AsyncStorage from '@react-native-community/async-storage';
+import { setAlarm, setNofication, deleteAlarm } from '@/components/CreateRoutine/AlarmNotifi';
+
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
@@ -29,25 +33,45 @@ function QRScreen({ navigation }) {
   const [scan, setScan] = useState(true);
   const [scanResult, setScanResult] = useState(false);
   const [result, setResult] = useState(null);
+  const [quests, setQuests] = useState({});
 
   const scanner = useRef('');
 
-  const onSuccess = (e) => {
-    const check = e.data.substring(0, 4);
-    console.log('scanned data' + check);
+  useEffect(() => {
+    getAsyncStorage('quests', setQuests);
+  }, []);
 
+  const getAsyncStorage = async (storageName, setData) => {
+    await AsyncStorage.getItem(storageName, (err, res) => {
+      let data = JSON.parse(res);
+      setData(data === null ? {} : data); // null 에러 처리
+      console.log(data);
+      if (err) console.log(err);
+    });
+  };
+
+  const onSuccess = (e) => {
+    // const check = e.data.substring(0, 4);
+    // console.log('scanned data' + check);
+    // 링크에 연결할 수 있으면 링크 열기
+    // if (check === 'http') {
+    //   Linking.openURL(e.data).catch((err) => console.error('An error occured', err));
+    // }
     setResult(e);
     setScan(false);
     setScanResult(true);
 
-    // 링크에 연결할 수 있으면 링크 열기
-    if (check === 'http') {
-      Linking.openURL(e.data).catch((err) => console.error('An error occured', err));
-    } else {
-      // 그렇지 않으면 그냥 skip
-      setResult(e);
-      setScan(false);
-      setScanResult(true);
+    const uuid = e.data;
+    let quest = quests[uuid];
+
+    let [date, month, year] = quest.startDate.split('-');
+    if (new Date(year, month, date) <= new Date()) {
+      quest.repeatDate.map((v, i) => {
+        [date, month, year] = v.startDate.split('-');
+        if (new Date(year, month, date).getDay() === new Date().getDay()) {
+          // 알람 삭제, 추가
+        }
+      });
     }
   };
 

@@ -22,7 +22,7 @@ const ConfigButton = styled.TouchableOpacity`
   border-radius: 8px;
 `;
 
-function Repeat({ setIsReapeat, setShowModal }) {
+function Repeat({ setRepeatYoilList, setShowModal }) {
   const [switchToggle, setSwitchToggle] = useState(false);
 
   const [yoil, setYoil] = useState([
@@ -88,7 +88,7 @@ function Repeat({ setIsReapeat, setShowModal }) {
             confirm={true}
             onPress={() => {
               setShowModal(false);
-              setIsReapeat(
+              setRepeatYoilList(
                 yoil.filter((value) => value.checked).map((value) => value && value.day),
               );
             }}>

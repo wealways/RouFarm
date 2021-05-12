@@ -29,13 +29,9 @@ import { Provider } from 'react-redux';
 import rootReducer from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import { LogBox } from 'react-native';
-
 const store = createStore(rootReducer, composeWithDevTools());
 
 const App = () => {
-  LogBox.ignoreLogs(['Require cycle']);
-
   const isDarkMode = useColorScheme() === 'dark';
 
   const Stack = createStackNavigator();

@@ -22,12 +22,6 @@ import com.airbnb.android.react.lottie.LottiePackage;
 // alarm-notification
 import com.emekalites.react.alarm.notification.ANPackage;
 
-// firebase
-// import io.invertase.firebase.RNFirebasePackage;
-// import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
-// import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-// import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -43,8 +37,8 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
-          packages.add(new LottiePackage());
           // packages.add(new ANPackage());
+          packages.add(new LottiePackage());
           
           return packages;
         }

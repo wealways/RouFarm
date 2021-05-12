@@ -6,12 +6,11 @@ import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './
 // 컴포넌트
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
-import { DailyQuest, EmergencyQuest } from '@/components/Home';
-import GetRoutine from '@/components/CreateRoutine/GetRoutine';
+import { EmergencyQuest } from '@/components/Home';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import { dayOfMonth, yoilReverse, yoil } from '@/utils/parsedate';
+import { yoilReverse } from '@/utils/parsedate';
 
 // 디바이스 사이즈
 import { deviceWidth } from '@/utils/devicesize';
@@ -21,13 +20,7 @@ import { useIsFocused } from '@react-navigation/native';
 import theme from '../../theme';
 
 // 알람
-import {
-  setAlarm,
-  setNofication,
-  viewAlarms,
-  deleteAlarm,
-  stopAlarmSound,
-} from '@/components/CreateRoutine/AlarmNotifi';
+import { deleteAlarm } from '@/components/CreateRoutine/AlarmNotifi';
 
 function HomeScreen({ navigation }) {
   // 모달
@@ -36,34 +29,34 @@ function HomeScreen({ navigation }) {
     setShowModal((prev) => !prev);
   };
 
-  const [quest, setQuest] = useState({});
+  const [quests, setQuests] = useState({});
   const [qrOpen, setQROpen] = useState(false);
   const [clickedUuid, setClickedUuid] = useState('');
 
-  const getAsyncStorage = (storageName, setData) => {
-    AsyncStorage.getItem(storageName, (err, res) => {
+  const getAsyncStorage = async (storageName, setData) => {
+    await AsyncStorage.getItem(storageName, (err, res) => {
       let data = JSON.parse(res);
-      // null 에러 처리
-      setData(data === null ? {} : data);
-      console.log(data);
+      setData(data === null ? {} : data); // null 에러 처리
       if (err) console.log(err);
+      console.log(data);
     });
   };
 
-  const getDailyQuest = (date) => {
+  // 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기
+  const getDailyQuests = (date) => {
     const [day1, month1, year1] = date.split('-');
 
-    let uuidList = Object.keys(quest).filter((uuid) => {
-      if (!quest[uuid].repeatDate.length) {
-        return date === quest[uuid].startDate;
+    let uuidList = Object.keys(quests).filter((uuid) => {
+      if (!quests[uuid].repeatDate.length) {
+        return date === quests[uuid].startDate;
       } else {
-        const [day2, month2, year2] = quest[uuid].startDate.split('-');
+        const [day2, month2, year2] = quests[uuid].startDate.split('-');
         // 시작한 루틴인지 확인
         if (new Date(year2, month2 - 1, day2) <= new Date(year1, month1 - 1, day1)) {
           const yoil1 = new Date(year1, month1 - 1, day1).getDay();
 
           // 같은 요일 루틴인지 확인
-          const result = quest[uuid].isReapeat.filter((yoil2) => {
+          const result = quests[uuid].isReapeat.filter((yoil2) => {
             if (yoil1 === yoilReverse[yoil2]) {
               return true;
             }
@@ -80,13 +73,12 @@ function HomeScreen({ navigation }) {
     uuidList = uuidList === null ? [] : uuidList;
     return uuidList;
   };
-  console.log(getDailyQuest('13-5-2021'));
 
   // 리로드 변수
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    getAsyncStorage('quest', setQuest);
+    getAsyncStorage('quests', setQuests);
     // setUp(0);
   }, [isFocused]);
 
@@ -104,13 +96,12 @@ function HomeScreen({ navigation }) {
             </Card>
           </View>
         </Contents>
-        <GetRoutine />
         {/* section 1 - 일일 퀘스트 */}
         <Contents>
           <View>
             <Text style={styles.title}>일일 퀘스트</Text>
             <Card style={styles.cardWidth}>
-              {Object.keys(quest).map((uuid) => (
+              {Object.keys(quests).map((uuid) => (
                 <React.Fragment key={uuid}>
                   <View>
                     <TouchableOpacity
@@ -118,8 +109,8 @@ function HomeScreen({ navigation }) {
                         setClickedUuid(uuid);
                         openModal();
                       }}>
-                      <Text>{quest[uuid].questName}</Text>
-                      <Text>{quest[uuid].startDate}</Text>
+                      <Text>{quests[uuid].questName}</Text>
+                      <Text>{quests[uuid].startDate}</Text>
                       <>
                         {showModal ? (
                           <View>
@@ -134,21 +125,19 @@ function HomeScreen({ navigation }) {
                                 <View style={styles.modalView}>
                                   <TouchableOpacity
                                     onPress={() => {
-                                      console.log(clickedUuid);
                                       navigation.navigate('UpdateRoutine', {
                                         uuid: clickedUuid,
-                                        quest: quest[clickedUuid],
+                                        quest: quests[clickedUuid],
                                       });
                                     }}>
                                     <Text>수정</Text>
                                   </TouchableOpacity>
                                   <TouchableOpacity
                                     onPress={() => {
-                                      console.log(clickedUuid);
-                                      quest[clickedUuid].alarmIdList.map((v) => deleteAlarm(v));
-                                      quest[clickedUuid].notifiIdList.map((v) => deleteAlarm(v));
-                                      delete quest[clickedUuid];
-                                      AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
+                                      quests[clickedUuid].alarmIdList.map((v) => deleteAlarm(v));
+                                      quests[clickedUuid].notifiIdList.map((v) => deleteAlarm(v));
+                                      delete quests[clickedUuid];
+                                      AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
                                         console.log('정보 삭제 완료');
                                       });
                                     }}>
