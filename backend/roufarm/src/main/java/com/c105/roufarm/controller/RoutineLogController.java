@@ -1,5 +1,7 @@
 package com.c105.roufarm.controller;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.c105.roufarm.model.RoutineLog;
@@ -40,14 +42,14 @@ public class RoutineLogController {
             return new ResponseEntity<RoutineLog>(routineLogService.saveRoutineLog(routineLog),HttpStatus.OK); 
       }
 
-      @ApiOperation(value = "모든 루틴 로그 조회",notes = "해당 User의 모든 루틴 로그 조회합니다.")
+      @ApiOperation(value = "모든 루틴 로그 조회",notes = "해당 User의 모든 루틴 로그 조회합니다. Routine으로 조회한 값")
       @GetMapping("/")
       public ResponseEntity<List<RoutineLog>> findRoutineLog() {
             return new ResponseEntity<List<RoutineLog>>(routineLogService.findRoutineLogList(),HttpStatus.OK); 
       }
 
-      @ApiOperation(value = "모든 루틴 로그 조회2",notes = "해당 User의 모든 루틴 로그 조회합니다. 단, 날짜별로 표현합니다.")
-      @GetMapping("/month/")
+      @ApiOperation(value = "모든 루틴 로그 조회2",notes = "해당 User의 모든 루틴 로그 조회합니다. User로 조회한 값")
+      @GetMapping("/all/")
       public ResponseEntity<List<RoutineLog>> findRoutineLogOrderMonth() {
             return new ResponseEntity<List<RoutineLog>>(userLogService.findLogAll(),HttpStatus.OK);
       }
@@ -58,7 +60,16 @@ public class RoutineLogController {
             return new ResponseEntity<RoutineLog>(routineLogService.findRoutineLog(routineLogId),HttpStatus.OK); 
       }
 
+      @ApiOperation(value = "루틴 로그 날짜별 조회",notes = "해당 Id의 모든 루틴 로그를 날짜별로 조회한다.")
+      @GetMapping("/date/")
+      public ResponseEntity<HashMap<String,HashSet<RoutineLog>>> getRoutineLogOrderDate() {
+            return new ResponseEntity<HashMap<String,HashSet<RoutineLog>>>(userLogService.findLogAllDate(),HttpStatus.OK); 
+      }
       
-
+      @ApiOperation(value = "루틴 로그 달별 조회",notes = "해당 Id의 모든 루틴 로그를 달별로 조회한다.")
+      @GetMapping("/month/")
+      public ResponseEntity<HashMap<String,HashSet<RoutineLog>>> getRoutineLogOrderMonth() {
+            return new ResponseEntity<HashMap<String,HashSet<RoutineLog>>>(userLogService.findLogAllMonth(),HttpStatus.OK); 
+      }
 }
 
