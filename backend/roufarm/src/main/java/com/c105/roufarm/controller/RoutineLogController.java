@@ -48,8 +48,8 @@ public class RoutineLogController {
 
       @ApiOperation(value = "모든 루틴 로그 조회2",notes = "해당 User의 모든 루틴 로그 조회합니다. 단, 날짜별로 표현합니다.")
       @GetMapping("/month/")
-      public ResponseEntity<List<String>> findRoutineLogOrderMonth() {
-            return new ResponseEntity<List<String>>(userLogService.findLogAll(),HttpStatus.OK);
+      public ResponseEntity<List<RoutineLog>> findRoutineLogOrderMonth() {
+            return new ResponseEntity<List<RoutineLog>>(userLogService.findLogAll(),HttpStatus.OK);
       }
       
       @ApiOperation(value = "루틴 로그 조회",notes = "해당 Id의 모든 루틴 로그를 조회한다.")

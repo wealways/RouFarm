@@ -1,13 +1,17 @@
 package com.c105.roufarm.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import com.c105.roufarm.config.JwtTokenUtil;
 import com.c105.roufarm.model.RoutineLog;
 import com.c105.roufarm.model.UserLog;
+import com.c105.roufarm.repository.RoutineLogMongoDBRepository;
 import com.c105.roufarm.repository.UserLogMongoDBRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +25,40 @@ public class UserLogService {
       UserLogMongoDBRepository userLogMongoDBRepository;
 
       @Autowired
+      RoutineLogService routineLogService;
+
+      @Autowired
       JwtTokenUtil jwtTokenUtil;
 
       // 1. 헤더로 해당 id 찾기
       @Transactional
       public UserLog findUserLogById(){
             String id = jwtTokenUtil.getId();
-            return userLogMongoDBRepository.findById(id).get();
+            Optional<UserLog> opt = userLogMongoDBRepository.findById(id);
+            UserLog userLog;
+            System.out.println(opt);
+            if(opt.isEmpty()){
+                  userLog = new UserLog();
+                  userLog.setId(id);
+                  userLog.setDays(new HashMap<String,Object>());
+            }
+            else{
+                  userLog = opt.get();
+            }
+            return userLog;
       }
 
       // 2. 헤더로 해당 id 모든 로그 찾기
       @Transactional
-      public List<String> findLogAll(){
+      public List<RoutineLog> findLogAll(){
             HashMap<String,Object> days = findUserLogById().getDays();
-            HashSet<Object> logSet = (HashSet<Object>) days.values();
-            List<String> userLogSet = new ArrayList<String>();
-            for(Object log:logSet){
-                  userLogSet.add((String)log);
+            Collection<Object> logSet = (Collection<Object>) days.values();
+            List<RoutineLog> userLogSet = new ArrayList<RoutineLog>();
+            for(Object daylog:logSet){
+                  ArrayList<String> daylist = (ArrayList<String>)daylog;
+                  for(String log: daylist){
+                        userLogSet.add(routineLogService.findRoutineLog(log));
+                  }
             }
             return userLogSet;
       }

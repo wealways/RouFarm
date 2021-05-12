@@ -35,7 +35,7 @@ public class RoutineController {
       @PostMapping("/")
       public ResponseEntity<List<Routine>> saveRoutine(@RequestBody Routine routine) {
             routineService.saveRoutine(routine);
-            userService.addUserRoutine(routine);
+            userService.saveUserRoutine(routine);
             return new ResponseEntity<List<Routine>>(routineService.findRoutine(),HttpStatus.OK); 
       }
 

@@ -51,11 +51,12 @@ public class UserService {
             return userMongoDBRepository.save(user);
       }
 
+      // 4. User 루틴 추가
       @Transactional
-      public User addUserRoutine(Routine routine){
+      public User saveUserRoutine(Routine routine){
             User user = userMongoDBRepository.findById(jwtTokenUtil.getId()).get();
             HashSet<String> routines = user.getRoutines();
-            routines.add(routine.getId());
+            routines.add(routine.getUuid());
             user.setRoutines(routines);
             return userMongoDBRepository.save(user);
       }

@@ -28,6 +28,8 @@ public class RoutineService {
       // 1. 루틴 등록
       @Transactional
       public Routine saveRoutine(Routine routine){
+            String kakaoId = jwtTokenUtil.getId();
+            routine.setKakaoId(kakaoId);
             routine.setIsActivate("true");
             return routineMongoDBRepository.save(routine);
       }
