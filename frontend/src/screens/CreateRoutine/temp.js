@@ -21,13 +21,11 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
-import { setAlarm } from '@/components/CreateRoutine/AlarmNotifi';
+import { makeAlarm, makeNotifi, makeRepeatDate } from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
-import AsyncStorage from '@react-native-community/async-storage';
-import { dayOfMonth, yoilReverse, yoil } from '@/utils/parsedate';
 import axios from 'axios';
-import { makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const today =
   new Date().getDate() +
@@ -55,7 +53,6 @@ function CreateRoutineScreen({ navigation }) {
   const [endTime, setEndTime] = useState('');
   const [alarmTime, setAlarmTime] = useState('');
   const [repeatYoilList, setRepeatYoilList] = useState([]);
-  const [qrName, setQRName] = useState('');
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
@@ -63,11 +60,19 @@ function CreateRoutineScreen({ navigation }) {
 
   // 퀘스트 생성
   const handleCreate = async () => {
-    const alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
-    let quest = {};
-
     // 퀘스트 uuid 생성
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
+
+    // 새로운 퀘스트를 담을 Object 생성
+    let quests = {};
+
+    // 알림과 알람 생성
+    let alarmIdList = [];
+    if (isAlarm) {
+      console.log('isAlarm 통과!');
+      alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
+    }
+    const notifiIdList = await makeNotifi(startDate, repeatYoilList, questName, startTime);
 
     // 반복일 계산
     let repeatDateList = [];
@@ -77,6 +82,7 @@ function CreateRoutineScreen({ navigation }) {
 
     // 반복일 오름차순 정렬
     let tempRepeatDate = [].concat(repeatDateList);
+
     tempRepeatDate &&
       tempRepeatDate.sort((a, b) => {
         const [dayA, monthA, yearA] = a.split('-');
@@ -86,27 +92,25 @@ function CreateRoutineScreen({ navigation }) {
     console.log(tempRepeatDate);
 
     // 메모리에 저장
-    AsyncStorage.getItem('quests', async (err, res) => {
-      quest = JSON.parse(res);
-      // quest가 null값인지 아닌지 체크해야함. 그렇지 않으면 다음과 같은 오류 뿜음
-      // null is not an object.
-      if (quest === null) quest = {};
-      quest[uuid] = {
+    await AsyncStorage.getItem('quests', async (err, res) => {
+      quests = JSON.parse(res);
+      if (quests === null) quests = {};
+      quests[uuid] = {
         startDate: tempRepeatDate.length ? tempRepeatDate[0] : startDate,
         questName,
+        alarmTime,
         startTime,
         endTime,
-        alarmTime,
-        repeatYoilList,
-        repeatDateList,
-        alarmIdList,
+        repeatDateList, // 반복일자 리스크 (string, 일-월-년)
+        repeatYoilList, // 반복요일 리스트 (string, 월 ~ 일)
+        alarmIdList, // 알람id 리스트 (int 타입)
+        notifiIdList, // 알림id 리스트 (int 타입)
       };
 
-      await AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
+      await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
         console.log('정보 저장 완료');
         navigation.navigate('Home');
       });
-
       if (err) console.log(err);
     });
   };
@@ -152,19 +156,28 @@ function CreateRoutineScreen({ navigation }) {
 
   // 시작시간 설정
   const handleStartConfirm = (element) => {
-    setStartTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    setStartTime(element.getHours() + ':' + element.getMinutes() + ':1');
+    // const time =
+    //   element.getHours() > 12
+    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
+    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
+    // console.log(time);
     hideStartTimePicker();
   };
 
   // 종료시간 설정
   const handleEndConfirm = (element) => {
-    setEndTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    setEndTime(element.getHours() + ':' + element.getMinutes() + ':1');
+    // const time =
+    //   element.getHours() > 12
+    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
+    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
     hideEndTimePicker();
   };
 
   // 알람시간 설정
   const handleAlarmConfirm = (element) => {
-    setAlarmTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    setAlarmTime(element.getHours() + ':' + element.getMinutes() + ':2');
     hideAlarmTimePicker();
   };
 
@@ -298,7 +311,7 @@ function CreateRoutineScreen({ navigation }) {
           <Image
             style={styles.qrImage}
             source={{
-              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${qrName}`,
+              uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=846466947504732',
             }}
           />
         </View>

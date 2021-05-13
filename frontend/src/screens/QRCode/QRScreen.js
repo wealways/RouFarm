@@ -22,6 +22,7 @@ import {
   makeNotifi,
   makeRepeatDate,
   deleteAlarm,
+  stopAlarmSound,
 } from '@/components/CreateRoutine/AlarmNotifi';
 import { yoilReverse } from '@/utils/parsedate';
 
@@ -67,26 +68,24 @@ function QRScreen({ navigation }) {
     if (quest !== null) {
       let [date, month, year] = quest.startDate.split('-');
       if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
-        console.log('startDate 통과!');
         if (quest.repeatYoilList.length === 0) {
-          console.log('일회성 퀘스트 QR 스캔!');
-
           // 기존 알림 삭제
-          if (quest.alarmIdList.length) {
-            deleteAlarm(quest.alarmIdList[0]);
-            quest.alarmIdList = [];
-          }
-          deleteAlarm(quest.notifiIdList[0]);
-          quest.notifiIdList = [];
+          if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
+            stopAlarmSound();
 
-          console.log(quest.notifiIdList);
+            if (quest.alarmIdList.length) {
+              deleteAlarm(quest.alarmIdList[0]);
+              quest.alarmIdList = [];
+            }
+            deleteAlarm(quest.notifiIdList[0]);
+            quest.notifiIdList = [];
+          }
         } else {
-          console.log('반복성 퀘스트 QR 스캔!');
           await Promise.all(
             quest.repeatYoilList.map(async (v, i) => {
               if (yoilReverse[v] === new Date().getDay()) {
-                console.log('index: ', i);
-                console.log(v, yoilReverse[v]);
+                stopAlarmSound();
+
                 // 기존 알람/알림 삭제
                 if (quest.alarmIdList.length) {
                   await deleteAlarm(quest.alarmIdList[i]);
@@ -102,7 +101,6 @@ function QRScreen({ navigation }) {
                     new Date().getFullYear(),
                   v,
                 );
-                console.log(startDate);
                 quest.repeatDateList[i] = startDate;
 
                 if (quest.alarmIdList.length) {

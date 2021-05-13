@@ -2,18 +2,16 @@ import ReactNativeAN from 'react-native-alarm-notification';
 import { yoilReverse, dayOfMonth } from '@/utils/parsedate';
 
 const alarmNotifData = {
-  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
   vibrate: true,
+  has_button: true,
   play_sound: true,
   schedule_type: 'once',
   channel: 'wakeup',
   volume: 0.9,
   loop_sound: true,
-  has_button: true,
 };
 
 const repeatAlarmNotifData = {
-  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
   vibrate: true,
   play_sound: true,
   schedule_type: 'repeat',
@@ -26,21 +24,22 @@ const repeatAlarmNotifData = {
 };
 
 const notifData = {
-  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
-  vibrate: true,
+  vibrate: false,
+  has_button: false,
   schedule_type: 'once',
   channel: 'wakeup',
 };
 
 const repeatNotifData = {
-  fire_date: ReactNativeAN.parseDate(new Date(Date.now())),
-  vibrate: true,
+  vibrate: false,
+  has_button: false,
   schedule_type: 'repeat',
   channel: 'wakeup',
 };
 
 const setNofication = async (props) => {
   // 반복 O
+  console.log('알림 :', props);
   if (props.schedule_type === 'repeat') {
     const details = {
       ...repeatNotifData,
@@ -67,6 +66,7 @@ const setNofication = async (props) => {
 
 const setAlarm = async (props) => {
   // 반복 O
+  console.log('알람: ', props);
   if (props.schedule_type === 'repeat') {
     const details = {
       ...repeatAlarmNotifData,
@@ -113,6 +113,7 @@ const makeNotifi = async (startDate, repeatYoilList, questName, startTime) => {
       title: questName,
       message: questName,
     });
+    console.log(alarmId);
     return [alarmId.id];
   } else if (repeatYoilList.length > 0) {
     const alarmIdList = await Promise.all(
@@ -123,6 +124,7 @@ const makeNotifi = async (startDate, repeatYoilList, questName, startTime) => {
           message: questName,
           schedule_type: 'repeat',
         });
+        console.log(alarmId);
         return alarmId;
       }),
     );
@@ -132,14 +134,13 @@ const makeNotifi = async (startDate, repeatYoilList, questName, startTime) => {
 
 // 알람 생성
 const makeAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
-  // 년.월.일(요일)
-  // 알람이 있을때 -> 반복 유/무에 따라 결과가 달라짐
   if (repeatYoilList.length === 0) {
     const alarmId = await setAlarm({
       fire_date: startDate + ' ' + alarmTime,
       title: questName,
       message: questName,
     });
+    console.log(alarmId);
     return [alarmId.id];
   } else if (repeatYoilList.length > 0) {
     const alarmIdList = await Promise.all(
@@ -150,6 +151,7 @@ const makeAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
           message: questName,
           schedule_type: 'repeat',
         });
+        console.log(alarmId);
         return alarmId;
       }),
     );
@@ -168,7 +170,7 @@ const makeRepeatDate = (startDate, repeatYoil) => {
 
   // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
   // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
-  gap <= 0 ? (tempDate += gap + 7) : (tempDate += gap);
+  gap < 0 ? (tempDate += gap + 7) : (tempDate += gap);
   if (dayOfMonth[month] < tempDate) {
     tempDate -= dayOfMonth[month];
     if (month === 12) {
