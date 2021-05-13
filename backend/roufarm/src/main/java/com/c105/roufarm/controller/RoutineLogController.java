@@ -1,5 +1,6 @@
 package com.c105.roufarm.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -70,6 +71,12 @@ public class RoutineLogController {
       @GetMapping("/month/")
       public ResponseEntity<HashMap<String,HashSet<RoutineLog>>> getRoutineLogOrderMonth() {
             return new ResponseEntity<HashMap<String,HashSet<RoutineLog>>>(userLogService.findLogAllMonth(),HttpStatus.OK); 
+      }
+
+      @ApiOperation(value = "루틴 로그 잔디 형식 조회",notes = "해당 Id의 모든 루틴 로그를 잔디형식으로 조회한다.")
+      @GetMapping("/month/grass/")
+      public ResponseEntity<HashMap<String,ArrayList<Integer>>> getRoutineLogForGrass() {
+            return new ResponseEntity<HashMap<String,ArrayList<Integer>>>(userLogService.findLogForGrass(),HttpStatus.OK); 
       }
 }
 

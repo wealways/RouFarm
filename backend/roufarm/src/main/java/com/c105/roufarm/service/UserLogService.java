@@ -30,7 +30,8 @@ public class UserLogService {
       @Autowired
       JwtTokenUtil jwtTokenUtil;
 
-      static HashMap<String,Integer> calendar = new HashMap<String,Integer>(){{
+      static HashMap<String,Integer> calendar = new HashMap<String,Integer>();
+      static{
             calendar.put("01",31);
             calendar.put("02",29);
             calendar.put("03",31);
@@ -43,12 +44,29 @@ public class UserLogService {
             calendar.put("10",31);
             calendar.put("11",30);
             calendar.put("12",31);
-      }};
+      };
 
       // 1. 헤더로 해당 id 찾기
       @Transactional
       public UserLog findUserLogById(){
             String id = jwtTokenUtil.getId();
+            Optional<UserLog> opt = userLogMongoDBRepository.findById(id);
+            UserLog userLog;
+            if(opt.isEmpty()){
+                  userLog = new UserLog();
+                  userLog.setId(id);
+                  userLog.setDays(new HashMap<String,Object>());
+            }
+            else{
+                  userLog = opt.get();
+            }
+            return userLog;
+      }
+
+      //1-1 토큰없이 헤더로 해당 id 찾기
+      @Transactional
+      public UserLog findUserLogById(String userId){
+            String id = userId;
             Optional<UserLog> opt = userLogMongoDBRepository.findById(id);
             UserLog userLog;
             if(opt.isEmpty()){
@@ -83,9 +101,9 @@ public class UserLogService {
             UserLog userLog = findUserLogById();
             HashMap<String,Object> days = userLog.getDays();
             String getDate = routineLog.getTime();
-            HashSet<String> userLogSet = (HashSet<String>)days.get(getDate);
+            ArrayList<String> userLogSet = (ArrayList<String>)days.get(getDate);
             if (userLogSet == null){
-                  userLogSet = new HashSet<String>();
+                  userLogSet = new ArrayList<String>();
             }
             userLogSet.add(routineLog.getId());
             days.put(getDate, userLogSet);
@@ -111,51 +129,88 @@ public class UserLogService {
             return userLogSet;
       }
 
-      // 5. 현재 헤더에 로그를 달 형식으로 표현
+      // 5. 현재 헤더에 로그를 달 형식으로 표현 (상세) : 명세
       @Transactional
       public HashMap<String,HashSet<RoutineLog>> findLogAllMonth(){
             HashMap<String,Object> days = findUserLogById().getDays();
+            return findLogAllMonthBase(days);
+      }
+
+      // 5-1. 현재 헤더에 로그를 달 형식으로 표현 // 토큰 없이 조회하는 버전 : 명세
+      @Transactional
+      public HashMap<String,HashSet<RoutineLog>> findLogAllMonth(String userId){
+            HashMap<String,Object> days = findUserLogById(userId).getDays();
+            return findLogAllMonthBase(days);
+      }
+
+      // 5. 현재 헤더에 로그를 달 형식으로 표현 ( 잔디 형식 ) : 명세
+      @Transactional
+      public HashMap<String,ArrayList<Integer>> findLogForGrass(){
+            HashMap<String,HashSet<RoutineLog>> userLogMap = findLogAllMonth();
+            return findLogForGrassBase(userLogMap);
+      }
+
+      // 5-1. 현재 헤더에 로그를 달 형식으로 표현 ( 잔디 형식 ) // 토큰 없이 조회하는 버전 : 명세
+      @Transactional
+      public HashMap<String,ArrayList<Integer>> findLogForGrass(String userId){
+            HashMap<String,HashSet<RoutineLog>> userLogMap = findLogAllMonth(userId);
+            return findLogForGrassBase(userLogMap);
+      }
+
+      // 5-1. 현재 헤더에 로그를 달 형식으로 표현 (상세)
+      @Transactional
+      public HashMap<String,HashSet<RoutineLog>> findLogAllMonthBase(HashMap<String,Object> days){
             Set<String> logKeySet = days.keySet();
             HashMap<String,HashSet<RoutineLog>> userLogMap = new HashMap<>();
             for(String logKey : logKeySet){
-                  Object logArray = days.get(logKey);
+                  List<String> logArray = (List<String>)days.get(logKey);
+                  System.out.println(logArray);
                   HashSet<RoutineLog> routineLogs = new HashSet<RoutineLog>();
                   String month = logKey.substring(3,5);
                   String year = logKey.substring(6);
-                  for(String log: (List<String>)logArray){
+                  for(String log: logArray){
                         routineLogs =  userLogMap.get(year+"-"+month);
                         if (routineLogs == null){
                               routineLogs = new HashSet<RoutineLog>();
                         }
                         routineLogs.add(routineLogService.findRoutineLog(log));
+                        userLogMap.put(year+"-"+month,routineLogs);
                   }
-                  userLogMap.put(year+"-"+month,routineLogs);
             }
             return userLogMap;
       }
 
       // 5-1. 현재 헤더에 로그를 달 형식으로 표현 ( 잔디 형식 )
-      /////////////////////////////////////////////구현중
-      // @Transactional
-      // public HashMap<String,ArrayList<Integer>> findLogForGrass(){
-      //       HashMap<String,HashSet<RoutineLog>> userLogMap = findLogAllMonth();
-      //       HashMap<String,ArrayList<Integer>> userLogGrassForm = new HashMap<>();
-      //       for(String userLogKey : userLogMap.keySet()){
-      //             String month = userLogKey.substring(5);
-      //             Integer[] monthInt = new Integer[calendar.get(month)];
-      //             Arrays.fill(monthInt, -1);
-      //             ArrayList<Integer> numList = new ArrayList<Integer>(Arrays.asList(monthInt));
-      //             int sum = 0, num = 0;
-      //             for(RoutineLog routineLog : userLogMap.get(userLogKey)){
-      //                   num++;
-      //                   if (routineLog.getIsSuccess().equals("true")){
-      //                         sum++;
-      //                   }
-      //             }
-      //             int rate = 100 * sum / num;
-      //             numList.set(Integer.parseInt(month), rate);
-      //       }
-      //       return userLogGrassForm;
-      // }
-      //////////////////////////////////////////////////////////////구현중
+      @Transactional
+      public HashMap<String,ArrayList<Integer>> findLogForGrassBase(HashMap<String,HashSet<RoutineLog>> userLogMap){
+            HashMap<String,ArrayList<Integer>> userLogGrassForm = new HashMap<>();
+            for(String userLogKey : userLogMap.keySet()){
+                  String month = userLogKey.substring(5);
+                  Integer[] monthInt = new Integer[calendar.get(month)];
+                  Arrays.fill(monthInt, -1);
+                  ArrayList<Integer> numList = new ArrayList<Integer>(Arrays.asList(monthInt));
+                  int[] sumArray = new int[calendar.get(month)];
+                  int[] numArray = new int[calendar.get(month)];
+                  int routineDate = 0;
+                  for(RoutineLog routineLog : userLogMap.get(userLogKey)){
+                        String routineTime = routineLog.getTime();
+                        routineDate = Integer.parseInt(routineTime.substring(0, 2))-1;
+                        numArray[routineDate]++;
+                        if (routineLog.getIsSuccess().equals("true")){
+                              sumArray[routineDate]++;
+                        }
+                  }
+                  int rate = 0;
+                  for(int i=0;i<calendar.get(month);i++){
+                        if(numArray[i]==0){
+                              continue;
+                        }
+                        rate = 100 * sumArray[i] / numArray[i];
+                        numList.set(i, rate);
+                  }
+                  userLogGrassForm.put(userLogKey,numList);
+            }
+            return userLogGrassForm;
+      }
+
 }

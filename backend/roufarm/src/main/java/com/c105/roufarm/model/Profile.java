@@ -12,7 +12,7 @@ public class Profile {
       private int exp;
       private String title;
       private HashSet<String> achievement;
-      private String createDate;
+      private String signindate;
       private int combo;
       private String mode;
 
@@ -29,7 +29,7 @@ public class Profile {
             int date = nowDate.getDate();
             String monthString = (month>9 ? ""+month : "0"+month);
             String dateString = (date>9 ? ""+date : "0"+date);
-            this.createDate = ""+(nowDate.getYear()+1900)+(monthString)+(dateString);
+            this.signindate = ""+(nowDate.getYear()+1900)+(monthString)+(dateString);
 
             this.combo = 0;
             this.mode = "soft"; // soft / hard
