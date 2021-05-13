@@ -53,7 +53,6 @@ function CreateRoutineScreen({ navigation }) {
   const [endTime, setEndTime] = useState('');
   const [alarmTime, setAlarmTime] = useState('');
   const [repeatYoilList, setRepeatYoilList] = useState([]);
-  const [qrName, setQRName] = useState('');
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
@@ -86,7 +85,7 @@ function CreateRoutineScreen({ navigation }) {
     // 반복일 계산
     let repeatDateList = [];
     repeatYoilList.map((v) => {
-      repeatDateList.push(makeRepeatDate(startDate, v));
+      repeatDateList.push(makeRepeatDate(startDate, v, alarmTime));
     });
 
     // 반복일 오름차순 정렬
@@ -294,14 +293,6 @@ function CreateRoutineScreen({ navigation }) {
                 <SettingTitle>QR 생성</SettingTitle>
                 <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
               </SettingWrapper>
-              {isQR ? (
-                <>
-                  <TextInput
-                    style={styles.qrTextInput}
-                    placeholder="QR 코드의 이름을 기입해주세요"
-                    maxLength={20}></TextInput>
-                </>
-              ) : null}
             </Card>
           </View>
         </Contents>

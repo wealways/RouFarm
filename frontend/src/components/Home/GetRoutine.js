@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Text, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 import { yoilReverse } from '../../utils/parsedate';
@@ -43,13 +43,12 @@ export const getDailyQuests = (quests, date) => {
     }
   });
 
+  uuidList = uuidList === null ? [] : uuidList;
   console.log(uuidList);
   return uuidList;
 };
 
 function GetRoutine({ quests, setClickedQuestUuidList }) {
-  // console.log(quests);
-  // 7일 날짜 삽입
   let date = new Date();
   let sevenDays = new Array(7);
 

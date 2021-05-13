@@ -55,7 +55,7 @@ const makeQRAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
     const alarmIdList = await Promise.all(
       repeatYoilList.map((value) => {
         const alarmId = setQRAlarm({
-          fire_date: makeRepeatDate(startDate, value) + ' ' + alarmTime,
+          fire_date: makeRepeatDate(startDate, value, alarmTime) + ' ' + alarmTime,
           title: questName,
           message: questName,
           schedule_type: 'repeat',
@@ -131,7 +131,7 @@ const makeAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
     const alarmIdList = await Promise.all(
       repeatYoilList.map((value) => {
         const alarmId = setAlarm({
-          fire_date: makeRepeatDate(startDate, value) + ' ' + alarmTime,
+          fire_date: makeRepeatDate(startDate, value, alarmTime) + ' ' + alarmTime,
           title: questName,
           message: questName,
           schedule_type: 'repeat',
@@ -144,7 +144,7 @@ const makeAlarm = async (startDate, repeatYoilList, questName, alarmTime) => {
   }
 };
 
-const makeRepeatDate = (startDate, repeatYoil) => {
+const makeRepeatDate = (startDate, repeatYoil, alarmTime) => {
   let [date, month, year] = startDate.split('-');
   let yoil = new Date(year, month * 1 - 1, date).getDay();
 
@@ -155,7 +155,11 @@ const makeRepeatDate = (startDate, repeatYoil) => {
 
   // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
   // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
-  gap <= 0 ? (tempDate += gap + 7) : (tempDate += gap);
+  gap < 0 ? (tempDate += gap + 7) : (tempDate += gap);
+  if (gap === 0 && new Date().toTimeString().split(' ')[0] > alarmTime) {
+    gap += 7;
+  }
+
   if (dayOfMonth[month] < tempDate) {
     tempDate -= dayOfMonth[month];
     if (month === 12) {
@@ -194,7 +198,7 @@ const makeRepeatDate = (startDate, repeatYoil) => {
 //     const alarmIdList = await Promise.all(
 //       repeatYoilList.map((value) => {
 //         const alarmId = setNofication({
-//           fire_date: makeRepeatDate(startDate, value) + ' ' + startTime,
+//           fire_date: makeRepeatDate(startDate, value, alarmTime) + ' ' + startTime,
 //           title: questName,
 //           message: questName,
 //           schedule_type: 'repeat',

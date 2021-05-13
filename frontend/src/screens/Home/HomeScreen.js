@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 
-import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './home.styles';
+import { Wrapper, Card, Contents, QRCodeButton, UserImage } from './home.styles';
 
 // 컴포넌트
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
@@ -38,7 +38,9 @@ function HomeScreen({ navigation }) {
   const getAsyncStorage = async (storageName, setData) => {
     await AsyncStorage.getItem(storageName, (err, res) => {
       let data = JSON.parse(res);
-      setData(data === null ? {} : data); // null 에러 처리
+      data = data === null ? {} : data;
+      setData(data); // null 에러 처리
+      console.log(data);
       setClickedQuestUuidList(
         getDailyQuests(
           data,
@@ -89,60 +91,60 @@ function HomeScreen({ navigation }) {
                 <>
                   {clickedQuestUuidList.map((uuid) => (
                     <React.Fragment key={uuid}>
-                      <View>
-                        <TouchableOpacity
-                          onPress={() => {
-                            setClickedUuid(uuid);
-                            openModal();
-                          }}>
-                          <Text>{quests[uuid].questName}</Text>
-                          <Text>{quests[uuid].startDate}</Text>
-                        </TouchableOpacity>
-                      </View>
+                      {quests[uuid] ? (
+                        <View>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setClickedUuid(uuid);
+                              openModal();
+                            }}>
+                            <Text>{quests[uuid].questName}</Text>
+                            <Text>{quests[uuid].startDate}</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ) : null}
 
-                      <>
-                        {showModal ? (
-                          <View>
-                            <Modal
-                              animationType="fade"
-                              transparent={true}
-                              visible={showModal}
-                              onRequestClose={() => {
-                                setShowModal(false);
-                              }}>
-                              <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      navigation.navigate('UpdateRoutine', {
-                                        uuid: clickedUuid,
-                                        quest: quests[clickedUuid],
-                                      });
-                                    }}>
-                                    <Text>수정</Text>
-                                  </TouchableOpacity>
-                                  <TouchableOpacity
-                                    onPress={() => {
-                                      quests[clickedUuid].alarmIdList.map((v) => deleteAlarm(v));
-                                      quests[clickedUuid].qrOnceAlarmIdList.map((v) =>
-                                        deleteAlarm(v),
-                                      );
-                                      quests[clickedUuid].qrRepeatAlarmIdList.map((v) =>
-                                        deleteAlarm(v),
-                                      );
-                                      delete quests[clickedUuid];
-                                      AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
-                                        console.log('정보 삭제 완료');
-                                      });
-                                    }}>
-                                    <Text>삭제</Text>
-                                  </TouchableOpacity>
-                                </View>
+                      {showModal ? (
+                        <View>
+                          <Modal
+                            animationType="fade"
+                            transparent={true}
+                            visible={showModal}
+                            onRequestClose={() => {
+                              setShowModal(false);
+                            }}>
+                            <View style={styles.centeredView}>
+                              <View style={styles.modalView}>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    navigation.navigate('UpdateRoutine', {
+                                      uuid: clickedUuid,
+                                      quest: quests[clickedUuid],
+                                    });
+                                  }}>
+                                  <Text>수정</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    quests[clickedUuid].alarmIdList.map((v) => deleteAlarm(v));
+                                    quests[clickedUuid].qrOnceAlarmIdList.map((v) =>
+                                      deleteAlarm(v),
+                                    );
+                                    quests[clickedUuid].qrRepeatAlarmIdList.map((v) =>
+                                      deleteAlarm(v),
+                                    );
+                                    delete quests[clickedUuid];
+                                    AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
+                                      console.log('정보 삭제 완료');
+                                    });
+                                  }}>
+                                  <Text>삭제</Text>
+                                </TouchableOpacity>
                               </View>
-                            </Modal>
-                          </View>
-                        ) : null}
-                      </>
+                            </View>
+                          </Modal>
+                        </View>
+                      ) : null}
                     </React.Fragment>
                   ))}
                 </>

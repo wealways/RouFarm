@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
-import {
-  View,
-  Text,
-  AppRegistry,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
-  StatusBar,
-} from 'react-native';
+import { View, Text, AppRegistry, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
@@ -18,6 +10,7 @@ import theme from '@/theme';
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
 import {
+  makeQRAlarm,
   makeAlarm,
   makeRepeatDate,
   deleteAlarm,
@@ -87,35 +80,43 @@ function QRScreen({ navigation }) {
           }
           // 반복성 QR알람 인지 확인
           else {
-            await Promise.all(
-              quest.repeatYoilList.map(async (v, i) => {
-                // 같은 요일 인지 확인
-                if (yoilReverse[v] === new Date().getDay()) {
-                  // 기존 알람 삭제
-                  await deleteAlarm(quest.qrRepeatAlarmIdList[i]);
+            let i = -1;
 
-                  // 향후 알람 추가
-                  const startDate = await makeRepeatDate(
-                    new Date().getDate() +
-                      '-' +
-                      (new Date().getMonth() * 1 + 1).toString() +
-                      '-' +
-                      new Date().getFullYear(),
-                    v,
-                  );
-                  quest.repeatDateList[i] = startDate;
+            quest.repeatYoilList.map((val, idx) => {
+              // 같은 요일 인지 확인
+              if (yoilReverse[val] === new Date().getDay()) {
+                i = idx;
+              }
+            });
 
-                  const alarmId = await makeAlarm(
-                    startDate,
-                    [quest.repeatYoilList[i]],
-                    quest.questName,
-                    quest.alarmTime,
-                  );
-                  console.log(alarmId);
-                  quest.qrRepeatAlarmIdList[i] = alarmId[0];
-                }
-              }),
-            );
+            if (i !== -1) {
+              // 기존 알람 삭제
+              await deleteAlarm(quest.qrRepeatAlarmIdList[i]);
+
+              // 향후 알람 추가
+              let startDate = new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                new Date().getDate() + 7,
+              );
+              startDate =
+                startDate.getDate() +
+                '-' +
+                (startDate.getMonth() * 1 + 1) +
+                '-' +
+                startDate.getFullYear();
+
+              quest.repeatDateList[i] = startDate;
+
+              const alarmId = await makeQRAlarm(
+                startDate,
+                [quest.repeatYoilList[i]],
+                quest.questName,
+                quest.alarmTime,
+              );
+              console.log(alarmId);
+              quest.qrRepeatAlarmIdList[i] = alarmId[0];
+            }
           }
 
           // 메모리에 저장

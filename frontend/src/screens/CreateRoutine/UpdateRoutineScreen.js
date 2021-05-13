@@ -60,15 +60,18 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [repeatYoilList, setRepeatYoilList] = useState(route.params.quest.repeatYoilList);
 
   // 스위치 상태
-  const [isQR, setIsQR] = useState(false);
-  const [isAlarm, setIsAlarm] = useState(alarmTime === '' ? false : true);
+  const [isQR, setIsQR] = useState(
+    route.params.quest.qrOnceAlarmIdList.length + route.params.quest.qrRepeatAlarmIdList.length !==
+      0,
+  );
+  const [isAlarm, setIsAlarm] = useState(alarmTime !== '');
 
   // 퀘스트 생성
   const handleCreate = async () => {
     // 기존의 알람 제거
     await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
     await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
-    await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
+    await route.params.quest.qrRepeatAlarmIdList.map((v) => deleteAlarm(v));
     console.log('delete alarm!');
 
     // 새로운 알람 생성
@@ -77,7 +80,7 @@ function UpdateRoutineScreen({ navigation, route }) {
     let qrRepeatAlarmIdList = [];
     if (isAlarm) {
       if (isQR) {
-        if (repeatDateList.length === 0) {
+        if (repeatYoilList.length === 0) {
           qrOnceAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
         } else {
           qrRepeatAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
@@ -91,7 +94,7 @@ function UpdateRoutineScreen({ navigation, route }) {
     // 반복일 계산
     let repeatDateList = [];
     repeatYoilList.map((v) => {
-      repeatDateList.push(makeRepeatDate(startDate, v));
+      repeatDateList.push(makeRepeatDate(startDate, v, alarmTime));
     });
 
     // 반복일 오름차순 정렬
@@ -105,7 +108,7 @@ function UpdateRoutineScreen({ navigation, route }) {
 
     // 메모리에 저장
     AsyncStorage.getItem('quests', async (err, res) => {
-      quests = JSON.parse(res);
+      let quests = JSON.parse(res);
       if (quests === null) quests = {};
 
       quests[route.params.uuid] = {
@@ -301,14 +304,6 @@ function UpdateRoutineScreen({ navigation, route }) {
                 <SettingTitle>QR 생성</SettingTitle>
                 <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
               </SettingWrapper>
-              {isQR ? (
-                <>
-                  <TextInput
-                    style={styles.qrTextInput}
-                    placeholder="QR 코드의 이름을 기입해주세요"
-                    maxLength={20}></TextInput>
-                </>
-              ) : null}
             </Card>
           </View>
         </Contents>
