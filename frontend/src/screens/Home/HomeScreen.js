@@ -6,11 +6,11 @@ import { Wrapper, Card, Contents, QRCodeButton, UserImage, UserStatus } from './
 // 컴포넌트
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
-import { EmergencyQuest } from '@/components/Home';
+import { EmergencyQuest, GetRoutine } from '@/components/Home';
+import { getDailyQuests } from '@/components/Home/GetRoutine';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import { yoilReverse } from '@/utils/parsedate';
 
 // 디바이스 사이즈
 import { deviceWidth } from '@/utils/devicesize';
@@ -33,53 +33,32 @@ function HomeScreen({ navigation }) {
   const [qrOpen, setQROpen] = useState(false);
   const [clickedUuid, setClickedUuid] = useState('');
 
+  const [clickedQuestUuidList, setClickedQuestUuidList] = useState([]);
+
   const getAsyncStorage = async (storageName, setData) => {
     await AsyncStorage.getItem(storageName, (err, res) => {
       let data = JSON.parse(res);
       setData(data === null ? {} : data); // null 에러 처리
+      setClickedQuestUuidList(
+        getDailyQuests(
+          data,
+          new Date().getDate() +
+            '-' +
+            (new Date().getMonth() * 1 + 1) +
+            '-' +
+            new Date().getFullYear(),
+        ),
+      );
       if (err) console.log(err);
-      console.log(data);
     });
-  };
-
-  // 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기
-  const getDailyQuests = (date) => {
-    const [day1, month1, year1] = date.split('-');
-
-    let uuidList = Object.keys(quests).filter((uuid) => {
-      if (!quests[uuid].repeatDate.length) {
-        return date === quests[uuid].startDate;
-      } else {
-        const [day2, month2, year2] = quests[uuid].startDate.split('-');
-        // 시작한 루틴인지 확인
-        if (new Date(year2, month2 - 1, day2) <= new Date(year1, month1 - 1, day1)) {
-          const yoil1 = new Date(year1, month1 - 1, day1).getDay();
-
-          // 같은 요일 루틴인지 확인
-          const result = quests[uuid].isReapeat.filter((yoil2) => {
-            if (yoil1 === yoilReverse[yoil2]) {
-              return true;
-            }
-            return false;
-          });
-
-          return result === null ? false : true;
-        }
-
-        return false;
-      }
-    });
-
-    uuidList = uuidList === null ? [] : uuidList;
-    return uuidList;
   };
 
   // 리로드 변수
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    getAsyncStorage('quests', setQuests);
-    // setUp(0);
+  useEffect(async () => {
+    await getAsyncStorage('quests', setQuests);
+    console.log(quests);
   }, [isFocused]);
 
   return (
@@ -100,17 +79,27 @@ function HomeScreen({ navigation }) {
         <Contents>
           <View>
             <Text style={styles.title}>일일 퀘스트</Text>
+
+            {quests !== null ? (
+              <GetRoutine quests={quests} setClickedQuestUuidList={setClickedQuestUuidList} />
+            ) : null}
+
             <Card style={styles.cardWidth}>
-              {Object.keys(quests).map((uuid) => (
-                <React.Fragment key={uuid}>
-                  <View>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setClickedUuid(uuid);
-                        openModal();
-                      }}>
-                      <Text>{quests[uuid].questName}</Text>
-                      <Text>{quests[uuid].startDate}</Text>
+              {clickedQuestUuidList.length > 0 ? (
+                <>
+                  {clickedQuestUuidList.map((uuid) => (
+                    <React.Fragment key={uuid}>
+                      <View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setClickedUuid(uuid);
+                            openModal();
+                          }}>
+                          <Text>{quests[uuid].questName}</Text>
+                          <Text>{quests[uuid].startDate}</Text>
+                        </TouchableOpacity>
+                      </View>
+
                       <>
                         {showModal ? (
                           <View>
@@ -148,10 +137,14 @@ function HomeScreen({ navigation }) {
                           </View>
                         ) : null}
                       </>
-                    </TouchableOpacity>
-                  </View>
-                </React.Fragment>
-              ))}
+                    </React.Fragment>
+                  ))}
+                </>
+              ) : (
+                <View>
+                  <Text>루틴을 생성해주세요.📝🤞💑😏😆😡🤦‍♂️🗝👍😂</Text>
+                </View>
+              )}
             </Card>
           </View>
         </Contents>

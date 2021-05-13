@@ -297,7 +297,7 @@ function CreateRoutineScreen({ navigation }) {
           <Image
             style={styles.qrImage}
             source={{
-              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${qrName}`,
+              uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393',
             }}
           />
         </View>
