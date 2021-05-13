@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.c105.roufarm.config.JwtTokenUtil;
+import com.c105.roufarm.model.Routine;
 import com.c105.roufarm.model.RoutineLog;
 import com.c105.roufarm.model.UserLog;
 import com.c105.roufarm.repository.UserLogMongoDBRepository;
@@ -26,6 +27,9 @@ public class UserLogService {
 
       @Autowired
       RoutineLogService routineLogService;
+
+      @Autowired
+      RoutineService routineService;
 
       @Autowired
       JwtTokenUtil jwtTokenUtil;
@@ -211,6 +215,46 @@ public class UserLogService {
                   userLogGrassForm.put(userLogKey,numList);
             }
             return userLogGrassForm;
+      }
+
+      // 6. 현재 헤더에 로그를 달 형식으로 표현 (해쉬태그 형식)
+      @Transactional
+      public HashMap<String,HashMap<String,HashMap<String,HashMap<String,Object>>>> findLogForHashtag(){
+            HashMap<String,HashSet<RoutineLog>> userLogMap = findLogAllMonth();
+            HashMap<String,HashMap<String,HashMap<String,HashMap<String,Object>>>> userLogHashtagForm = new HashMap<>();
+            for(String userLogKey : userLogMap.keySet()){
+                  String month = userLogKey.substring(5);
+                  HashMap<String, HashMap<String,HashMap<String,Object>>> hashtagMap = new HashMap<String,HashMap<String,HashMap<String,Object>>>();
+                  for(RoutineLog routineLog : userLogMap.get(userLogKey)){
+                        String routineId = routineLog.getRoutineId();
+                        Routine routine = routineService.findRoutineById(routineId);
+                        String category = routine.getCategory();
+                        HashMap<String,HashMap<String,Object>> hashtag = hashtagMap.get(category);
+                        if(hashtag == null){
+                              hashtag = new HashMap<String,HashMap<String,Object>>();
+                        }
+                        HashMap<String,Object> tagRoutine = hashtag.get(routineId);
+                        if(tagRoutine == null){
+                              tagRoutine = new HashMap<String,Object>();
+                              tagRoutine.put("content", routine.getQuestName());
+                              tagRoutine.put("cnt",0);
+                              tagRoutine.put("success",0);
+                        }
+                        int cnt = (int)tagRoutine.get("cnt") + 1;
+                        int success = (int)tagRoutine.get("success");
+                        if(routineLog.getIsSuccess().equals("true")){
+                              success++;
+                        }
+                        float rate = (float)success/(float)cnt;
+                        tagRoutine.put("cnt", cnt);
+                        tagRoutine.put("success", success);
+                        tagRoutine.put("rate", rate);
+                        hashtag.put(routineId,tagRoutine);
+                        hashtagMap.put(category, hashtag);
+                  }
+                  userLogHashtagForm.put(userLogKey,hashtagMap);
+            }
+            return userLogHashtagForm;
       }
 
 }

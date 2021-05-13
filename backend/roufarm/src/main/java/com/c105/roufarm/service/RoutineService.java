@@ -31,6 +31,10 @@ public class RoutineService {
             String kakaoId = jwtTokenUtil.getId();
             routine.setKakaoId(kakaoId);
             routine.setIsActivate("true");
+            String category = routine.getCategory();
+            if(category == null){
+                  routine.setCategory("없음");
+            }
             return routineMongoDBRepository.save(routine);
       }
 
@@ -59,7 +63,7 @@ public class RoutineService {
             return routine;
       }
 
-      // 4. 본인 루틴 확인
+      // 4. 루틴 아이디로 루틴 확인
       @Transactional
       public Routine findRoutineById(String routineId){
             return routineMongoDBRepository.findById(routineId).get();

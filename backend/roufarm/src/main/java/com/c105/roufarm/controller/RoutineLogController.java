@@ -78,5 +78,11 @@ public class RoutineLogController {
       public ResponseEntity<HashMap<String,ArrayList<Integer>>> getRoutineLogForGrass() {
             return new ResponseEntity<HashMap<String,ArrayList<Integer>>>(userLogService.findLogForGrass(),HttpStatus.OK); 
       }
+
+      @ApiOperation(value = "루틴 로그 해쉬태그 형식 조회",notes = "해당 Id의 모든 루틴 로그를 해쉬태그 형식으로 조회한다.")
+      @GetMapping("/month/hashtag/")
+      public ResponseEntity<HashMap<String,HashMap<String,HashMap<String,HashMap<String,Object>>>>> getRoutineLogForHashtag() {
+            return new ResponseEntity<HashMap<String,HashMap<String,HashMap<String,HashMap<String,Object>>>>>(userLogService.findLogForHashtag(),HttpStatus.OK); 
+      }
 }
 
