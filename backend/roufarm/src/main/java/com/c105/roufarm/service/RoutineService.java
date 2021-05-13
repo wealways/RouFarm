@@ -32,7 +32,7 @@ public class RoutineService {
             routine.setKakaoId(kakaoId);
             routine.setIsActivate("true");
             String category = routine.getCategory();
-            if(category == null){
+            if(category == null || category.equals("")){
                   routine.setCategory("없음");
             }
             return routineMongoDBRepository.save(routine);
