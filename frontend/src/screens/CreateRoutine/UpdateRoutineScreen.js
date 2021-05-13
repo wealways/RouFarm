@@ -21,7 +21,12 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
-import { deleteAlarm, makeAlarm, makeRepeatDate } from '@/components/CreateRoutine/AlarmNotifi';
+import {
+  deleteAlarm,
+  makeQRAlarm,
+  makeAlarm,
+  makeRepeatDate,
+} from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
@@ -60,14 +65,26 @@ function UpdateRoutineScreen({ navigation, route }) {
 
   // 퀘스트 생성
   const handleCreate = async () => {
-    // 기존의 알림과 알람 제거
+    // 기존의 알람 제거
     await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
+    await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
+    await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
     console.log('delete alarm!');
 
-    // 새로운 알림과 알람 생성
+    // 새로운 알람 생성
     let alarmIdList = [];
+    let qrOnceAlarmIdList = [];
+    let qrRepeatAlarmIdList = [];
     if (isAlarm) {
-      alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
+      if (isQR) {
+        if (repeatDateList.length === 0) {
+          qrOnceAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
+        } else {
+          qrRepeatAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
+        }
+      } else {
+        alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
+      }
     }
     console.log('create alarm!');
 
@@ -100,6 +117,8 @@ function UpdateRoutineScreen({ navigation, route }) {
         repeatDateList, // 반복일자 리스크 (string, 일-월-년)
         repeatYoilList, // 반복요일 리스트 (string, 월 ~ 일)
         alarmIdList, // 알람id 리스트 (int 타입)
+        qrOnceAlarmIdList, // 일회성 QR알람id 리스트 (int 타입)
+        qrRepeatAlarmIdList, // 반복성 QR알람id 리스트 (int 타입)
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {

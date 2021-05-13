@@ -24,8 +24,8 @@ import Repreat from '@/components/CreateRoutine/Repeat';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import { makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
-// import axios from 'axios';
+import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
+import axios from 'axios';
 
 const today =
   new Date().getDate() +
@@ -66,8 +66,21 @@ function CreateRoutineScreen({ navigation }) {
 
     // 알람 생성
     let alarmIdList = [];
+    let qrOnceAlarmIdList = [];
+    let qrRepeatAlarmIdList = [];
     if (isAlarm) {
-      alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
+      if (isQR) {
+        if (repeatYoilList.length === 0) {
+          console.log('일회성 QR 알람 생성');
+          qrOnceAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
+        } else {
+          console.log('반복성 QR 알람 생성');
+          qrRepeatAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
+        }
+      } else {
+        console.log('QR 없는 알람 생성');
+        alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
+      }
     }
 
     // 반복일 계산
@@ -99,6 +112,8 @@ function CreateRoutineScreen({ navigation }) {
         repeatYoilList,
         repeatDateList,
         alarmIdList,
+        qrOnceAlarmIdList,
+        qrRepeatAlarmIdList,
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {

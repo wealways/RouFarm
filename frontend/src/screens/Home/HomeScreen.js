@@ -135,6 +135,12 @@ function HomeScreen({ navigation }) {
                                   <TouchableOpacity
                                     onPress={() => {
                                       quests[clickedUuid].alarmIdList.map((v) => deleteAlarm(v));
+                                      quests[clickedUuid].qrOnceAlarmIdList.map((v) =>
+                                        deleteAlarm(v),
+                                      );
+                                      quests[clickedUuid].qrRepeatAlarmIdList.map((v) =>
+                                        deleteAlarm(v),
+                                      );
                                       delete quests[clickedUuid];
                                       AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
                                         console.log('정보 삭제 완료');
