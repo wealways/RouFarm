@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 // styled-components
@@ -81,6 +82,8 @@ const getAccessTokenInfo = async () => {
   }
 };
 */
+// AsyncStorage
+import AsyncStorage from '@react-native-community/async-storage';
 
 function LoginPage({ navigation }) {
 
@@ -90,25 +93,15 @@ function LoginPage({ navigation }) {
     profile: null,
   });
 
-  // 카카오 엑세스 토큰 정보 조회
-  const [kakaoAccessTokenInfo, setKakaoAccessTokenInfo] = useState(null);
-
-  // JWTtoken
-  const [JWT, setJWT] = useState('');
   // 접속 상태 정보 - 로그인 or 회원가입
   const [userState, setUserState] = useState('');
-  // 사용자 정보
-  const [userInfo, setUserInfo] = useState(null);
 
-  // 회원 정보 조회 테스트용
-  const [getUser, setGetUser] = useState('');
-
-  // 실제 로그인
-  const roufarmLogin = async () => {
-    // 1. 토큰 발급
+  // 1. 토큰 발급
+  const accessKakaoToken = async () => {
     try {
       const token: KakaoOAuthToken = await login();
-      setKakaoInfo((prev) => {
+      await setKakaoInfo((prev) => {
+        console.log({ ...kakaoInfo }, 'destructure')
         prev = { ...kakaoInfo, token: token }
         console.log('받은 토큰 정보', prev)
         return prev
@@ -116,20 +109,73 @@ function LoginPage({ navigation }) {
     } catch (e) {
       console.log('카카오 토큰 발급 실패')
       console.error(e)
+      showAlert("카카오 토큰 발급 실패")
     }
-    // 2. 프로필 조회
+  };
+  // 2. 프로필 조회
+  const kakaoProfile = async () => {
     try {
       const profile: KakaoProfile = await getKakaoProfile();
       setKakaoInfo((prev) => {
-        prev = { ...kakaoInfo, profile: profile }
+        // 들어온 인자(이전의 state - kakaoInfo)
+        prev = { ...prev, profile: profile }
         console.log('받은 프로필 정보', prev)
         return prev
       });
+      // 3번 함수 실행의 인자로 넘겨주기
+      return profile
     } catch (e) {
       console.log('카카오 프로필 조회 실패')
       console.error(e)
+      showAlert("카카오 프로필 조회 실패")
     }
   };
+  // 3. JWT token API
+  const getJWTToken = async (kakaoprofile) => {
+    try {
+      let url = 'http://k4c105.p.ssafy.io:8080/api/user';
+      let options = {
+        method: 'POST',
+        url: url,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8'
+        },
+        data: JSON.stringify(kakaoprofile)
+      };
+      // request 보낼 정보 확인(카카오 프로필 정보)
+      console.log(JSON.stringify(kakaoprofile), 'profile')
+      console.log(options)
+      let response = await axios(options);
+      // 받은 토큰, 접속 상태, 사용자 정보 업데이트
+      console.log('response')
+      console.log(response)
+      // 상태 정보 저장
+      setUserState(response.data.msg)
+      // 1. asyncstorage에 있는 토큰 정보 초기화
+      AsyncStorage.removeItem('JWT');
+      // 2. asyncstorage에 넣어주기
+      AsyncStorage.setItem('JWT', response.data.token)
+      // 3. 조회해서 확인
+      AsyncStorage.getItem('JWT', (error, JWTValue) => {
+        console.log(JWTValue)
+      })
+
+    } catch (e) {
+      console.error(e)
+      showAlert("JWT token 발급 실패")
+    }
+  };
+
+  // 실제 로그인
+  const roufarmLogin = async () => {
+    // 1. 토큰 발급
+    await accessKakaoToken()
+    // 2. 프로필 조회 => return 값 넣어주기
+    // 3. JWT token API
+    await getJWTToken(await kakaoProfile())
+  };
+
   /*
     // RN - BE 통신 테스트(로그인 및 회원가입) - fetch
     const test = async () => {
@@ -154,32 +200,6 @@ function LoginPage({ navigation }) {
       }
     };
   */
-  // RN - BE 통신 테스트(로그인 및 회원가입) - axios
-  const test = async () => {
-    try {
-      let url = 'http://k4c105.p.ssafy.io:8080/api/user';
-      let options = {
-        method: 'POST',
-        url: url,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json;charset=UTF-8'
-        },
-        data: JSON.stringify(kakaoInfo.profile)
-      };
-      // request 보낼 정보 확인(카카오 프로필 정보)
-      console.log(JSON.stringify(kakaoInfo.profile))
-      let response = await axios(options);
-      // 받은 토큰, 접속 상태, 사용자 정보 업데이트
-      console.log('response')
-      console.log(response)
-      setJWT(response.data.token)
-      setUserState(response.data.msg)
-      setUserInfo(response.data.user)
-    } catch (e) {
-      console.error(e)
-    }
-  };
   // RN - BE 통신 테스트 (회원 가입 조회 - 정보 가져오기)
   const testGet = async () => {
     try {
@@ -231,84 +251,39 @@ function LoginPage({ navigation }) {
     }
   };
 
+  // alert 창 실패 시 메세지 담아서
+  const showAlert = (msg) => {
+    Alert.alert(
+      "버튼을 다시 클릭해주세요",
+      msg
+    );
+  }
+
   return (
-    <ScrollView>
-      <Wrapper>
-        {/* App name */}
-        <Content1>
-          <AppName>Rou
+    <Wrapper>
+      {/* App name */}
+      <Content1>
+        <AppName>Rou
             <Text style={{ color: '#55f27c' }}>Farm</Text>
-          </AppName>
-          <Subtitle>부지런한 농부의 마음으로 시작하는 루틴 관리</Subtitle>
-        </Content1>
-        <Text>카카오 정보: {JSON.stringify(kakaoInfo)}</Text>
-        <Text>JWT토큰 정보: {JWT}</Text>
-        <Text>접속 상태 정보: {userState}</Text>
-        <Text>사용자 정보: {JSON.stringify(userInfo)}</Text>
-        <Text>get 사용자 정보: {getUser}</Text>
-        <Content2>
-          {/* App Logo */}
-          <Logo
-            resizeMode={'contain'}
-            source={require('../../assets/images/slave1.png')}></Logo>
-          {/* kakao login btn */}
-          <Btn onPress={() => roufarmLogin()}>
-            <WithLocalSvg
-              asset={kakaoSymbol}
-              width={15}
-              height={20}
-              fill={'#000000'} />
-            <BtnText>test</BtnText>
-          </Btn>
-          {/* 로그아웃 */}
-          <Btn onPress={() => signOutWithKakao()}>
-            <WithLocalSvg
-              asset={kakaoSymbol}
-              width={15}
-              height={20}
-              fill={'#000000'} />
-            <BtnText>카카오 로그아웃</BtnText>
-          </Btn>
-          {/* 연결끊기 */}
-          <Btn onPress={() => unlinkKakao()}>
-            <WithLocalSvg
-              asset={kakaoSymbol}
-              width={15}
-              height={20}
-              fill={'#000000'} />
-            <BtnText>카카오 연결끊기</BtnText>
-          </Btn>
-          {/* RN - BE test */}
-          {/* post(/user) */}
-          <Btn onPress={() => test()}>
-            <WithLocalSvg
-              asset={kakaoSymbol}
-              width={15}
-              height={20}
-              fill={'#000000'} />
-            <BtnText>BE test</BtnText>
-          </Btn>
-          {/* get(/user/) */}
-          <Btn onPress={() => testGet()}>
-            <WithLocalSvg
-              asset={kakaoSymbol}
-              width={15}
-              height={20}
-              fill={'#000000'} />
-            <BtnText>BE test(get)</BtnText>
-          </Btn>
-          {/* put(/user/) */}
-          <Btn onPress={() => testPut()}>
-            <WithLocalSvg
-              asset={kakaoSymbol}
-              width={15}
-              height={20}
-              fill={'#000000'} />
-            <BtnText>BE test(put)</BtnText>
-          </Btn>
-        </Content2>
-      </Wrapper >
-    </ScrollView>
+        </AppName>
+        <Subtitle>부지런한 농부의 마음으로 시작하는 루틴 관리</Subtitle>
+      </Content1>
+      <Content2>
+        {/* App Logo */}
+        <Logo
+          resizeMode={'contain'}
+          source={require('../../assets/images/slave1.png')}></Logo>
+        {/* kakao login btn */}
+        <Btn onPress={() => roufarmLogin()}>
+          <WithLocalSvg
+            asset={kakaoSymbol}
+            width={15}
+            height={20}
+            fill={'#000000'} />
+          <BtnText>카카오 로그인</BtnText>
+        </Btn>
+      </Content2>
+    </Wrapper >
   );
 }
 
