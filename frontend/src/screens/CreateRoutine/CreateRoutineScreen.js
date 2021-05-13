@@ -21,13 +21,11 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
-import { setAlarm } from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import { dayOfMonth, yoilReverse, yoil } from '@/utils/parsedate';
-import axios from 'axios';
 import { makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
+// import axios from 'axios';
 
 const today =
   new Date().getDate() +
@@ -63,11 +61,14 @@ function CreateRoutineScreen({ navigation }) {
 
   // 퀘스트 생성
   const handleCreate = async () => {
-    const alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
-    let quest = {};
-
     // 퀘스트 uuid 생성
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
+
+    // 알람 생성
+    let alarmIdList = [];
+    if (isAlarm) {
+      alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
+    }
 
     // 반복일 계산
     let repeatDateList = [];
@@ -76,23 +77,21 @@ function CreateRoutineScreen({ navigation }) {
     });
 
     // 반복일 오름차순 정렬
-    let tempRepeatDate = [].concat(repeatDateList);
-    tempRepeatDate &&
-      tempRepeatDate.sort((a, b) => {
+    let tempRepeatDateList = [].concat(repeatDateList);
+    tempRepeatDateList &&
+      tempRepeatDateList.sort((a, b) => {
         const [dayA, monthA, yearA] = a.split('-');
         const [dayB, monthB, yearB] = b.split('-');
         return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
       });
-    console.log(tempRepeatDate);
 
     // 메모리에 저장
     AsyncStorage.getItem('quests', async (err, res) => {
-      quest = JSON.parse(res);
-      // quest가 null값인지 아닌지 체크해야함. 그렇지 않으면 다음과 같은 오류 뿜음
-      // null is not an object.
-      if (quest === null) quest = {};
-      quest[uuid] = {
-        startDate: tempRepeatDate.length ? tempRepeatDate[0] : startDate,
+      let quests = JSON.parse(res);
+      if (quests === null) quests = {};
+
+      quests[uuid] = {
+        startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
         questName,
         startTime,
         endTime,
@@ -102,7 +101,7 @@ function CreateRoutineScreen({ navigation }) {
         alarmIdList,
       };
 
-      await AsyncStorage.setItem('quest', JSON.stringify(quest), () => {
+      await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
         console.log('정보 저장 완료');
         navigation.navigate('Home');
       });

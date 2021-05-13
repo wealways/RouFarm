@@ -13,55 +13,14 @@ const alarmNotifData = {
 
 const repeatAlarmNotifData = {
   vibrate: true,
+  has_button: true,
   play_sound: true,
   schedule_type: 'repeat',
   channel: 'wakeup',
   volume: 0.9,
   loop_sound: true,
-  has_button: true,
   repeat_interval: 'weekly',
   interval_value: 1, // repeat after 5 minutes
-};
-
-const notifData = {
-  vibrate: false,
-  has_button: false,
-  schedule_type: 'once',
-  channel: 'wakeup',
-};
-
-const repeatNotifData = {
-  vibrate: false,
-  has_button: false,
-  schedule_type: 'repeat',
-  channel: 'wakeup',
-};
-
-const setNofication = async (props) => {
-  // 반복 O
-  console.log('알림 :', props);
-  if (props.schedule_type === 'repeat') {
-    const details = {
-      ...repeatNotifData,
-      ...props,
-    };
-    try {
-      return await ReactNativeAN.scheduleAlarm(details);
-    } catch (e) {
-      console.log(e);
-    }
-  } else {
-    // 반복 X
-    const details = {
-      ...notifData,
-      ...props,
-    };
-    try {
-      return await ReactNativeAN.scheduleAlarm(details);
-    } catch (e) {
-      console.log(e);
-    }
-  }
 };
 
 const setAlarm = async (props) => {
@@ -182,8 +141,48 @@ const makeRepeatDate = (startDate, repeatYoil) => {
   return tempDate.toString() + '-' + tempMonth.toString() + '-' + tempYear.toString();
 };
 
+// const notifData = {
+//   vibrate: false,
+//   has_button: false,
+//   schedule_type: 'once',
+//   channel: 'wakeup',
+// };
+
+// const repeatNotifData = {
+//   vibrate: false,
+//   has_button: false,
+//   schedule_type: 'repeat',
+//   channel: 'wakeup',
+// };
+
+// const setNofication = async (props) => {
+//   // 반복 O
+//   console.log('알림 :', props);
+//   if (props.schedule_type === 'repeat') {
+//     const details = {
+//       ...repeatNotifData,
+//       ...props,
+//     };
+//     try {
+//       return await ReactNativeAN.scheduleAlarm(details);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   } else {
+//     // 반복 X
+//     const details = {
+//       ...notifData,
+//       ...props,
+//     };
+//     try {
+//       return await ReactNativeAN.scheduleAlarm(details);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+// };
+
 export {
-  setNofication,
   setAlarm,
   viewAlarms,
   deleteAlarm,
@@ -191,4 +190,5 @@ export {
   makeNotifi,
   makeAlarm,
   makeRepeatDate,
+  // setNofication,
 };

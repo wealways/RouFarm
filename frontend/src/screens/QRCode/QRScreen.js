@@ -19,7 +19,6 @@ import theme from '@/theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   makeAlarm,
-  makeNotifi,
   makeRepeatDate,
   deleteAlarm,
   stopAlarmSound,
@@ -66,31 +65,31 @@ function QRScreen({ navigation }) {
     let quest = quests[uuid];
 
     if (quest !== null) {
-      let [date, month, year] = quest.startDate.split('-');
+      let [date, month, year] = [...quest.startDate.split('-')];
       if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
+        // 알람시간이 지났으면 stopAlarmSound();
+        if (quest.alarmIdList.length) {
+          let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
+          if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
+            stopAlarmSound();
+          }
+        }
         if (quest.repeatYoilList.length === 0) {
           // 기존 알림 삭제
           if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
-            stopAlarmSound();
-
             if (quest.alarmIdList.length) {
               deleteAlarm(quest.alarmIdList[0]);
               quest.alarmIdList = [];
             }
-            deleteAlarm(quest.notifiIdList[0]);
-            quest.notifiIdList = [];
           }
         } else {
           await Promise.all(
             quest.repeatYoilList.map(async (v, i) => {
               if (yoilReverse[v] === new Date().getDay()) {
-                stopAlarmSound();
-
                 // 기존 알람/알림 삭제
                 if (quest.alarmIdList.length) {
                   await deleteAlarm(quest.alarmIdList[i]);
                 }
-                await deleteAlarm(quest.notifiIdList[i]);
 
                 // 향후 알람/알림 추가
                 const startDate = await makeRepeatDate(
@@ -113,15 +112,6 @@ function QRScreen({ navigation }) {
                   console.log(alarmId);
                   quest.alarmIdList[i] = alarmId[0];
                 }
-
-                const notifiId = await makeNotifi(
-                  startDate,
-                  [quest.repeatYoilList[i]],
-                  quest.questName,
-                  quest.startTime,
-                );
-                console.log(notifiId);
-                quest.notifiIdList[i] = notifiId[0];
               }
             }),
           );

@@ -21,16 +21,11 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
-import {
-  deleteAlarm,
-  makeNotifi,
-  makeAlarm,
-  makeRepeatDate,
-} from '@/components/CreateRoutine/AlarmNotifi';
+import { deleteAlarm, makeAlarm, makeRepeatDate } from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
-import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
 const today =
   new Date().getDate() +
@@ -40,7 +35,6 @@ const today =
   new Date().getFullYear();
 
 function UpdateRoutineScreen({ navigation, route }) {
-  console.log(route.params);
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal((prev) => !prev);
@@ -53,12 +47,12 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [alarmTimeShow, setAlarmTimeShow] = useState(false);
 
   // 생성시 넘길 데이터
-  const [questName, setQuestname] = useState(route.params.quests.questName);
-  const [startDate, setStartDate] = useState(route.params.quests.date);
-  const [startTime, setStartTime] = useState(route.params.quests.startTime);
-  const [endTime, setEndTime] = useState(route.params.quests.endTime);
-  const [alarmTime, setAlarmTime] = useState(route.params.quests.alarmTime);
-  const [repeatYoilList, setRepeatYoilList] = useState(route.params.quests.isReapeat);
+  const [questName, setQuestname] = useState(route.params.quest.questName);
+  const [startDate, setStartDate] = useState(route.params.quest.startDate);
+  const [startTime, setStartTime] = useState(route.params.quest.startTime);
+  const [endTime, setEndTime] = useState(route.params.quest.endTime);
+  const [alarmTime, setAlarmTime] = useState(route.params.quest.alarmTime);
+  const [repeatYoilList, setRepeatYoilList] = useState(route.params.quest.repeatYoilList);
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
@@ -67,18 +61,15 @@ function UpdateRoutineScreen({ navigation, route }) {
   // 퀘스트 생성
   const handleCreate = async () => {
     // 기존의 알림과 알람 제거
-    await route.params.quests.alarmIdList.map((v) => deleteAlarm(v));
-    await route.params.quests.notifiIdList.map((v) => deleteAlarm(v));
-
-    // 새로운 퀘스트를 담을 Object 생성
-    let quests = {};
+    await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
+    console.log('delete alarm!');
 
     // 새로운 알림과 알람 생성
     let alarmIdList = [];
     if (isAlarm) {
       alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
     }
-    const notifiIdList = await makeNotifi(startDate, repeatYoilList, questName, startTime);
+    console.log('create alarm!');
 
     // 반복일 계산
     let repeatDateList = [];
@@ -87,10 +78,9 @@ function UpdateRoutineScreen({ navigation, route }) {
     });
 
     // 반복일 오름차순 정렬
-    let tempRepeatDate = [].concat(repeatDateList);
-
-    tempRepeatDate &&
-      tempRepeatDate.sort((a, b) => {
+    let tempRepeatDateList = [].concat(repeatDateList);
+    tempRepeatDateList &&
+      tempRepeatDateList.sort((a, b) => {
         const [dayA, monthA, yearA] = a.split('-');
         const [dayB, monthB, yearB] = b.split('-');
         return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
@@ -100,8 +90,9 @@ function UpdateRoutineScreen({ navigation, route }) {
     AsyncStorage.getItem('quests', async (err, res) => {
       quests = JSON.parse(res);
       if (quests === null) quests = {};
+
       quests[route.params.uuid] = {
-        startDate: tempRepeatDate.length ? tempRepeatDate[0] : startDate,
+        startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
         questName,
         alarmTime,
         startTime,
@@ -109,13 +100,13 @@ function UpdateRoutineScreen({ navigation, route }) {
         repeatDateList, // 반복일자 리스크 (string, 일-월-년)
         repeatYoilList, // 반복요일 리스트 (string, 월 ~ 일)
         alarmIdList, // 알람id 리스트 (int 타입)
-        notifiIdList, // 알림id 리스트 (int 타입)
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
         console.log('정보 저장 완료');
         navigation.navigate('Home');
       });
+
       if (err) console.log(err);
     });
   };
