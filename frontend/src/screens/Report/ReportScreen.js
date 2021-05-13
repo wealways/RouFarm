@@ -21,6 +21,8 @@ import {
 } from './Report.styles';
 import LinearGradient from 'react-native-linear-gradient'
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 // components
 import CustomHeatmapChart from '@/components/Report/CustomHeatmapChart';
 import CustomHeatmapRate from '@/components/Report/CustomHeatmapRate';
@@ -104,8 +106,9 @@ function ReportScreen({navigation}) {
           <>
             {/* section 1 - 월간 수확 */}
               <Contents>
-                <View style={{flexDirection:'row',justifyContent:'center'}}>
+                <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                   <CustomDropdown date={date} flag={'month'}/>
+                  <Icon name="caret-down" size={15} color="#000" style={{marginRight:6}}/>
                 </View>
                   <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                     <SubtitleText>월간 수확</SubtitleText>
@@ -142,8 +145,9 @@ function ReportScreen({navigation}) {
           {/* section 2 - 실패 리스트 */}
             <Contents>
               <FailListProvider>
-                <View style={{flexDirection:'row',justifyContent:'center'}}>
+                <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                   <CustomDropdown date={weekDate} flag={'week'}/>
+                  <Icon name="caret-down" size={15} color="#000" style={{marginRight:6}}/>
                 </View>
                 <View style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between', width:330}}>
                   <SubtitleText>실패리스트</SubtitleText>
