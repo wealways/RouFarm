@@ -7,6 +7,7 @@ import HeatmapContext from '@/contexts/Report/Heatmap';
 
 
 const CustomPieChart = ({date}) => {
+  const height = useWindowDimensions().height;
   const {heatmap,pieClickDispatch} = useContext(HeatmapContext);
 
   const HashTagData = [
@@ -18,14 +19,14 @@ const CustomPieChart = ({date}) => {
   
   let month
   if(heatmap.date===''){
-    month = date[0].split('-')[1]
+    month = parseInt(date[0].split('-')[1])+'월'
   }else{
-    month = heatmap.date.split('-')[1]
+    month = parseInt(heatmap.date.split('-')[1])+'월'
   }
   const width = useWindowDimensions().width;
 
   return (
-    <View style={{marginLeft:-25,marginTop:-25,height:width-40}}>
+    <View style={{marginLeft:-25,marginTop:-25,height:height/5*2}}>
       <Svg>
         <VictoryLegend
           x = {60}
@@ -86,11 +87,10 @@ const CustomPieChart = ({date}) => {
         <VictoryLabel
           textAnchor="middle"
           style={{ fontSize: 20 }}
-          x={180} y={180}
+          x={205} y={175}
           text={month}
         />
       </Svg>
-      
     </View>
   )
 }

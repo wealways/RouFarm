@@ -39,6 +39,7 @@ import {FailListProvider} from '@/contexts/Report/FailList';
 function ReportScreen({navigation}) {
 
   const width = useWindowDimensions().width;
+  const height = useWindowDimensions().height;
 
   const TopTab = ({
     tabs:['월간 리포트','주간 리포트'],
@@ -51,13 +52,13 @@ function ReportScreen({navigation}) {
   const [showIndex,setShowIndex] = useState(0);
   const [loading,setLoading] = useState(false);
   useEffect(()=>{
-    setLoading(true);
+    // setLoading(true);
   })
 
   // 월간
   const date = ['2021-05','2021-04','2021-03']
   // 주간
-  const weekDate = ['2021-05-w1','2021-05-w2','2021-05-w3']
+  const weekDate = ['2021-05-w3','2021-05-w2','2021-05-w1']
 
   return (
     <LinearGradient
@@ -67,7 +68,7 @@ function ReportScreen({navigation}) {
       style={styles.container}
     >
       <HeatmapProvider>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         {/* <TitleText> Report Page</TitleText> */}
         <View style={{flexDirection:'row',justifyContent:'center'}}>
           {TopTab.tabs.map((d,idx)=>{
@@ -101,7 +102,6 @@ function ReportScreen({navigation}) {
         </View>
         { showIndex===0 && 
           <>
-            <HeatmapProvider>
             {/* section 1 - 월간 수확 */}
               <Contents>
                 <View style={{flexDirection:'row',justifyContent:'center'}}>
@@ -135,7 +135,6 @@ function ReportScreen({navigation}) {
                   </View>
                 {/* </PieProvider> */}
               </Contents>
-            </HeatmapProvider>
           </>
         }
         {showIndex===1 &&

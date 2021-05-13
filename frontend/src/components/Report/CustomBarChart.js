@@ -1,6 +1,7 @@
-import React from "react";
-import { StyleSheet, View, Dimensions } from "react-native";
+import React, {useContext} from "react";
+import { StyleSheet, View, Dimensions,Text } from "react-native";
 import { VictoryBar, VictoryChart, VictoryLegend,VictoryGroup,VictoryLine } from "victory-native";
+import HeatmapContext from '@/contexts/Report/Heatmap';
 
 const MeanData = [
   {x: "Mon", y: 59},
@@ -23,7 +24,10 @@ const NowData = [
 ]
 
 const CustomBarChart = () => {
+  const {heatmap} = useContext(HeatmapContext)
   const width = Dimensions.get("window").width;
+  const week = `${parseInt(heatmap.weekDate.split('-')[1])}월 ${heatmap.weekDate.split('-w')[1]}주차`
+
   return (
     <View style={styles.container}>
       <VictoryChart 
@@ -44,7 +48,7 @@ const CustomBarChart = () => {
           gutter={20}
           colorScale={[ "#6f95aa", "#ff844b" ]}
           data={[
-            { name: "평균" }, { name: "이번주" }
+            { name: "평균" }, { name: week }
           ]}
         />
         <VictoryGroup

@@ -16,14 +16,14 @@ const Contents = styled.View`
 const Card = styled.View`
   display:flex;
   /* flex-direction:column; */
-  padding: 16px;
+  padding: 20px;
   margin-bottom: 10px;
   /* justify-content:space-between; */
   /* align-items:space-between; */
   border-radius:8px;
   background: #fff;
   width: ${({width}) => width - 20}px;
-  max-height: ${({height}) => height/2+10}px;
+  max-height: ${({height}) => height/2}px;
   
   elevation: 12;
 `;
@@ -37,7 +37,7 @@ const ListView = styled.View`
   flex-direction:row;
   /* justify-content:space-between; */
   align-items:center;
-  width:270px;
+  /* width:270px; */
 `
 const TagText = styled.Text`
   padding:5px;
@@ -81,7 +81,7 @@ const Detail = ({route}) =>{
           <Text style={styles.date}>{year}년 {month}월 {day}일</Text>
           <ScrollView>
             <Text style={{fontSize:20,marginTop:5,marginBottom:5}}>🎉 성공</Text>
-            <View style={{marginLeft:20, width:width-50}}>
+            <View style={{marginLeft:20 }}>
               {completed.map((data,idx)=>(
                 <ListView key={idx}>
                   <TagText name={data.tag}>#{data.tag}</TagText>
@@ -92,7 +92,7 @@ const Detail = ({route}) =>{
               ))}
             </View>
             <Text style={{fontSize:20,marginTop:5,marginBottom:5}}>❗ 실패</Text>
-            <View style={{marginLeft:20,width:width-50}}>
+            <View style={{marginLeft:20}}>
               {notCompleted.map((data,idx)=>(
                 <ListView key={idx}>
                   <TagText name={data.tag}>#{data.tag}</TagText>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   result:{
     margin:15,
     justifyContent:'space-between',
-    minHeight:100
+    minHeight:120
   },
   comment:{
     marginLeft:'auto',

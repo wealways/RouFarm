@@ -1,5 +1,5 @@
 import React,{useContext} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View,ScrollView} from 'react-native';
 import styled from 'styled-components/native';
 
 import HeatmapContext from '@/contexts/Report/Heatmap';
@@ -46,37 +46,39 @@ const CustomHeatmapRate = () => {
     list = data[heatmap.pieClick]
   }
   return (
-    <View>
+    <View style={{flex:1}}>
       {list===undefined && <Text>
         파이 한 조각을 클릭해주세요 🍩
       </Text> }
       {list &&
       <>
-        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'baseline', marginLeft:3,marginRight:3,width:300,marginTop:5,paddingBottom:5, borderStyle:'solid',borderBottomWidth:1}}>
+        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'baseline', marginLeft:3,marginRight:3,marginTop:5,paddingBottom:5, borderStyle:'solid',borderBottomWidth:1}}>
           <TagText name={heatmap.pieClick}>#{heatmap.pieClick}</TagText>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
             <Text>개수</Text>
             <Text>달성률</Text>
           </View>
         </View>
-        <View>
-          {list.map((item,i)=>(
-            <ItemView key={i}>
-              <Text>{item.content}</Text>
-              <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
-                <Text>{item.cnt}</Text>
-                <Text>{item.rate}</Text>
-              </View>
-            </ItemView>
-          ))}
-        </View>
-        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginLeft:3,marginRight:3,width:300,marginTop:5,borderStyle:'solid',borderColor:"#000066", borderTopWidth:2}}>
-          <View></View>
-          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
-            <Text style={{fontSize:20}}>{list.reduce((acc,cur)=>acc+cur.cnt,0)}</Text>
-            <Text style={{fontSize:20}}>{(list.reduce((acc,cur)=>acc+cur.rate,0)/list.length).toFixed(1)}</Text>
+        <ScrollView style={{maxHeight:130}}>
+          <View>
+            {list.map((item,i)=>(
+              <ItemView key={i}>
+                <Text>{item.content}</Text>
+                <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
+                  <Text>{item.cnt}</Text>
+                  <Text>{item.rate}</Text>
+                </View>
+              </ItemView>
+            ))}
           </View>
-        </View>
+          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginLeft:3,marginRight:3,marginTop:5,borderStyle:'solid',borderColor:"#000066", borderTopWidth:2}}>
+            <View></View>
+            <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
+              <Text style={{fontSize:20}}>{list.reduce((acc,cur)=>acc+cur.cnt,0)}</Text>
+              <Text style={{fontSize:20}}>{(list.reduce((acc,cur)=>acc+cur.rate,0)/list.length).toFixed(1)}</Text>
+            </View>
+          </View>
+        </ScrollView>
       </>
       }
     </View>
