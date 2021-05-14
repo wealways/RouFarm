@@ -10,7 +10,6 @@ import {
 //styled
 import styled from 'styled-components/native';
 import {
-<<<<<<< HEAD
   Wrapper, 
   Contents, 
   TitleText, 
@@ -19,17 +18,6 @@ import {
   MonthChartView, 
   MonthTextView, 
   FailListView, 
-=======
-  Wrapper,
-  Contents,
-  TitleText,
-  SubtitleText,
-  Card,
-  MonthChartView,
-  MonthTextView,
-  FailListView,
-  ChartView,
->>>>>>> 4a309b64b9f9547791a3929f3cb45591c75d9a8f
 } from './Report.styles';
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -50,12 +38,8 @@ import {HeatmapProvider} from '@/contexts/Report/Heatmap';
 import {PieProvider} from '@/contexts/Report/Pie';
 import {FailListProvider} from '@/contexts/Report/FailList';
 
-<<<<<<< HEAD
 function ReportScreen({navigation}) {
 
-=======
-function ReportScreen() {
->>>>>>> 4a309b64b9f9547791a3929f3cb45591c75d9a8f
   const width = useWindowDimensions().width;
   const height = useWindowDimensions().height;
 
@@ -191,13 +175,10 @@ function ReportScreen() {
     </LinearGradient>
   );
 }
-<<<<<<< HEAD
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 })
-=======
->>>>>>> 4a309b64b9f9547791a3929f3cb45591c75d9a8f
 
 export default ReportScreen;
