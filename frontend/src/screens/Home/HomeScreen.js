@@ -11,6 +11,7 @@ import { getDailyQuests } from '@/components/Home/GetRoutine';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 import theme from '../../theme';
 import { Overlay } from 'react-native-elements';
 
@@ -41,7 +42,7 @@ function HomeScreen({ navigation }) {
       let data = JSON.parse(res);
       data = data === null ? {} : data;
       setData(data); // null 에러 처리
-      console.log(data);
+
       setClickedQuestUuidList(
         getDailyQuests(
           data,
@@ -52,7 +53,10 @@ function HomeScreen({ navigation }) {
             new Date().getFullYear(),
         ),
       );
+
       if (err) console.log(err);
+
+      console.log(data);
     });
   };
 
@@ -61,7 +65,6 @@ function HomeScreen({ navigation }) {
 
   useEffect(async () => {
     await getAsyncStorage('quests', setQuests);
-    // console.log(quests);
   }, [isFocused]);
 
   return (
@@ -139,6 +142,19 @@ function HomeScreen({ navigation }) {
                                     AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
                                       console.log('정보 삭제 완료');
                                     });
+
+                                    // 삭제 요청
+                                    const instance = axios.create({
+                                      baseURL: 'http://k4c105.p.ssafy.io/api/',
+                                      headers: {
+                                        Authorization:
+                                          'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxMjM0NTY3ODkiLCJpYXQiOjE2MjA5NTgwODEsImV4cCI6MTYyMzU1MDA4MX0.ShjZ5egr9AmY2calidv_jf77DqfRqt3lR05UQLZn8rOVgQuD9wXxCQcw0QKPFm8cRWwCMzoPvW-OqonAZbkHFQ',
+                                      },
+                                    });
+                                    instance
+                                      .delete(`routine/${clickedUuid}`)
+                                      .then((res) => console.log('delete response', res.data))
+                                      .catch((err) => console.log(err));
                                   }}>
                                   <Text>삭제</Text>
                                 </TouchableOpacity>

@@ -131,6 +131,28 @@ function CreateRoutineScreen({ navigation }) {
 
       if (err) console.log(err);
     });
+
+    // 생성 요청
+    const instance = axios.create({
+      baseURL: 'http://k4c105.p.ssafy.io/api/',
+      headers: {
+        Authorization:
+          'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxMjM0NTY3ODkiLCJpYXQiOjE2MjA5NTgwODEsImV4cCI6MTYyMzU1MDA4MX0.ShjZ5egr9AmY2calidv_jf77DqfRqt3lR05UQLZn8rOVgQuD9wXxCQcw0QKPFm8cRWwCMzoPvW-OqonAZbkHFQ',
+      },
+    });
+    instance
+      .post('routine/', {
+        uuid,
+        startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
+        questName,
+        startTime,
+        endTime,
+        alarmTime,
+        repeatYoilList,
+        category: '기타',
+      })
+      .then((res) => console.log('post response!', res.data))
+      .catch((err) => console.log(err));
   };
 
   // 모달 활성/비활성

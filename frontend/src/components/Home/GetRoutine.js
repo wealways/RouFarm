@@ -41,7 +41,9 @@ export const getDailyQuests = (quests, date) => {
   });
 
   uuidList = uuidList === null ? [] : uuidList;
+
   console.log(uuidList);
+
   return uuidList;
 };
 
