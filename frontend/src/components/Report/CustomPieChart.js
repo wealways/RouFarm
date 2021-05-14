@@ -42,10 +42,10 @@ const CustomPieChart = ({date}) => {
         <VictoryPie 
           innerRadius={50}
           colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
-          // animate={{
-          //   duration: 2000,
-          //   onLoad: { duration: 1000 }
-          // }}
+          animate={{
+            duration: 2000,
+            onLoad: { duration: 1000 }
+          }}
           domainPadding={{ x: [0, 100] }}
           data={HashTagData}
           height={350}

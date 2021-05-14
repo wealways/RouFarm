@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 import styled from 'styled-components/native';
-import FailListContext from '@/contexts/Report/FailList';
 import HeatmapContext from '@/contexts/Report/Heatmap';
 
 const FailView = styled.View`
@@ -36,7 +35,7 @@ const Fail = () => {
   const width = useWindowDimensions().width;
   const height = useWindowDimensions().height;
 
-  const {failList} = useContext(FailListContext);
+
   const {heatmap} = useContext(HeatmapContext)
   const contents = {
     '2021-05-w1':[
@@ -95,20 +94,6 @@ const Fail = () => {
           </FailView>
         ))}
       </ScrollView>
-      {/* <ScrollView style={{maxHeight:230}}>
-        {
-          idx===-1 && <Text>실패한 루틴이 하나도 없는 날이에요 👍</Text>
-        }
-        {idx!=-1 && Object.values(contents)[idx]
-        .map((item,key) => (
-          <FailView key={key} width={width}>
-            <TagText name={item.tag}>#{item.tag}</TagText>
-            <Text>
-              {item.routine}
-            </Text>
-          </FailView>
-        ))}
-      </ScrollView> */}
     </>
   );
 }

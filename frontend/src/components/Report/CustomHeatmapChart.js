@@ -22,11 +22,6 @@ const Weekline = styled.View`
   flex-direction:row;
 
 `
-const SubtitleText = styled.Text`
-  font-size:${({theme}) => theme.fontSizes.lg}px;
-  color: #000;
-  margin: 8px 0;
-`
 
 
 
