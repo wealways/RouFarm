@@ -21,11 +21,11 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
+import { makeAlarm, makeNotifi, makeRepeatDate } from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
-import AsyncStorage from '@react-native-community/async-storage';
-import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const today =
   new Date().getDate() +
@@ -63,63 +63,54 @@ function CreateRoutineScreen({ navigation }) {
     // 퀘스트 uuid 생성
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
 
-    // 알람 생성
+    // 새로운 퀘스트를 담을 Object 생성
+    let quests = {};
+
+    // 알림과 알람 생성
     let alarmIdList = [];
-    let qrOnceAlarmIdList = [];
-    let qrRepeatAlarmIdList = [];
     if (isAlarm) {
-      if (isQR) {
-        if (repeatYoilList.length === 0) {
-          console.log('일회성 QR 알람 생성');
-          qrOnceAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
-        } else {
-          console.log('반복성 QR 알람 생성');
-          qrRepeatAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
-        }
-      } else {
-        console.log('QR 없는 알람 생성');
-        alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
-      }
+      console.log('isAlarm 통과!');
+      alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
     }
+    const notifiIdList = await makeNotifi(startDate, repeatYoilList, questName, startTime);
 
     // 반복일 계산
     let repeatDateList = [];
     repeatYoilList.map((v) => {
-      repeatDateList.push(makeRepeatDate(startDate, v, alarmTime));
+      repeatDateList.push(makeRepeatDate(startDate, v));
     });
 
     // 반복일 오름차순 정렬
-    let tempRepeatDateList = [].concat(repeatDateList);
-    tempRepeatDateList &&
-      tempRepeatDateList.sort((a, b) => {
+    let tempRepeatDate = [].concat(repeatDateList);
+
+    tempRepeatDate &&
+      tempRepeatDate.sort((a, b) => {
         const [dayA, monthA, yearA] = a.split('-');
         const [dayB, monthB, yearB] = b.split('-');
         return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
       });
+    console.log(tempRepeatDate);
 
     // 메모리에 저장
-    AsyncStorage.getItem('quests', async (err, res) => {
-      let quests = JSON.parse(res);
+    await AsyncStorage.getItem('quests', async (err, res) => {
+      quests = JSON.parse(res);
       if (quests === null) quests = {};
-
       quests[uuid] = {
-        startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
+        startDate: tempRepeatDate.length ? tempRepeatDate[0] : startDate,
         questName,
+        alarmTime,
         startTime,
         endTime,
-        alarmTime,
-        repeatYoilList,
-        repeatDateList,
-        alarmIdList,
-        qrOnceAlarmIdList,
-        qrRepeatAlarmIdList,
+        repeatDateList, // 반복일자 리스크 (string, 일-월-년)
+        repeatYoilList, // 반복요일 리스트 (string, 월 ~ 일)
+        alarmIdList, // 알람id 리스트 (int 타입)
+        notifiIdList, // 알림id 리스트 (int 타입)
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
         console.log('정보 저장 완료');
         navigation.navigate('Home');
       });
-
       if (err) console.log(err);
     });
   };
@@ -165,19 +156,28 @@ function CreateRoutineScreen({ navigation }) {
 
   // 시작시간 설정
   const handleStartConfirm = (element) => {
-    setStartTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    setStartTime(element.getHours() + ':' + element.getMinutes() + ':1');
+    // const time =
+    //   element.getHours() > 12
+    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
+    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
+    // console.log(time);
     hideStartTimePicker();
   };
 
   // 종료시간 설정
   const handleEndConfirm = (element) => {
-    setEndTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    setEndTime(element.getHours() + ':' + element.getMinutes() + ':1');
+    // const time =
+    //   element.getHours() > 12
+    //     ? 'PM ' + (element.getHours() % 12) + ':' + element.getMinutes()
+    //     : 'AM ' + element.getHours() + ':' + element.getMinutes();
     hideEndTimePicker();
   };
 
   // 알람시간 설정
   const handleAlarmConfirm = (element) => {
-    setAlarmTime(element.getHours() + ':' + element.getMinutes() + ':0');
+    setAlarmTime(element.getHours() + ':' + element.getMinutes() + ':2');
     hideAlarmTimePicker();
   };
 
@@ -293,6 +293,14 @@ function CreateRoutineScreen({ navigation }) {
                 <SettingTitle>QR 생성</SettingTitle>
                 <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
               </SettingWrapper>
+              {isQR ? (
+                <>
+                  <TextInput
+                    style={styles.qrTextInput}
+                    placeholder="QR 코드의 이름을 기입해주세요"
+                    maxLength={20}></TextInput>
+                </>
+              ) : null}
             </Card>
           </View>
         </Contents>
@@ -303,7 +311,7 @@ function CreateRoutineScreen({ navigation }) {
           <Image
             style={styles.qrImage}
             source={{
-              uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393',
+              uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=846466947504732',
             }}
           />
         </View>

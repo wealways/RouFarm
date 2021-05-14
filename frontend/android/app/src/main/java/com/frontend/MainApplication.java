@@ -16,7 +16,11 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+// lottie animation
 import com.airbnb.android.react.lottie.LottiePackage;
+
+// alarm-notification
+import com.emekalites.react.alarm.notification.ANPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -33,7 +37,9 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          // packages.add(new ANPackage());
           packages.add(new LottiePackage());
+          
           return packages;
         }
 

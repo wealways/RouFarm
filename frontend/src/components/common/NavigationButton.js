@@ -39,6 +39,7 @@ function NavigationButton({ navigation }) {
     { id: 5, path: 'Login', name: '로그인' },
     { id: 6, path: 'SelectMode', name: '모드선택' },
     { id: 7, path: 'FriendList', name: '친구목록' },
+    { id: 8, path: 'AlarmTest', name: '알람 테스트' },
   ];
 
   const [open, setOpen] = useState(false);

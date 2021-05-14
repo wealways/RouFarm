@@ -15,24 +15,23 @@ const Button = styled.TouchableOpacity`
   border: 3px solid ${({ theme }) => theme.colors.third};
   border-radius: 8px;
 `;
-
 const ConfigButton = styled.TouchableOpacity`
   background: ${(props) => (props.confirm ? '#382F9B' : '#fff')};
   padding: 8px 16px;
   border-radius: 8px;
 `;
 
-function Reapeat({ setIsReapeat, setShowModal }) {
+function Repeat({ setRepeatYoilList, setShowModal }) {
   const [switchToggle, setSwitchToggle] = useState(false);
 
   const [yoil, setYoil] = useState([
+    { id: 0, day: '일', checked: false },
     { id: 1, day: '월', checked: false },
     { id: 2, day: '화', checked: false },
     { id: 3, day: '수', checked: false },
     { id: 4, day: '목', checked: false },
     { id: 5, day: '금', checked: false },
     { id: 6, day: '토', checked: false },
-    { id: 7, day: '일', checked: false },
   ]);
 
   // 개별 toggle
@@ -88,7 +87,9 @@ function Reapeat({ setIsReapeat, setShowModal }) {
             confirm={true}
             onPress={() => {
               setShowModal(false);
-              setIsReapeat(yoil.map((value) => (value.checked ? value.day : null)));
+              setRepeatYoilList(
+                yoil.filter((value) => value.checked).map((value) => value && value.day),
+              );
             }}>
             <Text style={styles.confirm}>확인</Text>
           </ConfigButton>
@@ -104,4 +105,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Reapeat;
+export default Repeat;

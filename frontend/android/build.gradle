@@ -6,6 +6,8 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 29
         targetSdkVersion = 29
+        kotlinVersion = '1.3.41'
+
         ndkVersion = "20.1.5948944"
     }
     repositories {
@@ -14,6 +16,11 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.1.0")
+<<<<<<< HEAD
+=======
+        classpath("com.google.gms:google-services:4.3.4")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+>>>>>>> 5b0bd52576c5b7d860bdd797f8bbdd82f6579272
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -26,6 +33,9 @@ allprojects {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url("$rootDir/../node_modules/react-native/android")
         }
+
+        maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
+
         maven {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
