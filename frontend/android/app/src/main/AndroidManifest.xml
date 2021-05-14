@@ -25,9 +25,13 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="@string/kakao_scheme" android:host="@string/kakaolink_host" />
+        </intent-filter>
       </activity>
-<<<<<<< HEAD
-
       <!-- react-native-alarm-notification -->
       <receiver
           android:name="com.emekalites.react.alarm.notification.AlarmReceiver"
@@ -57,7 +61,6 @@
           </intent-filter>
       </receiver>
       <!--  -->
-=======
       <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
         <intent-filter>
             <action android:name="android.intent.action.VIEW" />
@@ -69,7 +72,7 @@
                 android:scheme="kakao5a33da06b251af86a1f0a83ad946e9df" />
         </intent-filter>
       </activity>
->>>>>>> 5b0bd52576c5b7d860bdd797f8bbdd82f6579272
+      <meta-data android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_app_key" />
     </application>
 
 
