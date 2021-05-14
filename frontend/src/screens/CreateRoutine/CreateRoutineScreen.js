@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, ScrollView, Text, View, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
 import {
   Wrapper,
@@ -25,7 +25,6 @@ import Repreat from '@/components/CreateRoutine/Repeat';
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
 import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
-import axios from 'axios';
 
 const today =
   new Date().getDate() +
@@ -34,10 +33,17 @@ const today =
   '-' +
   new Date().getFullYear();
 
+const tagName = ['일상', '자기개발', '건강'];
+
 function CreateRoutineScreen({ navigation }) {
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => {
-    setShowModal((prev) => !prev);
+  // 모달
+  const [showRepeatModal, setShowRepeatModal] = useState(false);
+  const toggleRepeatModal = () => {
+    setShowRepeatModal((prev) => !prev);
+  };
+  const [showHashTagModal, setShowHashTagModal] = useState(false);
+  const toggleHashTagModal = () => {
+    setShowHashTagModal((prev) => !prev);
   };
 
   // 모달 상태
@@ -53,6 +59,7 @@ function CreateRoutineScreen({ navigation }) {
   const [endTime, setEndTime] = useState('');
   const [alarmTime, setAlarmTime] = useState('');
   const [repeatYoilList, setRepeatYoilList] = useState([]);
+  const [hashTag, setHashTag] = useState('');
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
@@ -67,6 +74,7 @@ function CreateRoutineScreen({ navigation }) {
     let alarmIdList = [];
     let qrOnceAlarmIdList = [];
     let qrRepeatAlarmIdList = [];
+
     if (isAlarm) {
       if (isQR) {
         if (repeatYoilList.length === 0) {
@@ -110,9 +118,10 @@ function CreateRoutineScreen({ navigation }) {
         alarmTime,
         repeatYoilList,
         repeatDateList,
-        alarmIdList,
+        hashTag: hashTag ? hashTag : '기타',
         qrOnceAlarmIdList,
         qrRepeatAlarmIdList,
+        alarmIdList,
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
@@ -207,7 +216,7 @@ function CreateRoutineScreen({ navigation }) {
               {/* 반복 유무 */}
               <SettingWrapper>
                 <SettingTitle>반복</SettingTitle>
-                <SettingButton onPress={toggleModal} onCancel={() => console.log('@')}>
+                <SettingButton onPress={toggleRepeatModal} onCancel={() => console.log('@')}>
                   {repeatYoilList.map((value, index) =>
                     value ? (
                       <Text key={index} style={{ opacity: 0.5 }}>
@@ -216,8 +225,11 @@ function CreateRoutineScreen({ navigation }) {
                     ) : null,
                   )}
                 </SettingButton>
-                <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-                  <Repreat setShowModal={setShowModal} setRepeatYoilList={setRepeatYoilList} />
+                <ModalComponent showModal={showRepeatModal} setShowModal={setShowRepeatModal}>
+                  <Repreat
+                    setShowModal={setShowRepeatModal}
+                    setRepeatYoilList={setRepeatYoilList}
+                  />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -266,6 +278,35 @@ function CreateRoutineScreen({ navigation }) {
                 </View>
               </SettingWrapper>
 
+              {/* 해시태그 */}
+              <SettingWrapper>
+                <SettingTitle>해시태그</SettingTitle>
+                <SettingButton onPress={toggleHashTagModal} onCancel={() => console.log('@')}>
+                  <Text>{hashTag ? hashTag : null}</Text>
+                </SettingButton>
+
+                <ModalComponent showModal={showHashTagModal} setShowModal={setShowHashTagModal}>
+                  <>
+                    {tagName.map((v, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        onPress={() => {
+                          setHashTag(v);
+                          toggleHashTagModal();
+                        }}>
+                        <Text>{v}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                </ModalComponent>
+              </SettingWrapper>
+
+              {/* QR 생성 여부 */}
+              <SettingWrapper>
+                <SettingTitle>QR 생성</SettingTitle>
+                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
+              </SettingWrapper>
+
               {/* 알람 유무 */}
               <SettingWrapper>
                 <SettingTitle>알람</SettingTitle>
@@ -287,26 +328,20 @@ function CreateRoutineScreen({ navigation }) {
                   />
                 </>
               ) : null}
-
-              {/* QR 생성 여부 */}
-              <SettingWrapper>
-                <SettingTitle>QR 생성</SettingTitle>
-                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
-              </SettingWrapper>
             </Card>
           </View>
         </Contents>
         {/* section 2 끝 */}
 
         {/* 루틴을 생성하면 qr코드화면으로 넘어가게 + 루틴의  */}
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Image
             style={styles.qrImage}
             source={{
               uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393',
             }}
           />
-        </View>
+        </View> */}
         <ButtonWrapper
           style={{ marginBottom: 50 }}
           onPress={() => {

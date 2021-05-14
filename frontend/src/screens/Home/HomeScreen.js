@@ -11,13 +11,14 @@ import { getDailyQuests } from '@/components/Home/GetRoutine';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import theme from '../../theme';
+import { Overlay } from 'react-native-elements';
 
 // 디바이스 사이즈
 import { deviceWidth } from '@/utils/devicesize';
 
 // 페이지 리로드관련 hook
 import { useIsFocused } from '@react-navigation/native';
-import theme from '../../theme';
 
 // 알람
 import { deleteAlarm } from '@/components/CreateRoutine/AlarmNotifi';
@@ -60,12 +61,13 @@ function HomeScreen({ navigation }) {
 
   useEffect(async () => {
     await getAsyncStorage('quests', setQuests);
-    console.log(quests);
+    // console.log(quests);
   }, [isFocused]);
 
   return (
     <Wrapper>
       <ScrollView>
+        <Overlay isVisible={showModal} />
         {/* section 1 - 프로필 */}
         <Contents>
           <View>

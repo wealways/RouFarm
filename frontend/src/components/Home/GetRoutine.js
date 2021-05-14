@@ -12,8 +12,6 @@ const DateButton = styled.Pressable`
 
 // 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기
 export const getDailyQuests = (quests, date) => {
-  console.log(date);
-
   const [day1, month1, year1] = date.split('-');
 
   let uuidList = Object.keys(quests).filter((uuid) => {
@@ -30,7 +28,6 @@ export const getDailyQuests = (quests, date) => {
 
         // 같은 요일 루틴인지 확인
         const result = quests[uuid].repeatYoilList.filter((yoil2) => {
-          console.log(yoil1, yoilReverse[yoil2]);
           if (yoil1 === yoilReverse[yoil2]) {
             return true;
           }
