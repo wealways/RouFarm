@@ -2,8 +2,13 @@ package com.c105.roufarm.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+
+import com.c105.roufarm.model.Routine;
+import com.c105.roufarm.model.RoutineLog;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.DateOperators.DayOfMonth;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +18,10 @@ public class ReportPageService {
       @Autowired
       UserLogService userLogService;
 
-      // 1. 리포트 페이지에 보여줄 잔디와 해쉬태그별 통계
+      @Autowired
+      RoutineService routineService;
+
+      // 1. 리포트 페이지에 보여줄 잔디와 해쉬태그별 통계 (달별 통계)
       @Transactional
       public HashMap<String,Object> findReportForGrassAndHashtag(){
             HashMap<String,ArrayList<Integer>> logsForGrass = userLogService.findLogForGrass();
@@ -45,5 +53,22 @@ public class ReportPageService {
                   reportForGrassAndHashtag.put(logsKey, contents);
             }
             return reportForGrassAndHashtag;
+      }
+
+      // 2. 리포트 페이지에 보여줄 날짜별 통계
+      @Transactional
+      public HashSet<HashMap<String,Object>> findReportDaily(String getDate){
+            HashSet<HashMap<String,Object>> dailyReport = new HashSet<>();
+            HashSet<RoutineLog> dailySet = userLogService.findLogByDate(getDate);
+            for(RoutineLog routineLog : dailySet){
+                  HashMap<String,Object> dailyLog = new HashMap<>();
+                  Routine routine = routineService.findRoutineById(routineLog.getRoutineId());
+                  dailyLog.put("id", routineLog.getRoutineId());
+                  dailyLog.put("routine", routine.getQuestName());
+                  dailyLog.put("tag", routine.getCategory());
+                  dailyLog.put("completed", routineLog.getIsSuccess().equals("true") ? true : false);
+                  dailyReport.add(dailyLog);
+            }
+            return dailyReport;
       }
 }

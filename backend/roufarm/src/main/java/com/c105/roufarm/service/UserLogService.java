@@ -133,6 +133,25 @@ public class UserLogService {
             return userLogSet;
       }
 
+      //4-1. 받아온 날짜를 기준으로 로그정보를 뿌린다.
+      @Transactional
+      public HashSet<RoutineLog> findLogByDate(String getDate){
+            HashMap<String,Object> days = findUserLogById().getDays();
+            String getDateNum = getDate.substring(6);
+            String getDateMonth = getDate.substring(4,6);
+            String getDateYear = getDate.substring(0,4);
+            String getDateKey = getDateNum+"-"+getDateMonth+"-"+getDateYear;
+            HashSet<RoutineLog> userLogSet = new HashSet<>();
+            Object logArray = days.get(getDateKey);
+            System.out.println(getDateKey);
+            if(logArray != null){
+                  for(String log: (List<String>)logArray){
+                        userLogSet.add(routineLogService.findRoutineLog(log));
+                  }
+            }
+            return userLogSet;
+      }
+
       // 5. 현재 헤더에 로그를 달 형식으로 표현 (상세) : 명세
       @Transactional
       public HashMap<String,HashSet<RoutineLog>> findLogAllMonth(){
@@ -168,7 +187,6 @@ public class UserLogService {
             HashMap<String,HashSet<RoutineLog>> userLogMap = new HashMap<>();
             for(String logKey : logKeySet){
                   List<String> logArray = (List<String>)days.get(logKey);
-                  System.out.println(logArray);
                   HashSet<RoutineLog> routineLogs = new HashSet<RoutineLog>();
                   String month = logKey.substring(3,5);
                   String year = logKey.substring(6);

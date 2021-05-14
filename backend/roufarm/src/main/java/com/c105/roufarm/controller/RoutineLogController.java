@@ -66,6 +66,12 @@ public class RoutineLogController {
       public ResponseEntity<HashMap<String,HashSet<RoutineLog>>> getRoutineLogOrderDate() {
             return new ResponseEntity<HashMap<String,HashSet<RoutineLog>>>(userLogService.findLogAllDate(),HttpStatus.OK); 
       }
+
+      @ApiOperation(value = "루틴 로그 날짜별 조회 2",notes = "해당 Id의 해당 날짜로 루틴 로그를 조회한다.")
+      @GetMapping("/date/{getDate}")
+      public ResponseEntity<HashSet<RoutineLog>> getRoutineLogByDate(@PathVariable String getDate) {
+            return new ResponseEntity<HashSet<RoutineLog>>(userLogService.findLogByDate(getDate),HttpStatus.OK); 
+      }
       
       @ApiOperation(value = "루틴 로그 달별 조회",notes = "해당 Id의 모든 루틴 로그를 달별로 조회한다.")
       @GetMapping("/month/")

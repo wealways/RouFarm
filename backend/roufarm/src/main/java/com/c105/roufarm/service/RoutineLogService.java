@@ -1,6 +1,7 @@
 package com.c105.roufarm.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -47,8 +48,7 @@ public class RoutineLogService {
       // 3. 루틴로그 생성 (루틴 로그를 생성 / 해당 루틴의 로그들을 조회 / 유저로그에 추가)
       @Transactional
       public RoutineLog saveRoutineLog(RoutineLog routineLog){
-            routineLogMongoDBRepository.save(routineLog);
-            RoutineLog getRoutineLog = routineLogMongoDBRepository.findById(routineLog.getId()).get();
+            RoutineLog getRoutineLog = routineLogMongoDBRepository.save(routineLog);
             Routine routine = routineMongoDBRepository.findById(routineLog.getRoutineId()).get();
             HashSet<String> routineLogs =  routine.getRoutineLog();
             routineLogs.add(getRoutineLog.getId());
