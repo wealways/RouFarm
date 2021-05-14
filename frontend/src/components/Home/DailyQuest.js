@@ -6,7 +6,7 @@ import { ModalComponent } from '@/components/common';
 
 import { TodoWrapper } from './style';
 
-function DailyQuest() {
+function DailyQuest({ quest }) {
   let dailyQ = [
     { id: 1, content: '코딩 테스트 문제 풀기', checked: false },
     { id: 2, content: 'javascript 공부하기', checked: false },

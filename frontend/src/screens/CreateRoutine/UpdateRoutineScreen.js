@@ -21,10 +21,15 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
+import {
+  deleteAlarm,
+  makeQRAlarm,
+  makeAlarm,
+  makeRepeatDate,
+} from '@/components/CreateRoutine/AlarmNotifi';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
 import axios from 'axios';
 
 const today =
@@ -34,7 +39,7 @@ const today =
   '-' +
   new Date().getFullYear();
 
-function CreateRoutineScreen({ navigation }) {
+function UpdateRoutineScreen({ navigation, route }) {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal((prev) => !prev);
@@ -47,40 +52,44 @@ function CreateRoutineScreen({ navigation }) {
   const [alarmTimeShow, setAlarmTimeShow] = useState(false);
 
   // 생성시 넘길 데이터
-  const [questName, setQuestname] = useState('');
-  const [startDate, setStartDate] = useState(today);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [alarmTime, setAlarmTime] = useState('');
-  const [repeatYoilList, setRepeatYoilList] = useState([]);
+  const [questName, setQuestname] = useState(route.params.quest.questName);
+  const [startDate, setStartDate] = useState(route.params.quest.startDate);
+  const [startTime, setStartTime] = useState(route.params.quest.startTime);
+  const [endTime, setEndTime] = useState(route.params.quest.endTime);
+  const [alarmTime, setAlarmTime] = useState(route.params.quest.alarmTime);
+  const [repeatYoilList, setRepeatYoilList] = useState(route.params.quest.repeatYoilList);
 
   // 스위치 상태
-  const [isQR, setIsQR] = useState(false);
-  const [isAlarm, setIsAlarm] = useState(false);
+  const [isQR, setIsQR] = useState(
+    route.params.quest.qrOnceAlarmIdList.length + route.params.quest.qrRepeatAlarmIdList.length !==
+      0,
+  );
+  const [isAlarm, setIsAlarm] = useState(alarmTime !== '');
 
   // 퀘스트 생성
   const handleCreate = async () => {
-    // 퀘스트 uuid 생성
-    let uuid = parseInt(Math.random() * Math.pow(10, 16));
+    // 기존의 알람 제거
+    await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
+    await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
+    await route.params.quest.qrRepeatAlarmIdList.map((v) => deleteAlarm(v));
+    console.log('delete alarm!');
 
-    // 알람 생성
+    // 새로운 알람 생성
     let alarmIdList = [];
     let qrOnceAlarmIdList = [];
     let qrRepeatAlarmIdList = [];
     if (isAlarm) {
       if (isQR) {
         if (repeatYoilList.length === 0) {
-          console.log('일회성 QR 알람 생성');
           qrOnceAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
         } else {
-          console.log('반복성 QR 알람 생성');
           qrRepeatAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
         }
       } else {
-        console.log('QR 없는 알람 생성');
         alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
       }
     }
+    console.log('create alarm!');
 
     // 반복일 계산
     let repeatDateList = [];
@@ -102,17 +111,17 @@ function CreateRoutineScreen({ navigation }) {
       let quests = JSON.parse(res);
       if (quests === null) quests = {};
 
-      quests[uuid] = {
+      quests[route.params.uuid] = {
         startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
         questName,
+        alarmTime,
         startTime,
         endTime,
-        alarmTime,
-        repeatYoilList,
-        repeatDateList,
-        alarmIdList,
-        qrOnceAlarmIdList,
-        qrRepeatAlarmIdList,
+        repeatDateList, // 반복일자 리스크 (string, 일-월-년)
+        repeatYoilList, // 반복요일 리스트 (string, 월 ~ 일)
+        alarmIdList, // 알람id 리스트 (int 타입)
+        qrOnceAlarmIdList, // 일회성 QR알람id 리스트 (int 타입)
+        qrRepeatAlarmIdList, // 반복성 QR알람id 리스트 (int 타입)
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
@@ -193,7 +202,9 @@ function CreateRoutineScreen({ navigation }) {
                 onChangeText={(text) => setQuestname(text)}
                 style={styles.textInput}
                 placeholder="어떤 퀘스트인가요?"
-                maxLength={30}></TextInput>
+                maxLength={30}>
+                {questName}
+              </TextInput>
             </Card>
           </View>
         </Contents>
@@ -217,7 +228,7 @@ function CreateRoutineScreen({ navigation }) {
                   )}
                 </SettingButton>
                 <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-                  <Repreat setShowModal={setShowModal} setRepeatYoilList={setRepeatYoilList} />
+                  <Repreat setShowModal={setShowModal} setIsReapeat={setRepeatYoilList} />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -275,7 +286,7 @@ function CreateRoutineScreen({ navigation }) {
                 <>
                   <SettingButton onPress={showAlarmTimePicker}>
                     <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {!alarmTime ? '알람 시간 설정' : alarmTime}
+                      {alarmTime === '' ? '알람 시간 설정' : alarmTime}
                     </Text>
                   </SettingButton>
                   <DateTimePickerModal
@@ -303,7 +314,7 @@ function CreateRoutineScreen({ navigation }) {
           <Image
             style={styles.qrImage}
             source={{
-              uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393',
+              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${startTime}`,
             }}
           />
         </View>
@@ -353,4 +364,4 @@ const styles = StyleSheet.create({
   qrTextInput: {},
 });
 
-export default CreateRoutineScreen;
+export default UpdateRoutineScreen;

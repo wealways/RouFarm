@@ -1,13 +1,14 @@
-import React,{useState,useContext} from 'react';
+import React,{useState,useContext,useEffect} from 'react';
 import { StyleSheet, View,Text,useWindowDimensions } from "react-native";
-import { VictoryPie, VictoryLegend } from "victory-native";
+import { VictoryPie, VictoryLegend,VictoryLabel } from "victory-native";
 import Svg from 'react-native-svg';
 
-import PieContext from '@/contexts/Report/Pie';
+import HeatmapContext from '@/contexts/Report/Heatmap';
 
 
-const CustomPieChart = () => {
-  const {clickDispatch} = useContext(PieContext);
+const CustomPieChart = ({date}) => {
+  const height = useWindowDimensions().height;
+  const {heatmap,pieClickDispatch} = useContext(HeatmapContext);
 
   const HashTagData = [
     { x: "건강", y: 35 },
@@ -15,13 +16,19 @@ const CustomPieChart = () => {
     { x: "일상", y: 55 },
     { x: "없음", y: 70 },
   ];
-
+  
+  let month
+  if(heatmap.date===''){
+    month = parseInt(date[0].split('-')[1])+'월'
+  }else{
+    month = parseInt(heatmap.date.split('-')[1])+'월'
+  }
   const width = useWindowDimensions().width;
 
   return (
-    <View style={{marginLeft:-25,marginTop:-25,height:width-40}}>
+    <View style={{marginLeft:-25,marginTop:-25,height:height/5*2}}>
       <Svg>
-        <VictoryLegend 
+        <VictoryLegend
           x = {60}
           y = {10}
           gutter={30}
@@ -32,7 +39,8 @@ const CustomPieChart = () => {
             { name: "건강" }, { name: "자기개발" },{ name: "일상" }, { name: "없음" }
           ]}
         />
-        <VictoryPie
+        <VictoryPie 
+          innerRadius={50}
           colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
           // animate={{
           //   duration: 2000,
@@ -67,7 +75,7 @@ const CustomPieChart = () => {
                   }, {
                     target: "labels",
                     mutation: ({ text }) => {
-                      clickDispatch(text)
+                      pieClickDispatch(text)
                       return 
                     }
                   }
@@ -76,8 +84,13 @@ const CustomPieChart = () => {
             }
           }]}
         />
+        <VictoryLabel
+          textAnchor="middle"
+          style={{ fontSize: 20 }}
+          x={205} y={175}
+          text={month}
+        />
       </Svg>
-      
     </View>
   )
 }

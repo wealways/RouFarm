@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 const Wrapper = styled.View`
   flex:1;
   background:#dce8ef;
-
 `;
 const Contents = styled.View`
   flex: 1;
@@ -19,9 +18,9 @@ const TitleText = styled.Text`
   text-align:center;
 `
 const SubtitleText = styled.Text`
-  font-size:${({theme}) => theme.fontSizes.lg}px;
+  font-size:${({theme}) => theme.fontSizes.md}px;
   color: #000;
-  margin: 8px 0;
+  margin: 8px 2px;
 `
 // const StyledText = styled.Text`
 //   font-size: ${FontSize}px;
@@ -30,7 +29,7 @@ const SubtitleText = styled.Text`
 const Card = styled.View`
   display:flex;
   flex-direction:row;
-  padding: 16px;
+  padding: 10px 16px;
   margin-bottom: 10px;
   align-items:center;
   border-radius:8px;
@@ -44,7 +43,7 @@ const MonthChartView = styled.View`
   flex:4;
   background:#fff;
   border-radius:8px;
-  padding: 8px;
+  padding: 0 8px;
 `
 const MonthTextView = styled.View`
   flex:2;
