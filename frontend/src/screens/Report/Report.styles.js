@@ -31,6 +31,7 @@ const Card = styled.View`
   display:flex;
   flex-direction:row;
   padding: 16px;
+  margin-bottom: 10px;
   align-items:center;
   border-radius:8px;
   background: #fff;
