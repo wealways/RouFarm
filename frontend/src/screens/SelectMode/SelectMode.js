@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -31,9 +31,11 @@ import { deviceWidth, deviceHeight } from '@/utils/devicesize';
 import { WithLocalSvg } from 'react-native-svg';
 import kakaoSymbol from '@/assets/images/Kakao_symbol.svg';
 
-function selectMode({ navigation }) {
+function selectMode({ route, navigation }) {
   // 모드 변경 감지
   const [modes, setModes] = useState('');
+  // 닉네임
+  const [nickname, setNickname] = useState('');
 
   // 모드 설명
   const soft = '소프트 모드는 개인의 선택에 따라 서비스의 모든 기능을 취사 선택하여 이용할 수 있습니다';
@@ -47,12 +49,25 @@ function selectMode({ navigation }) {
     setModes(hard);
   };
 
+  // 회원가입 상태 시 가져올 정보
+  if (route) {
+    const signupProfile = route.params;
+    // useEffect로 관리
+    useEffect(() => {
+      setNickname(signupProfile.nickname)
+      console.log(signupProfile)
+    })
+  }
+
   return (
     <Wrapper>
+      <Text>닉네임: {nickname}</Text>
       {/* 닉네임 선택 */}
       <Content1>
         <Title>닉네임을 입력해주세요</Title>
-        <NicknameInput />
+        <NicknameInput
+          value={nickname}
+        />
       </Content1>
       {/* 모드 선택 */}
       <Content2>

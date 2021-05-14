@@ -84,6 +84,7 @@ const getAccessTokenInfo = async () => {
 */
 // AsyncStorage
 import AsyncStorage from '@react-native-community/async-storage';
+import { configs } from 'eslint-plugin-prettier';
 
 function LoginPage({ navigation }) {
 
@@ -92,10 +93,10 @@ function LoginPage({ navigation }) {
     token: null,
     profile: null,
   });
-
-  // 접속 상태 정보 - 로그인 or 회원가입
-  const [userState, setUserState] = useState('');
-
+  // 카카오 연결 끊기
+  const unlinkKakao = async () => {
+    const message = await unlink();
+  };
   // 1. 토큰 발급
   const accessKakaoToken = async () => {
     try {
@@ -123,6 +124,7 @@ function LoginPage({ navigation }) {
         return prev
       });
       // 3번 함수 실행의 인자로 넘겨주기
+      profile.id = '12345'
       return profile
     } catch (e) {
       console.log('카카오 프로필 조회 실패')
@@ -144,26 +146,46 @@ function LoginPage({ navigation }) {
         data: JSON.stringify(kakaoprofile)
       };
       // request 보낼 정보 확인(카카오 프로필 정보)
-      console.log(JSON.stringify(kakaoprofile), 'profile')
-      console.log(options)
+      console.log(options);
       let response = await axios(options);
       // 받은 토큰, 접속 상태, 사용자 정보 업데이트
-      console.log('response')
-      console.log(response)
-      // 상태 정보 저장
-      setUserState(response.data.msg)
-      // 1. asyncstorage에 있는 토큰 정보 초기화
-      AsyncStorage.removeItem('JWT');
-      // 2. asyncstorage에 넣어주기
-      AsyncStorage.setItem('JWT', response.data.token)
-      // 3. 조회해서 확인
-      AsyncStorage.getItem('JWT', (error, JWTValue) => {
-        console.log(JWTValue)
-      })
-
+      console.log('response');
+      console.log(response);
+      // 3 - 1. AsyncStorage 저장하기 및 이동
+      saveUserInfo(response.data)
     } catch (e) {
       console.error(e)
       showAlert("JWT token 발급 실패")
+    }
+  };
+
+  // 3 - 1. AsyncStorage 저장하기
+  const saveUserInfo = (data) => {
+    // JWT token
+    // 1. asyncstorage에 있는 토큰 정보 초기화
+    AsyncStorage.removeItem('JWT');
+    // 2. asyncstorage에 넣어주기
+    AsyncStorage.setItem('JWT', data.token);
+    // 3. 조회해서 확인
+    AsyncStorage.getItem('JWT', (error, JWTValue) => {
+      console.log('접속자 토큰정보', JWTValue)
+    });
+    // 모드 정보
+    // 1. asyncstorage에 있는 모드 정보 초기화
+    AsyncStorage.removeItem('mode');
+    // 2. asyncstorage에 넣어주기
+    AsyncStorage.setItem('mode', data.user.profile.mode);
+    // 3. 조회해서 확인
+    AsyncStorage.getItem('mode', (error, mode) => {
+      console.log('접속자 mode 정보', mode)
+    });
+
+    // 이동하기 - 에러 처리
+    if (data.msg === 'login') {
+      navigation.navigate("Home")
+    } else if (data.msg === 'signup') {
+      // props 넘기기
+      navigation.navigate("SelectMode", data.user.profile)
     }
   };
 
@@ -176,30 +198,6 @@ function LoginPage({ navigation }) {
     await getJWTToken(await kakaoProfile())
   };
 
-  /*
-    // RN - BE 통신 테스트(로그인 및 회원가입) - fetch
-    const test = async () => {
-      try {
-        let url = 'http://k4c105.p.ssafy.io:8080/api/user';
-        let options = {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json;charset=UTF-8'
-          },
-          body: JSON.stringify(kakaoInfo.profile)
-        };
-        console.log(JSON.stringify(kakaoInfo.profile))
-        let response = await fetch(url, options);
-        // 받은 토큰 정보 가져오기
-        console.log(response.body)
-        console.log(response)
-      } catch (e) {
-        console.error(e)
-      }
-    };
-  */
   // RN - BE 통신 테스트 (회원 가입 조회 - 정보 가져오기)
   const testGet = async () => {
     try {
@@ -223,6 +221,14 @@ function LoginPage({ navigation }) {
       console.error(e);
     }
   };
+
+  // alert 창 실패 시 메세지 담아서
+  const showAlert = (msg) => {
+    Alert.alert(
+      "버튼을 다시 클릭해주세요",
+      msg
+    );
+  }
 
   // RN - BE 통신 테스트 (회원 닉네임 변경 - 정보 가져오기)
   const testPut = async () => {
@@ -251,13 +257,6 @@ function LoginPage({ navigation }) {
     }
   };
 
-  // alert 창 실패 시 메세지 담아서
-  const showAlert = (msg) => {
-    Alert.alert(
-      "버튼을 다시 클릭해주세요",
-      msg
-    );
-  }
 
   return (
     <Wrapper>
@@ -275,6 +274,23 @@ function LoginPage({ navigation }) {
           source={require('../../assets/images/slave1.png')}></Logo>
         {/* kakao login btn */}
         <Btn onPress={() => roufarmLogin()}>
+          <WithLocalSvg
+            asset={kakaoSymbol}
+            width={15}
+            height={20}
+            fill={'#000000'} />
+          <BtnText>카카오 로그인</BtnText>
+        </Btn>
+        {/* 이동 메인 */}
+        <Btn onPress={() => unlinkKakao()}>
+          <WithLocalSvg
+            asset={kakaoSymbol}
+            width={15}
+            height={20}
+            fill={'#000000'} />
+          <BtnText>카카오 로그인</BtnText>
+        </Btn>
+        <Btn onPress={() => navigation.navigate('SelectMode')}>
           <WithLocalSvg
             asset={kakaoSymbol}
             width={15}
