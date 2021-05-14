@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-
 import { Wrapper, Card, Contents, QRCodeButton, UserImage } from './home.styles';
+import jwtContext, { JwtConsumer } from '@/contexts/jwt';
 
 // 컴포넌트
 import { QRCodeAnim, CarrotAnim } from '@/components/animations';
@@ -27,7 +27,7 @@ import { deleteAlarm } from '@/components/CreateRoutine/AlarmNotifi';
 function HomeScreen({ navigation }) {
   // 모달
   const [showModal, setShowModal] = useState(false);
-  const openModal = () => {
+  const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
 
@@ -71,6 +71,9 @@ function HomeScreen({ navigation }) {
     <Wrapper>
       <ScrollView>
         <Overlay isVisible={showModal} />
+
+        <JwtConsumer>{({ JWT }) => <Text>JWT: {JWT.jwt}</Text>}</JwtConsumer>
+
         {/* section 1 - 프로필 */}
         <Contents>
           <View>
@@ -101,7 +104,7 @@ function HomeScreen({ navigation }) {
                           <TouchableOpacity
                             onPress={() => {
                               setClickedUuid(uuid);
-                              openModal();
+                              toggleModal();
                             }}>
                             <Text>{quests[uuid].questName}</Text>
                             <Text>{quests[uuid].startDate}</Text>
@@ -126,6 +129,7 @@ function HomeScreen({ navigation }) {
                                       uuid: clickedUuid,
                                       quest: quests[clickedUuid],
                                     });
+                                    toggleModal();
                                   }}>
                                   <Text>수정</Text>
                                 </TouchableOpacity>
@@ -155,6 +159,8 @@ function HomeScreen({ navigation }) {
                                       .delete(`routine/${clickedUuid}`)
                                       .then((res) => console.log('delete response', res.data))
                                       .catch((err) => console.log(err));
+
+                                    toggleModal();
                                   }}>
                                   <Text>삭제</Text>
                                 </TouchableOpacity>

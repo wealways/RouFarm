@@ -1,13 +1,11 @@
 import axios from 'axios';
-import { Config } from '@/config';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const instance = axios.create({
-  baseURL: Config.API_URL,
+  baseURL: 'http://k4c105.p.ssafy.io/api/',
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    Authorization: JWT,
   },
-  timeout: 3000,
 });
 
 function handleError({ message, data, status }) {

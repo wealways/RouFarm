@@ -15,6 +15,7 @@ import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
 import { Switch } from 'react-native-elements';
+import axios from 'axios';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // 컴포넌트
@@ -149,7 +150,7 @@ function CreateRoutineScreen({ navigation }) {
         endTime,
         alarmTime,
         repeatYoilList,
-        category: '기타',
+        category: hashTag,
       })
       .then((res) => console.log('post response!', res.data))
       .catch((err) => console.log(err));
