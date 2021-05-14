@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, ScrollView, Text, View, TextInput } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  TextInput,
+} from 'react-native';
 
 import {
   Wrapper,
@@ -30,7 +38,6 @@ import {
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
 
 const today =
   new Date().getDate() +
@@ -39,10 +46,17 @@ const today =
   '-' +
   new Date().getFullYear();
 
+const tagName = ['일상', '자기개발', '건강', '기타'];
+
 function UpdateRoutineScreen({ navigation, route }) {
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => {
-    setShowModal((prev) => !prev);
+  // 모달
+  const [showRepeatModal, setShowRepeatModal] = useState(false);
+  const toggleRepeatModal = () => {
+    setShowRepeatModal((prev) => !prev);
+  };
+  const [showHashTagModal, setShowHashTagModal] = useState(false);
+  const toggleHashTagModal = () => {
+    setShowHashTagModal((prev) => !prev);
   };
 
   // 모달 상태
@@ -58,6 +72,7 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [endTime, setEndTime] = useState(route.params.quest.endTime);
   const [alarmTime, setAlarmTime] = useState(route.params.quest.alarmTime);
   const [repeatYoilList, setRepeatYoilList] = useState(route.params.quest.repeatYoilList);
+  const [hashTag, setHashTag] = useState(route.params.quest.hashTag);
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(
@@ -129,6 +144,7 @@ function UpdateRoutineScreen({ navigation, route }) {
         alarmIdList, // 알람id 리스트 (int 타입)
         qrOnceAlarmIdList, // 일회성 QR알람id 리스트 (int 타입)
         qrRepeatAlarmIdList, // 반복성 QR알람id 리스트 (int 타입)
+        hashTag,
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
@@ -252,7 +268,7 @@ function UpdateRoutineScreen({ navigation, route }) {
               {/* 반복 유무 */}
               <SettingWrapper>
                 <SettingTitle>반복</SettingTitle>
-                <SettingButton onPress={toggleModal} onCancel={() => console.log('@')}>
+                <SettingButton onPress={toggleRepeatModal} onCancel={() => console.log('@')}>
                   {repeatYoilList.map((value, index) =>
                     value ? (
                       <Text key={index} style={{ opacity: 0.5 }}>
@@ -261,8 +277,8 @@ function UpdateRoutineScreen({ navigation, route }) {
                     ) : null,
                   )}
                 </SettingButton>
-                <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-                  <Repreat setShowModal={setShowModal} setIsReapeat={setRepeatYoilList} />
+                <ModalComponent showModal={showRepeatModal} setShowModal={setShowRepeatModal}>
+                  <Repreat setShowModal={setShowRepeatModal} setIsReapeat={setRepeatYoilList} />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -311,6 +327,35 @@ function UpdateRoutineScreen({ navigation, route }) {
                 </View>
               </SettingWrapper>
 
+              {/* 해시태그 */}
+              <SettingWrapper>
+                <SettingTitle>해시태그</SettingTitle>
+                <SettingButton onPress={toggleHashTagModal} onCancel={() => console.log('@')}>
+                  <Text>{hashTag ? hashTag : null}</Text>
+                </SettingButton>
+
+                <ModalComponent showModal={showHashTagModal} setShowModal={setShowHashTagModal}>
+                  <>
+                    {tagName.map((v, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        onPress={() => {
+                          setHashTag(v);
+                          toggleHashTagModal();
+                        }}>
+                        <Text>{v}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                </ModalComponent>
+              </SettingWrapper>
+
+              {/* QR 생성 여부 */}
+              <SettingWrapper>
+                <SettingTitle>QR 생성</SettingTitle>
+                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
+              </SettingWrapper>
+
               {/* 알람 유무 */}
               <SettingWrapper>
                 <SettingTitle>알람</SettingTitle>
@@ -332,12 +377,6 @@ function UpdateRoutineScreen({ navigation, route }) {
                   />
                 </>
               ) : null}
-
-              {/* QR 생성 여부 */}
-              <SettingWrapper>
-                <SettingTitle>QR 생성</SettingTitle>
-                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
-              </SettingWrapper>
             </Card>
           </View>
         </Contents>
