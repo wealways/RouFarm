@@ -12,6 +12,14 @@ target 'frontend' do
     :hermes_enabled => false
   )
 
+
+
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'frontendTests' do
     inherit! :complete
     # Pods for testing

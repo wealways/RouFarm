@@ -4,12 +4,23 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
+import com.zoontek.rnpermissions.RNPermissionsPackage;
+import org.reactnative.camera.RNCameraPackage;
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
+// lottie animation
+import com.airbnb.android.react.lottie.LottiePackage;
+
+// alarm-notification
+import com.emekalites.react.alarm.notification.ANPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -26,6 +37,9 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          // packages.add(new ANPackage());
+          packages.add(new LottiePackage());
+          
           return packages;
         }
 
