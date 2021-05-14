@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-
+import { TouchableOpacity, Text } from 'react-native';
 // 네비게이션
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -32,6 +32,8 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import AsyncStorage from '@react-native-community/async-storage';
+import { Value } from 'react-native-reanimated';
 
 const store = createStore(rootReducer, composeWithDevTools());
 
@@ -45,7 +47,7 @@ const App = () => {
       <Provider store={store}>
         <NavigationContainer>
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <Stack.Navigator component={Home}>
+          <Stack.Navigator initialRouteName="Home">
             <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
             <Stack.Screen options={{ headerShown: false }} name="Report" component={Report} />
             <Stack.Screen options={{ headerShown: false }} name="QR" component={QR} />
