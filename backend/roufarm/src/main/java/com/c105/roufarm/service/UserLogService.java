@@ -56,13 +56,13 @@ public class UserLogService {
             String id = jwtTokenUtil.getId();
             Optional<UserLog> opt = userLogMongoDBRepository.findById(id);
             UserLog userLog;
-            if(opt.isEmpty()){
+            try{
+                  userLog = opt.get();
+            }
+            catch(Exception e){
                   userLog = new UserLog();
                   userLog.setId(id);
                   userLog.setDays(new HashMap<String,Object>());
-            }
-            else{
-                  userLog = opt.get();
             }
             return userLog;
       }
@@ -73,13 +73,13 @@ public class UserLogService {
             String id = userId;
             Optional<UserLog> opt = userLogMongoDBRepository.findById(id);
             UserLog userLog;
-            if(opt.isEmpty()){
+            try{
+                  userLog = opt.get();
+            }
+            catch(Exception e){
                   userLog = new UserLog();
                   userLog.setId(id);
                   userLog.setDays(new HashMap<String,Object>());
-            }
-            else{
-                  userLog = opt.get();
             }
             return userLog;
       }
