@@ -1,6 +1,8 @@
 package com.c105.roufarm.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.c105.roufarm.config.JwtTokenUtil;
@@ -31,9 +33,10 @@ public class RoutineService {
             String kakaoId = jwtTokenUtil.getId();
             routine.setKakaoId(kakaoId);
             routine.setIsActivate("true");
+            routine.setRoutineLog(new HashSet<String>());
             String category = routine.getCategory();
             if(category == null || category.equals("")){
-                  routine.setCategory("없음");
+                  routine.setCategory("기타");
             }
             return routineMongoDBRepository.save(routine);
       }
