@@ -20,6 +20,7 @@ import {
   Login,
   SelectMode,
   FriendList,
+  Detail
 } from './screens/index';
 import AlarmTest from './screens/AlarmTest';
 
