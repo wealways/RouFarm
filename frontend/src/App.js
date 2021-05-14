@@ -11,9 +11,6 @@ import { ThemeProvider } from 'styled-components/native';
 import theme from './theme/index';
 
 // 페이지
-<<<<<<< HEAD
-import { Home, Report, QR, CreateRoutine, Login, SelectMode, FriendList,Detail } from './screens/index';
-=======
 import {
   Home,
   Report,
@@ -23,9 +20,9 @@ import {
   Login,
   SelectMode,
   FriendList,
+  Detail,
 } from './screens/index';
 import AlarmTest from './screens/AlarmTest';
->>>>>>> 4a309b64b9f9547791a3929f3cb45591c75d9a8f
 
 // 리덕스
 import { createStore } from 'redux';
@@ -64,25 +61,14 @@ const App = () => {
             />
             {/* screen test 용 */}
             <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-<<<<<<< HEAD
             <Stack.Screen options={{ headerShown: false }} name="SelectMode" component={SelectMode} />
             <Stack.Screen options={{ headerShown: false }} name="FriendList" component={FriendList} />
             {/* 리포트 디테일 페이지 */}
-            <Stack.Screen options={{headerStyle:{
-              backgroundColor:'#dce8ef'
-            }}} name="Daily" component={Detail} />
-=======
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="SelectMode"
-              component={SelectMode}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="FriendList"
-              component={FriendList}
-            />
->>>>>>> 4a309b64b9f9547791a3929f3cb45591c75d9a8f
+            <Stack.Screen options={{
+              headerStyle: {
+                backgroundColor: '#dce8ef'
+              }
+            }} name="Daily" component={Detail} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
