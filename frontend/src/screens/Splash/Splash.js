@@ -17,74 +17,8 @@ import styled from 'styled-components/native';
 import { WithLocalSvg } from 'react-native-svg';
 import kakaoSymbol from '@/assets/images/Kakao_symbol.svg';
 
-// 카카오 로그인 활용하기
-import {
-  KakaoOAuthToken,
-  KakaoProfile,
-  getProfile as getKakaoProfile,
-  login,
-  logout,
-  unlink,
-  // 엑세스 토큰 정보
-  getAccessToken as getKakaoAccessToken,
-  KakaoAccessTokenInfo,
-} from '@react-native-seoul/kakao-login';
-
-// axios
-import axios from 'axios';
-
-/*
-// 카카오 로그인
-const signInWithKakao = async () => {
-  const token: KakaoOAuthToken = await login();
-
-  setResult(JSON.stringify(token));
-};
-// 카카오 로그아웃
-const signOutWithKakao = async () => {
-  const message = await logout();
-
-  setKakaoInfo({
-    token: null,
-    profile: null,
-  });
-  setKakaoAccessTokenInfo(null);
-};
-// 카카오 연결 끊기
-const unlinkKakao = async () => {
-  const message = await unlink();
-
-  setKakaoInfo({
-    token: null,
-    profile: null,
-  });
-
-  setKakaoAccessTokenInfo(null);
-};
-// 카카오 프로필 조회
-const getProfile = async () => {
-  const profile: KakaoProfile = await getKakaoProfile();
-
-  setResult(JSON.stringify(profile));
-};
-// 카카오 엑세스 토큰 정보 조회
-const getAccessTokenInfo = async () => {
-  try {
-    const accessTokenInfo: KakaoAccessTokenInfo = await getKakaoAccessToken();
-    setKakaoAccessTokenInfo((prev) => {
-      prev = { ...kakaoAccessTokenInfo, accessTokenInfo }
-      console.log('가지고 있는 엑세스 토큰 정보', prev)
-      return prev
-    })
-  } catch (e) {
-    console.log('엑세스 토큰 정보 조회 에러 발생')
-    console.error(e)
-  }
-};
-*/
 // AsyncStorage
 import AsyncStorage from '@react-native-community/async-storage';
-import { configs } from 'eslint-plugin-prettier';
 
 function LoginPage({ navigation }) {
 
