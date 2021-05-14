@@ -74,6 +74,9 @@ function UpdateRoutineScreen({ navigation, route }) {
     await route.params.quest.qrRepeatAlarmIdList.map((v) => deleteAlarm(v));
     console.log('delete alarm!');
 
+    // 퀘스트 uuid 생성
+    let uuid = parseInt(Math.random() * Math.pow(10, 16));
+
     // 새로운 알람 생성
     let alarmIdList = [];
     let qrOnceAlarmIdList = [];
@@ -109,9 +112,13 @@ function UpdateRoutineScreen({ navigation, route }) {
     // 메모리에 저장
     AsyncStorage.getItem('quests', async (err, res) => {
       let quests = JSON.parse(res);
-      if (quests === null) quests = {};
+      if (quests === null) {
+        quests = {};
+      } else {
+        delete quests[route.params.uuid];
+      }
 
-      quests[route.params.uuid] = {
+      quests[uuid] = {
         startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
         questName,
         alarmTime,
@@ -131,6 +138,33 @@ function UpdateRoutineScreen({ navigation, route }) {
 
       if (err) console.log(err);
     });
+
+    const instance = axios.create({
+      baseURL: 'http://k4c105.p.ssafy.io/api/',
+      headers: {
+        Authorization:
+          'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxMjM0NTY3ODkiLCJpYXQiOjE2MjA5NTgwODEsImV4cCI6MTYyMzU1MDA4MX0.ShjZ5egr9AmY2calidv_jf77DqfRqt3lR05UQLZn8rOVgQuD9wXxCQcw0QKPFm8cRWwCMzoPvW-OqonAZbkHFQ',
+      },
+    });
+    // 삭제 요청
+    instance
+      .delete(`routine/${route.params.uuid}`)
+      .then((res) => console.log('delete response', res.data))
+      .catch((err) => console.log(err));
+    // 생성 요청
+    instance
+      .post('routine/', {
+        uuid,
+        startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
+        questName,
+        startTime,
+        endTime,
+        alarmTime,
+        repeatYoilList,
+        category: '기타',
+      })
+      .then((res) => console.log('post response!', res.data))
+      .catch((err) => console.log(err));
   };
 
   // 모달 활성/비활성
