@@ -1,7 +1,7 @@
-import React, { useState,useEffect,useContext } from 'react';
-import { 
-  Text, 
-  View, 
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  Text,
+  View,
   useWindowDimensions,
   ScrollView,
   StyleSheet
@@ -34,9 +34,9 @@ import CustomPieList from '@/components/Report/CustomPieList';
 import CustomDropdown from '@/components/Report/CustomDropdown';
 
 //Context API
-import {HeatmapProvider} from '@/contexts/Report/Heatmap';
-import {PieProvider} from '@/contexts/Report/Pie';
-import {FailListProvider} from '@/contexts/Report/FailList';
+import { HeatmapProvider } from '@/contexts/Report/Heatmap';
+import { PieProvider } from '@/contexts/Report/Pie';
+import { FailListProvider } from '@/contexts/Report/FailList';
 
 function ReportScreen({navigation}) {
 
@@ -44,133 +44,133 @@ function ReportScreen({navigation}) {
   const height = useWindowDimensions().height;
 
   const TopTab = ({
-    tabs:['월간 리포트','주간 리포트'],
-    lineColor:'#000066',
-    noSelectedStyled:{color:'#525252',fontSize:14},
-    selectedStyle:{color:'black',fontWeight:'bold',fontSize:14},
-    tabStyle:{paddingTop:12,paddingBottom:5,marginRight:10}
+    tabs: ['월간 리포트', '주간 리포트'],
+    lineColor: '#000066',
+    noSelectedStyled: { color: '#525252', fontSize: 14 },
+    selectedStyle: { color: 'black', fontWeight: 'bold', fontSize: 14 },
+    tabStyle: { paddingTop: 12, paddingBottom: 5, marginRight: 10 }
   })
 
-  const [showIndex,setShowIndex] = useState(0);
-  const [loading,setLoading] = useState(false);
-  useEffect(()=>{
+  const [showIndex, setShowIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
     // setLoading(true);
   })
 
   // 월간
-  const date = ['2021-05','2021-04','2021-03']
+  const date = ['2021-05', '2021-04', '2021-03']
   // 주간
-  const weekDate = ['2021-05-w3','2021-05-w2','2021-05-w1']
+  const weekDate = ['2021-05-w3', '2021-05-w2', '2021-05-w1']
 
   return (
     <LinearGradient
-      colors={['#dce8ef','#fff']}
-      start={{x:0,y:0}}
-      end={{x:0,y:1}}
+      colors={['#dce8ef', '#fff']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
       style={styles.container}
     >
       <HeatmapProvider>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {/* <TitleText> Report Page</TitleText> */}
-        <View style={{flexDirection:'row',justifyContent:'center'}}>
-          {TopTab.tabs.map((d,idx)=>{
-            return (
-              <View
-                key={idx}
-                onTouchStart={()=>{
-                  if(showIndex!==idx){
-                    setLoading(false);
-                    setShowIndex(idx);
-                  }
-                }}
-                style={{
-                  borderBottomWidth:showIndex===idx?1:0,
-                  borderBottomColor:TopTab.lineColor,
-                  width:width/2,
-                  alignItems:'center'
-                }}
-              >
-                <Text
-                  style={[
-                    showIndex===idx?TopTab.selectedStyle:TopTab.noSelectedStyled,
-                    TopTab.tabStyle
-                  ]}
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          {/* <TitleText> Report Page</TitleText> */}
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            {TopTab.tabs.map((d, idx) => {
+              return (
+                <View
+                  key={idx}
+                  onTouchStart={() => {
+                    if (showIndex !== idx) {
+                      setLoading(false);
+                      setShowIndex(idx);
+                    }
+                  }}
+                  style={{
+                    borderBottomWidth: showIndex === idx ? 1 : 0,
+                    borderBottomColor: TopTab.lineColor,
+                    width: width / 2,
+                    alignItems: 'center'
+                  }}
                 >
-                  {d}
-                </Text>
-              </View>
-            )
-          })}
-        </View>
-        { showIndex===0 && 
-          <>
-            {/* section 1 - 월간 수확 */}
-              <Contents>
-                <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
-                  <CustomDropdown date={date} flag={'month'}/>
-                  <Icon name="caret-down" size={15} color="#000" style={{marginRight:6}}/>
+                  <Text
+                    style={[
+                      showIndex === idx ? TopTab.selectedStyle : TopTab.noSelectedStyled,
+                      TopTab.tabStyle
+                    ]}
+                  >
+                    {d}
+                  </Text>
                 </View>
-                  <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-                    <SubtitleText>월간 수확</SubtitleText>
-                  </View>
-                  <View>
-                    <Card width={width}>
-                      <MonthChartView>
-                        <CustomHeatmapChart navigation={navigation}/>
-                      </MonthChartView>
-                      <MonthTextView>
-                        <CustomHeatmapRate/>
-                      </MonthTextView>
-                    </Card>
-                  </View>
+              )
+            })}
+          </View>
+          {showIndex === 0 &&
+            <>
+              {/* section 1 - 월간 수확 */}
+              <Contents>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                  <CustomDropdown date={date} flag={'month'} />
+                  <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SubtitleText>월간 수확</SubtitleText>
+                </View>
+                <View>
+                  <Card width={width}>
+                    <MonthChartView>
+                      <CustomHeatmapChart navigation={navigation} />
+                    </MonthChartView>
+                    <MonthTextView>
+                      <CustomHeatmapRate />
+                    </MonthTextView>
+                  </Card>
+                </View>
               </Contents>
               {/* section 4 - 해쉬태그 별 달성률 */}
               <Contents>
                 {/* <PieProvider> */}
-                  <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
-                  <View>
-                    <Card width={width}>
-                      <CustomPieChart date={date}/>
-                    </Card>
-                    <Card width={width}>
-                      <CustomPieList/>
-                    </Card>
-                  </View>
+                <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
+                <View>
+                  <Card width={width}>
+                    <CustomPieChart date={date} />
+                  </Card>
+                  <Card width={width}>
+                    <CustomPieList />
+                  </Card>
+                </View>
                 {/* </PieProvider> */}
               </Contents>
-          </>
-        }
-        {showIndex===1 &&
-          <>
-          {/* section 2 - 실패 리스트 */}
-            <Contents>
-              <FailListProvider>
-                <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
-                  <CustomDropdown date={weekDate} flag={'week'}/>
-                  <Icon name="caret-down" size={15} color="#000" style={{marginRight:6}}/>
+            </>
+          }
+          {showIndex === 1 &&
+            <>
+              {/* section 2 - 실패 리스트 */}
+              <Contents>
+                <FailListProvider>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <CustomDropdown date={weekDate} flag={'week'} />
+                    <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
+                  </View>
+                  <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: 330 }}>
+                    <SubtitleText>실패리스트</SubtitleText>
+                  </View>
+                  <Card width={width}>
+                    <FailView />
+                  </Card>
+                </FailListProvider>
+              </Contents>
+              {/* section 3 - 요일 별 달성률 */}
+              <Contents>
+                <SubtitleText>요일 별 달성률</SubtitleText>
+                <View>
+                  <Card width={width}>
+                    <CustomBarChart />
+                  </Card>
                 </View>
-                <View style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between', width:330}}>
-                  <SubtitleText>실패리스트</SubtitleText>
-                </View>
-                <Card width={width}>
-                  <FailView />
-                </Card>
-              </FailListProvider>
-            </Contents>
-            {/* section 3 - 요일 별 달성률 */}
-            <Contents>
-              <SubtitleText>요일 별 달성률</SubtitleText>
-              <View>
-                <Card width={width}>
-                  <CustomBarChart />
-                </Card>
-              </View>
-            </Contents>
-          </>
-        }
+              </Contents>
+            </>
+          }
 
-        
-      </ScrollView>
+
+        </ScrollView>
       </HeatmapProvider>
     </LinearGradient>
   );
