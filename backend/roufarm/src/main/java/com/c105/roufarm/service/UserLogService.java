@@ -2,7 +2,10 @@ package com.c105.roufarm.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +38,7 @@ public class UserLogService {
       JwtTokenUtil jwtTokenUtil;
 
       static HashMap<String,Integer> calendar = new HashMap<String,Integer>();
+      static HashMap<Integer,String> yoil = new HashMap<>();
       static{
             calendar.put("01",31);
             calendar.put("02",29);
@@ -48,9 +52,16 @@ public class UserLogService {
             calendar.put("10",31);
             calendar.put("11",30);
             calendar.put("12",31);
+            yoil.put(0, "Sun");
+            yoil.put(1, "Mon");
+            yoil.put(2, "Tue");
+            yoil.put(3, "Wed");
+            yoil.put(4, "Thu");
+            yoil.put(5, "Fri");
+            yoil.put(6, "Sat");
       };
 
-      // 1. 헤더로 해당 id 찾기
+      // 1. 헤더로 유저 로그 찾기
       @Transactional
       public UserLog findUserLogById(){
             String id = jwtTokenUtil.getId();
@@ -273,6 +284,134 @@ public class UserLogService {
                   userLogHashtagForm.put(userLogKey,hashtagMap);
             }
             return userLogHashtagForm;
+      }
+
+      // 7. 전체 요일별 평균을 구함
+      @Transactional
+      public HashMap<String,HashMap<String, Object>> findLogForDay(){
+            UserLog userLog = findUserLogById();
+            HashMap<String,Object> days = userLog.getDays();
+
+            HashMap<String,HashMap<String, Object>> dayMap = new HashMap<>();
+            for(int i=0;i<7;i++){
+                  HashMap<String,Object> countMap = new HashMap<>();
+                  countMap.put("cnt", 0);
+                  countMap.put("success",0);
+                  countMap.put("rate", 0);
+                  dayMap.put(yoil.get(i),countMap);
+            }
+
+            for(String daykey : days.keySet()){
+                  int year = Integer.parseInt(daykey.substring(6)) - 1900;
+                  int month = Integer.parseInt(daykey.substring(3,5))-1;
+                  int date = Integer.parseInt(daykey.substring(0,2));
+                  Date getDate = new Date(year, month, date);
+                  int day = getDate.getDay();
+                  String dayString = yoil.get(day);
+                  HashMap<String, Object> countMap = dayMap.get(dayString);
+                  for(String logId : (ArrayList<String>)days.get(daykey)){
+                        RoutineLog routineLog = routineLogService.findRoutineLog(logId);
+                        int cntNum = ((int)countMap.get("cnt")) + 1;
+                        int successNum = ((int)countMap.get("success"));
+                        if(routineLog.getIsSuccess().equals("true")){
+                              successNum += 1;
+                              
+                        }
+                        countMap.put("cnt", cntNum);
+                        countMap.put("success",successNum);
+                        countMap.put("rate", 100 * (float)successNum / (float)cntNum);
+                  }
+                  dayMap.put(dayString, countMap);
+            }
+            return dayMap;
+      }
+
+      // 8. 각 주차별 통계를 구함
+      @Transactional
+      public HashMap<String,HashMap<String, Object>> findLogForDayOfWeek(){
+            UserLog userLog = findUserLogById();
+            HashMap<String,Object> days = userLog.getDays();
+            HashMap<String,HashMap<String,Object>> so = new HashMap<>();
+
+            for(String daykey : days.keySet()){
+                  int year = Integer.parseInt(daykey.substring(6));
+                  int month = Integer.parseInt(daykey.substring(3,5))-1;
+                  int date = Integer.parseInt(daykey.substring(0,2));
+                  Calendar getDate = new GregorianCalendar(year, month, date);
+                  int week = getDate.get(getDate.WEEK_OF_MONTH); // 주차를 구하고
+                  int day = getDate.get(getDate.DAY_OF_WEEK)-1; // 요일을 구한다
+                  String dayString = yoil.get(day); // 요일 문자를 구한다
+                  String weekKey = daykey.substring(6)+"-"+daykey.substring(3,5)+"-w"+week;
+                  HashMap<String,Object> soMap = so.get(weekKey);
+                  if(soMap == null){
+                        soMap = new HashMap<>();
+                        for(int i=0;i<7;i++){
+                              HashMap<String,Object> countMap = new HashMap<>();
+                              countMap.put("cnt", 0);
+                              countMap.put("success",0);
+                              countMap.put("rate", 0);
+                              soMap.put(yoil.get(i),countMap);
+                        }
+                  }
+                  int cnt = 0;
+                  int success = 0;
+                  float rate = 0;
+                  for(String logId : (ArrayList<String>)days.get(daykey)){
+                        RoutineLog routineLog = routineLogService.findRoutineLog(logId);
+                        cnt++;
+                        if(routineLog.getIsSuccess().equals("true")){
+                              success += 1;
+                        }
+                  }
+                  rate = 100 * (float)success / (float)cnt;
+                  HashMap<String,Object> countMap = (HashMap<String,Object>)soMap.get(dayString);
+                  countMap.put("cnt", cnt);
+                  countMap.put("success", success);
+                  countMap.put("rate", rate);
+                  soMap.put(dayString, countMap);
+                  so.put(weekKey, soMap);
+            }
+            return so;
+      }
+
+      // 9. 각 주차별 실패리스트를 구함
+      @Transactional
+      public HashMap<String,ArrayList<HashMap<String,Object>>> findFailLogOfWeek(){
+            HashMap<String,ArrayList<HashMap<String,Object>>> failLogMap = new HashMap<>();
+            UserLog userLog = findUserLogById();
+            HashMap<String,Object> days = userLog.getDays();
+            for(String daykey : days.keySet()){
+                  ArrayList<String> logIds = (ArrayList<String>)days.get(daykey);
+                  int year = Integer.parseInt(daykey.substring(6));
+                  int month = Integer.parseInt(daykey.substring(3,5))-1;
+                  int date = Integer.parseInt(daykey.substring(0,2));
+                  Calendar getDate = new GregorianCalendar(year, month, date);
+                  int week = getDate.get(getDate.WEEK_OF_MONTH); // 주차를 구하고
+                  String weekKey = daykey.substring(6)+"-"+daykey.substring(3,5)+"-w"+week;
+                  ArrayList<HashMap<String,Object>> failLogWeek = failLogMap.get(weekKey);
+                  if(failLogWeek == null){
+                        failLogWeek = new ArrayList<>();
+                  }
+                  for(String logId : logIds){
+                        RoutineLog routineLog = routineLogService.findRoutineLog(logId);
+                        if(!routineLog.getIsSuccess().equals("true")){
+                              Routine failRoutine = routineService.findRoutineById(routineLog.getRoutineId());
+                              HashMap<String,Object> failRoutineLog = new HashMap<>();
+                              failRoutineLog.put("id", routineLog.getId());
+                              failRoutineLog.put("routine", failRoutine.getQuestName());
+                              failRoutineLog.put("tag", failRoutine.getCategory());
+                              failLogWeek.add(failRoutineLog);
+                        }
+                  }
+                  failLogMap.put(weekKey,failLogWeek);
+            }
+            
+            return failLogMap;
+      }
+
+      // 번외. 숫자로 요일 구하기
+      public String convertYoil(int num){
+            return yoil.get(num);
       }
 
 }
