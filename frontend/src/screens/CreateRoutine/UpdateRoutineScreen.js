@@ -25,6 +25,8 @@ import { deviceWidth } from '@/utils/devicesize';
 import { Switch } from 'react-native-elements';
 import axios from 'axios';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { instance } from '@/api';
+import { JwtConsumer } from '@/contexts/jwt';
 
 // 컴포넌트
 import ModalComponent from '@/components/common/ModalComponent';
@@ -83,7 +85,7 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [isAlarm, setIsAlarm] = useState(alarmTime !== '');
 
   // 퀘스트 생성
-  const handleCreate = async () => {
+  const handleCreate = async (jwt) => {
     // 기존의 알람 제거
     await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
     await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
@@ -156,13 +158,9 @@ function UpdateRoutineScreen({ navigation, route }) {
       if (err) console.log(err);
     });
 
-    const instance = axios.create({
-      baseURL: 'http://k4c105.p.ssafy.io/api/',
-      headers: {
-        Authorization:
-          'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxMjM0NTY3ODkiLCJpYXQiOjE2MjA5NTgwODEsImV4cCI6MTYyMzU1MDA4MX0.ShjZ5egr9AmY2calidv_jf77DqfRqt3lR05UQLZn8rOVgQuD9wXxCQcw0QKPFm8cRWwCMzoPvW-OqonAZbkHFQ',
-      },
-    });
+    // header에 jwt토큰 삽입
+    instance.defaults.headers.common['Authorization'] = jwt;
+
     // 삭제 요청
     instance
       .delete(`routine/${route.params.uuid}`)
@@ -392,13 +390,18 @@ function UpdateRoutineScreen({ navigation, route }) {
             }}
           />
         </View>
-        <ButtonWrapper
-          style={{ marginBottom: 50 }}
-          onPress={() => {
-            handleCreate();
-          }}>
-          <Text style={{ color: 'white' }}>퀘스트 생성</Text>
-        </ButtonWrapper>
+        {/* 전역에 있는 토큰 불러와서 적용 */}
+        <JwtConsumer>
+          {({ JWT }) => (
+            <ButtonWrapper
+              style={{ marginBottom: 50 }}
+              onPress={() => {
+                handleCreate(JWT.jwt);
+              }}>
+              <Text style={{ color: 'white' }}>퀘스트 생성</Text>
+            </ButtonWrapper>
+          )}
+        </JwtConsumer>
       </ScrollView>
 
       <NavigationButton navigation={navigation} />

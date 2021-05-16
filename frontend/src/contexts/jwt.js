@@ -7,7 +7,7 @@ const jwtContext = createContext({
 });
 
 const JwtProvider = ({ children }) => {
-  const [jwt, setJwt] = useState('JWT is Comming...');
+  const [jwt, setJwt] = useState('');
 
   AsyncStorage.getItem('JWT', (err, res) => {
     console.log(res);

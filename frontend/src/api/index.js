@@ -1,11 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const instance = axios.create({
+export const instance = axios.create({
   baseURL: 'http://k4c105.p.ssafy.io/api/',
-  headers: {
-    Authorization: JWT,
-  },
 });
 
 function handleError({ message, data, status }) {
@@ -20,4 +17,3 @@ instance.interceptors.response.use(
   },
 );
 
-export default instance;
