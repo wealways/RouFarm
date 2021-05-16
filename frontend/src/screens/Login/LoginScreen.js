@@ -190,7 +190,7 @@ function LoginPage({ navigation }) {
       navigation.navigate("Home")
     } else if (data.msg === 'signup') {
       // props 넘기기
-      navigation.navigate("SelectMode", data.user.profile)
+      navigation.navigate("SelectMode")
     }
   };
 
