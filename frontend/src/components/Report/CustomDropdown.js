@@ -1,4 +1,4 @@
-import React,{useState,useContext} from 'react';
+import React,{useState,useContext, useEffect} from 'react';
 import {View,Text,TouchableOpacity,ScrollView} from 'react-native'
 import styled from 'styled-components/native';
 
@@ -18,11 +18,19 @@ const weekText = styled.Text`
 
 const CustomDropdown = ({date,flag}) => {
   const {heatmap,dateDispatch,weekDateDispatch} = useContext(HeatmapContext);
-
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
+
+  const onDefault = () =>{
+    if(flag==='month') dateDispatch(date[0])
+    else weekDateDispatch(date[0])
+  };
+  useEffect(()=>{
+    onDefault()
+  },[])
+
   const onValueChange = (item) => {
     if(flag==='month'){
       dateDispatch(item);

@@ -77,6 +77,7 @@ function ReportScreen({navigation}) {
           Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI0ODYiLCJpYXQiOjE2MjA5NzA0MDcsImV4cCI6MTYyMzU2MjQwN30.CtvAR1QeW4pR_NbF8JU8_YDqrw5aWZAJJ87vQ5l6dgLwImMIestqlFlKWwSKHC4hYhbfX5CUkKpAHcs5-1XwJQ',
         },
       }).then(res=>{
+        setweekDate(Object.keys(res.data))
         setWeekRes(res.data)
         setLoading(false);
       }).catch(e=>{
@@ -201,7 +202,7 @@ function ReportScreen({navigation}) {
                   <SubtitleText>실패리스트</SubtitleText>
                 </View>
                 <Card width={width}>
-                  <FailView />
+                  <FailView res={weekRes}/>
                 </Card>
               </Contents>
               {/* section 3 - 요일 별 달성률 */}
@@ -209,7 +210,7 @@ function ReportScreen({navigation}) {
                 <SubtitleText>요일 별 달성률</SubtitleText>
                 <View>
                   <Card width={width}>
-                    <CustomBarChart />
+                    <CustomBarChart res={weekRes}/>
                   </Card>
                 </View>
               </Contents>

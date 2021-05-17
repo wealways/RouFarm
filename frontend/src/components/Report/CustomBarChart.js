@@ -23,7 +23,7 @@ const NowData = [
   {x: "Sun", y: 70}
 ]
 
-const CustomBarChart = () => {
+const CustomBarChart = ({res}) => {
   const {heatmap} = useContext(HeatmapContext)
   const width = Dimensions.get("window").width;
   const week = `${parseInt(heatmap.weekDate.split('-')[1])}월 ${heatmap.weekDate.split('-w')[1]}주차`
