@@ -22,7 +22,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import theme from '../theme';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
+
 const HomeStack = createStackNavigator();
+// tab navi
+const Tab = createBottomTabNavigator();
 
 // route 이름 가져오기
 function getHeaderTitle(route) {
