@@ -1,6 +1,8 @@
 package com.c105.roufarm.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -22,7 +24,7 @@ public class ReportPageService {
 
       // 1. 리포트 페이지에 보여줄 잔디와 해쉬태그별 통계 (달별 통계)
       @Transactional
-      public HashMap<String,Object> findReportMonth(){
+      public ArrayList<HashMap<String,Object>> findReportMonth(){
             HashMap<String,ArrayList<Integer>> logsForGrass = userLogService.findLogForGrass();
             HashMap<String,HashMap<String,HashMap<String,HashMap<String,Object>>>> logsForHashtag = userLogService.findLogForHashtag();
             HashMap<String,Object> reportForGrassAndHashtag = new HashMap<String,Object>();
@@ -51,7 +53,40 @@ public class ReportPageService {
 
                   reportForGrassAndHashtag.put(logsKey, contents);
             }
-            return reportForGrassAndHashtag;
+            ArrayList<HashMap<String,Object>> reportMonth = new ArrayList<>();
+            for(String Date : reportForGrassAndHashtag.keySet()){
+                  HashMap<String,Object> reportOne = new HashMap<>();
+                  reportOne.put(Date, reportForGrassAndHashtag.get(Date));
+                  reportMonth.add(reportOne);
+            }
+            reportMonth.sort(new Comparator<HashMap<String,Object>>(){
+
+                  @Override
+                  public int compare(HashMap<String,Object> o1, HashMap<String,Object> o2) {
+                        for(String o1Report : o1.keySet()){
+                              for(String o2Report: o2.keySet()){
+                                    int year1 = Integer.parseInt(o1Report.substring(0,4));
+                                    int year2 = Integer.parseInt(o2Report.substring(0, 4));
+                                    if(year1 < year2){
+                                          return 1;
+                                    }
+                                    else if(year1 > year2){
+                                          return -1;
+                                    }
+                                    int month1 = Integer.parseInt(o1Report.substring(5));
+                                    int month2 = Integer.parseInt(o2Report.substring(5));
+                                    if(month1 < month2){
+                                          return 1;
+                                    }
+                                    else if(month1 > month2){
+                                          return -1;
+                                    }
+                              }
+                        }
+                        return 0;
+                  }
+            });
+            return reportMonth;
       }
 
       // 2. 리포트 페이지에 보여줄 날짜별 통계
@@ -73,7 +108,7 @@ public class ReportPageService {
 
       // 3. 리포트 페이지에 보여줄 주간별 통계
       @Transactional
-      public HashMap<String,HashMap<String,Object>> findReportWeek(){
+      public ArrayList<HashMap<String,Object>> findReportWeek(){
             HashMap<String,HashMap<String,Object>> LogForDay = userLogService.findLogForDay(); // 전체 요일 평균
             HashMap<String,HashMap<String,Object>> LogForDayOfWeek = userLogService.findLogForDayOfWeek(); // 해당 요일 평균
             HashMap<String,ArrayList<HashMap<String,Object>>> LogForFail = userLogService.findFailLogOfWeek(); // 실패리스트
@@ -94,8 +129,6 @@ public class ReportPageService {
                   }
                   weekList.put("실패리스트",failLogList);
                   HashMap<String,Object> dayMap = new HashMap<>();
-                  System.out.println(LogForDay);
-                  System.out.println(failList);
                   ArrayList<Object> dayList = new ArrayList<>();
                   ArrayList<Object> totalDayList = new ArrayList<>();
                   for(int i=1;i<8;i++){
@@ -115,6 +148,53 @@ public class ReportPageService {
                   weekList.put("요일별평균",dayMap);
                   weekReport.put(week, weekList);
             }
-            return weekReport;
+            ArrayList<HashMap<String,Object>> weekReportList = new ArrayList<>();
+            for(String weekReportKey : weekReport.keySet()){
+                  HashMap<String,Object> oneReport = new HashMap<>();
+                  oneReport.put(weekReportKey, weekReport.get(weekReportKey));
+                  weekReportList.add(oneReport);
+            }
+            weekReportList.sort(new Comparator<HashMap<String,Object>>(){
+
+                  @Override
+                  public int compare(HashMap<String,Object> o1, HashMap<String,Object> o2) {
+                        for(String o1Report : o1.keySet()){
+                              for(String o2Report: o2.keySet()){
+                                    int year1 = Integer.parseInt(o1Report.substring(0,4));
+                                    int year2 = Integer.parseInt(o2Report.substring(0, 4));
+                                    if(year1 < year2){
+                                          return 1;
+                                    }
+                                    else if(year1 > year2){
+                                          return -1;
+                                    }
+                                    int month1 = Integer.parseInt(o1Report.substring(5, 7));
+                                    int month2 = Integer.parseInt(o2Report.substring(5, 7));
+                                    if(month1 < month2){
+                                          return 1;
+                                    }
+                                    else if(month1 > month2){
+                                          return -1;
+                                    }
+                                    int date1 = Integer.parseInt(o1Report.substring(9));
+                                    int date2 = Integer.parseInt(o2Report.substring(9));
+                                    if (date1 < date2){
+                                          return 1;
+                                    }
+                                    else if(date1 > date2){
+                                          return -1;
+                                    }
+                              }
+                        }
+                        return 0;
+                  }
+            });
+            return weekReportList;
+            
       }
+      @Transactional
+      public ArrayList<String> findLogWeek(){
+            return userLogService.findLogWeek();
+      }
+      
 }
