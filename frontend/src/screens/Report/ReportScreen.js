@@ -69,7 +69,6 @@ function ReportScreen({navigation}) {
     }).then(res=>{
 
       // month
-      console.log(res.data)
       setMonthDate(Object.keys(res.data))
       setMonthRes(res.data)
 
@@ -78,14 +77,13 @@ function ReportScreen({navigation}) {
           Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI0ODYiLCJpYXQiOjE2MjA5NzA0MDcsImV4cCI6MTYyMzU2MjQwN30.CtvAR1QeW4pR_NbF8JU8_YDqrw5aWZAJJ87vQ5l6dgLwImMIestqlFlKWwSKHC4hYhbfX5CUkKpAHcs5-1XwJQ',
         },
       }).then(res=>{
-        console.log(res.data)
         setWeekRes(res.data)
         setLoading(false);
       }).catch(e=>{
-        console.log('week',e)
+        console.error('week',e)
       })
     }).catch(e=>{
-      console.log('month',e)
+      console.error('month',e)
     })
   },[])
 
@@ -182,10 +180,10 @@ function ReportScreen({navigation}) {
                 <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
                 <View>
                   <Card width={width}>
-                    <CustomPieChart date={monthDate}  res={monthRes}/>
+                    <CustomPieChart date={monthDate} res={monthRes}/>
                   </Card>
                   <Card width={width}>
-                    <CustomPieList />
+                    <CustomPieList res={monthRes} />
                   </Card>
                 </View>
               </Contents>

@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React,{useContext, useEffect, useState} from 'react';
 import {Text, View,ScrollView} from 'react-native';
 import styled from 'styled-components/native';
 
@@ -19,32 +19,19 @@ const ItemView= styled.View`
   align-items:center;
 `
 
-const CustomHeatmapRate = () => {
+const CustomHeatmapRate = ({res}) => {
+  const [data,setData] = useState({})
   const {heatmap} = useContext(HeatmapContext);
   
-  const data ={
-    '건강':[
-      {id:1,content:'조깅',cnt:20,rate:0.7},
-      {id:2,content:'필라테스가기',cnt:4,rate:1},
-    ],
-    '자기개발':[
-      {id:1,content:'1일1커밋',cnt:30,rate:0.8},
-      {id:2,content:'독서',cnt:8,rate:0.5},
-    ],
-    '일상':[
-      {id:1,content:'빨래',cnt:4,rate:1},
-      {id:2,content:'아침에 바로 일어나기',cnt:30,rate:0.8},
-      {id:2,content:'야식안먹기',cnt:30,rate:0.4},
-    ],
-    '없음':[
-      {id:1,content:'멍때리기',cnt:30,rate:1},
-      {id:2,content:'숨쉬기',cnt:30,rate:0.8},
-    ]
-  }
+  useEffect(()=>{
+    setData(res[heatmap.date]['해쉬태그별'])
+  },[heatmap.date])
+
   let list
   if(heatmap.pieClick != ''){
     list = data[heatmap.pieClick]
   }
+
   return (
     <View style={{flex:1}}>
       {list===undefined && <Text>

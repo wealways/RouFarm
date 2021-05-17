@@ -34,7 +34,6 @@ const CustomPieChart = ({date,res}) => {
       return {x:val['x'],y:val['y']}
     })
     setMyData(myData)
-    console.log(HashTagData)
   },[heatmap.date])
   
   
@@ -71,9 +70,9 @@ const CustomPieChart = ({date,res}) => {
           domainPadding={{ x: [0, 100] }}
           data={myData}
           height={350}
-          style={{ labels: { fill: "black", fontSize: 10 }, data:{opacity:0.8}}}
+          style={{ labels: { fill: "black", fontSize: 0 }, data:{opacity:0.8}}}
           labelRadius={80}
-          labels={({ datum }) => ``}
+          // labels={({ datum }) => ``}
           events={[{
             target: "data",
             eventHandlers: {
