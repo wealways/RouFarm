@@ -23,14 +23,13 @@ import theme from '../theme';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const HomeStack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
 // route 이름 가져오기
 function getHeaderTitle(route) {
   console.log(route, 'route정보');
   console.log(route.params.date, 'route정보');
   // 날짜가 있으면 날짜를 반환하고 없으면 하루라는 정보 보여주기
-  const routeName = route.params.date ? route.params.date : '일일 정보';
+  const routeName = 'Daily';
   // 확인
   console.log(routeName, 'routeName');
   console.log(route, 'routeName');
@@ -168,7 +167,7 @@ function HideTabs() {
 
 const TabNavigation = () => {
   useEffect(() => {
-    return () => {};
+    return () => { };
   }, []);
   return (
     <Stack.Navigator>

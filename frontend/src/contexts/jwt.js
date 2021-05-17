@@ -10,7 +10,6 @@ const JwtProvider = ({ children }) => {
   const [jwt, setJwt] = useState('');
 
   AsyncStorage.getItem('JWT', (err, res) => {
-    console.log(res);
     setJwt(res);
 
     if (err) console.log(err);

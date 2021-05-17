@@ -6,16 +6,37 @@ import Svg from 'react-native-svg';
 import HeatmapContext from '@/contexts/Report/Heatmap';
 
 
-const CustomPieChart = ({date}) => {
+const CustomPieChart = ({date,res}) => {
   const height = useWindowDimensions().height;
   const {heatmap,pieClickDispatch} = useContext(HeatmapContext);
-
+  const [myData,setMyData] = useState([])
   const HashTagData = [
-    { x: "건강", y: 35 },
-    { x: "자기개발", y: 40 },
-    { x: "일상", y: 55 },
-    { x: "없음", y: 70 },
+    { x: "운동", y: 0 },
+    { x: "지식", y: 0 },
+    { x: "자기개발", y: 0 },
+    { x: "기타", y: 0 },
   ];
+
+  useEffect(()=>{
+    const temp = res[heatmap.date]['해쉬태그별']
+    Object.keys(temp)
+    .forEach(i=>{
+      temp[i].forEach(j=>{
+        if(i==='운동') HashTagData[0]['y']+=j['cnt']
+        else if(i==='지식') HashTagData[1]['y']+=j['cnt']
+        else if(i==='자기개발') HashTagData[2]['y']+=j['cnt']
+        else HashTagData[3]['y']+=j['cnt']
+
+      })
+    })
+
+    const myData = HashTagData.map((val)=>{
+      return {x:val['x'],y:val['y']}
+    })
+    setMyData(myData)
+  },[heatmap.date])
+  
+  
   
   let month
   if(heatmap.date===''){
@@ -36,20 +57,20 @@ const CustomPieChart = ({date}) => {
           // style={{ border: { stroke: "black" } }}
           colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
           data={[
-            { name: "건강" }, { name: "자기개발" },{ name: "일상" }, { name: "없음" }
+            { name: "운동" }, { name: "지식" },{ name: "자기개발" }, { name: "기타" }
           ]}
         />
         <VictoryPie 
           innerRadius={50}
           colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
           animate={{
-            duration: 2000,
+            duration: 1000,
             onLoad: { duration: 1000 }
           }}
           domainPadding={{ x: [0, 100] }}
-          data={HashTagData}
+          data={myData}
           height={350}
-          style={{ labels: { fill: "black", fontSize: 10 }, data:{opacity:0.8}}}
+          style={{ labels: { fill: "black", fontSize: 0 }, data:{opacity:0.8}}}
           labelRadius={80}
           // labels={({ datum }) => ``}
           events={[{

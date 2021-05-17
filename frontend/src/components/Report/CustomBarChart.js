@@ -1,30 +1,38 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { StyleSheet, View, Dimensions,Text } from "react-native";
 import { VictoryBar, VictoryChart, VictoryLegend,VictoryGroup,VictoryLine } from "victory-native";
 import HeatmapContext from '@/contexts/Report/Heatmap';
 
-const MeanData = [
-  {x: "Mon", y: 59},
-  {x: "Tue", y: 70},
-  {x: "Wen", y: 69},
-  {x: "Thu", y: 100},
-  {x: "Fri", y: 30},
-  {x: "Sat", y: 100},
-  {x: "Sun", y: 100}
-]
+// const MeanData = [
+//   {x: "Mon", y: 59},
+//   {x: "Tue", y: 70},
+//   {x: "Wen", y: 69},
+//   {x: "Thu", y: 100},
+//   {x: "Fri", y: 30},
+//   {x: "Sat", y: 100},
+//   {x: "Sun", y: 100}
+// ]
 
-const NowData = [
-  {x: "Mon", y: 69},
-  {x: "Tue", y: 20},
-  {x: "Wen", y: 100},
-  {x: "Thu", y: 100},
-  {x: "Fri", y: 45},
-  {x: "Sat", y: 100},
-  {x: "Sun", y: 70}
-]
+// const NowData = [
+//   {x: "Mon", y: 69},
+//   {x: "Tue", y: 20},
+//   {x: "Wen", y: 100},
+//   {x: "Thu", y: 100},
+//   {x: "Fri", y: 45},
+//   {x: "Sat", y: 100},
+//   {x: "Sun", y: 70}
+// ]
 
-const CustomBarChart = () => {
+const CustomBarChart = ({res}) => {
   const {heatmap} = useContext(HeatmapContext)
+  const [MeanData,setMeanData] = useState([])
+  const [NowData,setNowData] = useState([])
+  
+  useEffect(()=>{
+    setMeanData(res[heatmap.weekDate]['요일별평균']['전체평균'])
+    setNowData(res[heatmap.weekDate]['요일별평균']['평균'])
+  },[heatmap.weekDate])
+
   const width = Dimensions.get("window").width;
   const week = `${parseInt(heatmap.weekDate.split('-')[1])}월 ${heatmap.weekDate.split('-w')[1]}주차`
 
