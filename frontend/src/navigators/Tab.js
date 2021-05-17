@@ -20,11 +20,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 // 아이콘 사용하기
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from '../theme';
-import { createStackNavigator } from '@react-navigation/stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const HomeStack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
 // route 이름 가져오기
 function getHeaderTitle(route) {
@@ -170,7 +168,7 @@ function HideTabs() {
 
 const TabNavigation = () => {
   useEffect(() => {
-    return () => {};
+    return () => { };
   }, []);
   return (
     <Stack.Navigator>
