@@ -9,6 +9,12 @@ import theme from '@/theme';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+import { instance } from '@/api';
+import { JwtConsumer } from '@/contexts/jwt';
+import { yoilReverse } from '@/utils/parsedate';
+
+// 컴포넌트
 import {
   makeQRAlarm,
   makeAlarm,
@@ -16,7 +22,6 @@ import {
   deleteAlarm,
   stopAlarmSound,
 } from '@/components/CreateRoutine/AlarmNotifi';
-import { yoilReverse } from '@/utils/parsedate';
 
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
@@ -44,12 +49,12 @@ function QRScreen({ navigation }) {
     await AsyncStorage.getItem(storageName, (err, res) => {
       let data = JSON.parse(res);
       setData(data === null ? {} : data); // null 에러 처리
-      console.log(data);
+
       if (err) console.log(err);
     });
   };
 
-  const onSuccess = async (e) => {
+  const onSuccess = async (e, jwt) => {
     setResult(e);
     setScan(false);
     setScanResult(true);
@@ -64,11 +69,7 @@ function QRScreen({ navigation }) {
       if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
         // QR알람이 존재하는지 확인
         if (quest.qrOnceAlarmIdList.length + quest.qrRepeatAlarmIdList.length !== 0) {
-          // 알람이 울린 후이면, 알람 종료
-          let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
-          if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
-            stopAlarmSound();
-          }
+          let isQuit = true;
 
           // 일회성 QR알람 인지 확인
           if (quest.qrOnceAlarmIdList.length !== 0) {
@@ -76,6 +77,8 @@ function QRScreen({ navigation }) {
             if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
               deleteAlarm(quest.qrOnceAlarmIdList[0]);
               quest.qrOnceAlarmIdList = [];
+
+              isQuit = true;
             }
           }
           // 반복성 QR알람 인지 확인
@@ -86,6 +89,7 @@ function QRScreen({ navigation }) {
               // 같은 요일 인지 확인
               if (yoilReverse[val] === new Date().getDay()) {
                 i = idx;
+                isQuit = true;
               }
             });
 
@@ -119,12 +123,42 @@ function QRScreen({ navigation }) {
             }
           }
 
-          // 메모리에 저장
-          quests[uuid] = quest;
-          await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
-            console.log('정보 저장 완료');
-            navigation.navigate('Home');
-          });
+          // QR을 삭제/종료 했다면
+          if (isQuit) {
+            // 알람이 울린 후이면, 알람 종료
+            let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
+            if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
+              stopAlarmSound();
+            }
+
+            // 메모리에 저장
+            quests[uuid] = quest;
+            await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
+              console.log('정보 저장 완료');
+              navigation.navigate('Home');
+            });
+
+            // 퀘스트 로그 생성
+            date = date.length == 1 ? '0' + date : date;
+            month = month.length == 1 ? '0' + month : month;
+
+            instance
+              .post(
+                'routineLog/',
+                {
+                  routineId: uuid,
+                  time: date + '-' + month + '-' + year,
+                  isSuccess: 'true',
+                },
+                {
+                  headers: {
+                    Authorization: jwt,
+                  },
+                },
+              )
+              .then((res) => console.log('post response!', res.data))
+              .catch((err) => console.log(err));
+          }
         }
       }
     }
@@ -220,26 +254,30 @@ function QRScreen({ navigation }) {
       {scan && (
         <Wrapper>
           <StatusBar></StatusBar>
-          <QRCodeScanner
-            reactivate={true}
-            showMarker={true}
-            ref={(node) => {
-              scanner.current = node;
-            }}
-            onRead={onSuccess}
-            bottomContent={
-              <View>
-                <TouchableOpacity
-                  style={styles.buttonTouchable}
-                  onPress={() => {
-                    setScan(false);
-                    navigation.navigate('Home');
-                  }}>
-                  <Text style={styles.buttonTextStyle}>Stop Scan</Text>
-                </TouchableOpacity>
-              </View>
-            }
-          />
+          <JwtConsumer>
+            {({ JWT }) => (
+              <QRCodeScanner
+                reactivate={true}
+                showMarker={true}
+                ref={(node) => {
+                  scanner.current = node;
+                }}
+                onRead={onSuccess(JWT.jwt)}
+                bottomContent={
+                  <View>
+                    <TouchableOpacity
+                      style={styles.buttonTouchable}
+                      onPress={() => {
+                        setScan(false);
+                        navigation.navigate('Home');
+                      }}>
+                      <Text style={styles.buttonTextStyle}>Stop Scan</Text>
+                    </TouchableOpacity>
+                  </View>
+                }
+              />
+            )}
+          </JwtConsumer>
         </Wrapper>
       )}
     </>

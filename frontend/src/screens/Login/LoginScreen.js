@@ -87,7 +87,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { configs } from 'eslint-plugin-prettier';
 
 function LoginPage({ navigation }) {
-
   // 카카오 정보 조회
   const [kakaoInfo, setKakaoInfo] = useState({
     token: null,
@@ -105,10 +104,10 @@ function LoginPage({ navigation }) {
       token = await login();
 
       await setKakaoInfo((prev) => {
-        console.log({ ...kakaoInfo }, 'destructure')
-        prev = { ...kakaoInfo, token: token }
-        console.log('받은 토큰 정보', prev)
-        return prev
+        console.log({ ...kakaoInfo }, 'destructure');
+        prev = { ...kakaoInfo, token: token };
+        console.log('받은 토큰 정보', prev);
+        return prev;
       });
       // 성공시
       return true
@@ -125,16 +124,16 @@ function LoginPage({ navigation }) {
       const profile: KakaoProfile = await getKakaoProfile();
       setKakaoInfo((prev) => {
         // 들어온 인자(이전의 state - kakaoInfo)
-        prev = { ...prev, profile: profile }
-        console.log('받은 프로필 정보', prev)
-        return prev
+        prev = { ...prev, profile: profile };
+        console.log('받은 프로필 정보', prev);
+        return prev;
       });
       // 3번 함수 실행의 인자로 넘겨주기
       return profile
     } catch (e) {
-      console.log('카카오 프로필 조회 실패')
-      console.error(e)
-      showAlert("카카오 프로필 조회 실패")
+      console.log('카카오 프로필 조회 실패');
+      console.error(e);
+      showAlert('카카오 프로필 조회 실패');
     }
   };
   // 3. JWT token API
@@ -145,10 +144,10 @@ function LoginPage({ navigation }) {
         method: 'POST',
         url: url,
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json;charset=UTF-8'
+          Accept: 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
         },
-        data: JSON.stringify(kakaoprofile)
+        data: JSON.stringify(kakaoprofile),
       };
       // request 보낼 정보 확인(카카오 프로필 정보)
       console.log(options);
@@ -157,10 +156,10 @@ function LoginPage({ navigation }) {
       console.log('response');
       console.log(response);
       // 3 - 1. AsyncStorage 저장하기 및 이동
-      saveUserInfo(response.data)
+      saveUserInfo(response.data);
     } catch (e) {
-      console.error(e)
-      showAlert("JWT token 발급 실패")
+      console.error(e);
+      showAlert('JWT token 발급 실패');
     }
   };
 
@@ -173,7 +172,7 @@ function LoginPage({ navigation }) {
     AsyncStorage.setItem('JWT', data.token);
     // 3. 조회해서 확인
     AsyncStorage.getItem('JWT', (error, JWTValue) => {
-      console.log('접속자 토큰정보', JWTValue)
+      console.log('접속자 토큰정보', JWTValue);
     });
     // 모드 정보
     // 1. asyncstorage에 있는 모드 정보 초기화
@@ -182,12 +181,12 @@ function LoginPage({ navigation }) {
     AsyncStorage.setItem('mode', data.user.profile.mode);
     // 3. 조회해서 확인
     AsyncStorage.getItem('mode', (error, mode) => {
-      console.log('접속자 mode 정보', mode)
+      console.log('접속자 mode 정보', mode);
     });
 
     // 이동하기 - 에러 처리
     if (data.msg === 'login') {
-      navigation.navigate("Home")
+      navigation.navigate('Home');
     } else if (data.msg === 'signup') {
       // props 넘기기
       navigation.navigate("SelectMode")
@@ -221,15 +220,15 @@ function LoginPage({ navigation }) {
         headers: {
           // body가 없기 때문에 accept, content-type X
           // 헤더에 JWT 추가
-          'Authorization': JWT,
+          Authorization: JWT,
         },
       };
-      console.log(options, '옵션')
+      console.log(options, '옵션');
       let response = await axios(options);
       // 테스트용 조회
-      setGetUser(JSON.stringify(response.data))
-      console.log('response - get(user/)')
-      console.log(response)
+      setGetUser(JSON.stringify(response.data));
+      console.log('response - get(user/)');
+      console.log(response);
     } catch (e) {
       console.error(e);
     }
@@ -237,11 +236,8 @@ function LoginPage({ navigation }) {
 
   // alert 창 실패 시 메세지 담아서
   const showAlert = (msg) => {
-    Alert.alert(
-      "버튼을 다시 클릭해주세요",
-      msg
-    );
-  }
+    Alert.alert('버튼을 다시 클릭해주세요', msg);
+  };
 
   // RN - BE 통신 테스트 (회원 닉네임 변경 - 정보 가져오기)
   const testPut = async () => {
@@ -251,20 +247,20 @@ function LoginPage({ navigation }) {
         method: 'PUT',
         url: url,
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json;charset=UTF-8',
           // 헤더에 JWT 추가
-          'Authorization': JWT,
+          Authorization: JWT,
         },
         data: {
           nickname: '나야',
-          mode: '너야?'
-        }
+          mode: '너야?',
+        },
       };
-      console.log(options, '옵션')
+      console.log(options, '옵션');
       let response = await axios(options);
-      console.log('response - put(user/)')
-      console.log(response)
+      console.log('response - put(user/)');
+      console.log(response);
     } catch (e) {
       console.error(e);
     }
@@ -279,33 +275,28 @@ function LoginPage({ navigation }) {
     <Wrapper>
       {/* App name */}
       <Content1>
-        <AppName>Rou
-            <Text style={{ color: '#55f27c' }}>Farm</Text>
+        <AppName>
+          Rou
+          <Text style={{ color: '#55f27c' }}>Farm</Text>
         </AppName>
         <Subtitle>부지런한 농부의 마음으로 시작하는 루틴 관리</Subtitle>
       </Content1>
       <Content2>
         {/* App Logo */}
-        <Logo
-          resizeMode={'contain'}
-          source={require('../../assets/images/slave1.png')}></Logo>
+        <Logo resizeMode={'contain'} source={require('../../assets/images/slave1.png')}></Logo>
         {/* kakao login btn */}
         <Btn onPress={() => roufarmLogin()}>
-          <WithLocalSvg
-            asset={kakaoSymbol}
-            width={15}
-            height={20}
-            fill={'#000000'} />
+          <WithLocalSvg asset={kakaoSymbol} width={15} height={20} fill={'#000000'} />
           <BtnText>카카오 로그인</BtnText>
         </Btn>
       </Content2>
-    </Wrapper >
+    </Wrapper>
   );
 }
 
 // 메인 배경
 const Wrapper = styled.View`
-  flex:1;
+  flex: 1;
   background: #f4f4f4;
 `;
 
@@ -318,14 +309,14 @@ const Content1 = styled.View`
 const AppName = styled.Text`
   color: white;
   font-size: 40px;
-  font-family: "SHOWG";
+  font-family: 'SHOWG';
   color: #fcc004;
   margin-bottom: 4px;
 `;
 const Subtitle = styled.Text`
   align-self: center;
   font-size: 12px;
-  font-family: "NotoSansKR-Regular";
+  font-family: 'NotoSansKR-Regular';
   color: #606c80;
 `;
 
@@ -337,8 +328,7 @@ const Content2 = styled.View`
   margin: 20px;
   margin-top: 40px;
 `;
-const Logo = styled.Image`
-`;
+const Logo = styled.Image``;
 // 카카오 로그인 - 규칙에 따라
 const Btn = styled.TouchableOpacity`
   flex-direction: row;

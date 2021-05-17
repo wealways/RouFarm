@@ -1,7 +1,5 @@
 import React,{createContext,useState} from 'react';
 
-
-
 const HeatmapContext = createContext({
   heatmap:{date:'',weekDate:'',rate:'',pieClick:''},
   dateDispatch: () => {},
