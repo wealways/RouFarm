@@ -86,16 +86,15 @@ const Fail = ({res}) => {
       }
     })
   }
-
   const idx = Object.keys(contents).indexOf(heatmap.weekDate)
 
   return (
     <>
       <ScrollView style={{maxHeight:230}}>
         {
-          (renderData.length===0 || renderData.length===undefined) && <Text>실패한 루틴이 하나도 없는 날이에요 👍</Text>
+          (Object.keys(renderData).length===0) && <Text>실패한 루틴이 하나도 없는 날이에요 👍</Text>
         }
-        {renderData.length!==0 && Object.values(renderData)
+        {Object.keys(renderData).length!==0 && Object.values(renderData)
         .map((item,key) => (
           <FailView key={key}>
             <TagText name={item.tag}>#{item.tag}</TagText>
