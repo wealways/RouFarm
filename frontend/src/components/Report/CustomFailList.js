@@ -40,6 +40,8 @@ const Fail = ({res}) => {
   const [contents,setContents] = useState({})
 
   useEffect(()=>{
+    console.log(heatmap.weekDate)
+    console.log(res[heatmap.weekDate])
     setContents(res[heatmap.weekDate]["실패리스트"])
   },[heatmap.weekDate])
 

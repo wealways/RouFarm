@@ -23,6 +23,7 @@ const CustomDropdown = ({date,flag}) => {
     setShowModal((prev) => !prev);
   };
 
+  // 디폴트값 만들기
   const onDefault = () =>{
     if(flag==='month') dateDispatch(date[0])
     else weekDateDispatch(date[0])
