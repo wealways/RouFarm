@@ -15,14 +15,17 @@ import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
 import { Switch } from 'react-native-elements';
+import axios from 'axios';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // 컴포넌트
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
+import { JwtConsumer } from '@/contexts/jwt';
 
 // 유틸
+import { instance } from '@/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
 
@@ -66,7 +69,7 @@ function CreateRoutineScreen({ navigation }) {
   const [isAlarm, setIsAlarm] = useState(false);
 
   // 퀘스트 생성
-  const handleCreate = async () => {
+  const handleCreate = async (jwt) => {
     // 퀘스트 uuid 생성
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
 
@@ -133,26 +136,30 @@ function CreateRoutineScreen({ navigation }) {
     });
 
     // 생성 요청
-    const instance = axios.create({
-      baseURL: 'http://k4c105.p.ssafy.io/api/',
-      headers: {
-        Authorization:
-          'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxMjM0NTY3ODkiLCJpYXQiOjE2MjA5NTgwODEsImV4cCI6MTYyMzU1MDA4MX0.ShjZ5egr9AmY2calidv_jf77DqfRqt3lR05UQLZn8rOVgQuD9wXxCQcw0QKPFm8cRWwCMzoPvW-OqonAZbkHFQ',
-      },
-    });
+    // instance.defaults.headers.common['Authorization'] = jwt;
     instance
-      .post('routine/', {
-        uuid,
-        startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
-        questName,
-        startTime,
-        endTime,
-        alarmTime,
-        repeatYoilList,
-        category: '기타',
-      })
+      .post(
+        'routine/',
+        {
+          uuid,
+          startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
+          questName,
+          startTime,
+          endTime,
+          alarmTime,
+          repeatYoilList,
+          category: hashTag,
+        },
+        {
+          headers: {
+            Authorization: jwt,
+          },
+        },
+      )
       .then((res) => console.log('post response!', res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log('post error!', err));
+
+    console.log(jwt);
   };
 
   // 모달 활성/비활성
@@ -364,13 +371,17 @@ function CreateRoutineScreen({ navigation }) {
             }}
           />
         </View> */}
-        <ButtonWrapper
-          style={{ marginBottom: 50 }}
-          onPress={() => {
-            handleCreate();
-          }}>
-          <Text style={{ color: 'white' }}>퀘스트 생성</Text>
-        </ButtonWrapper>
+        <JwtConsumer>
+          {({ JWT }) => (
+            <ButtonWrapper
+              style={{ marginBottom: 50 }}
+              onPress={() => {
+                handleCreate(JWT.jwt);
+              }}>
+              <Text style={{ color: 'white' }}>퀘스트 생성</Text>
+            </ButtonWrapper>
+          )}
+        </JwtConsumer>
       </ScrollView>
 
       <NavigationButton navigation={navigation} />

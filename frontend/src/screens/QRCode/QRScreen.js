@@ -9,6 +9,12 @@ import theme from '@/theme';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+import { instance } from '@/api';
+import { JwtConsumer } from '@/contexts/jwt';
+import { yoilReverse } from '@/utils/parsedate';
+
+// 컴포넌트
 import {
   makeQRAlarm,
   makeAlarm,
@@ -16,8 +22,6 @@ import {
   deleteAlarm,
   stopAlarmSound,
 } from '@/components/CreateRoutine/AlarmNotifi';
-import { yoilReverse } from '@/utils/parsedate';
-import axios from 'axios';
 
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
@@ -50,7 +54,7 @@ function QRScreen({ navigation }) {
     });
   };
 
-  const onSuccess = async (e) => {
+  const onSuccess = async (e, jwt) => {
     setResult(e);
     setScan(false);
     setScanResult(true);
@@ -138,21 +142,21 @@ function QRScreen({ navigation }) {
             date = date.length == 1 ? '0' + date : date;
             month = month.length == 1 ? '0' + month : month;
 
-            const instance = axios.create({
-              baseURL: 'http://k4c105.p.ssafy.io/api/',
-              headers: {
-                Authorization:
-                  'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxMjM0NTY3ODkiLCJpYXQiOjE2MjA5NTgwODEsImV4cCI6MTYyMzU1MDA4MX0.ShjZ5egr9AmY2calidv_jf77DqfRqt3lR05UQLZn8rOVgQuD9wXxCQcw0QKPFm8cRWwCMzoPvW-OqonAZbkHFQ',
-              },
-            });
             instance
-              .post('routineLog/', {
-                routineId: uuid,
-                time: date + '-' + month + '-' + year,
-                isSuccess: 'true',
-              })
+              .post(
+                'routineLog/',
+                {
+                  routineId: uuid,
+                  time: date + '-' + month + '-' + year,
+                  isSuccess: 'true',
+                },
+                {
+                  headers: {
+                    Authorization: jwt,
+                  },
+                },
+              )
               .then((res) => console.log('post response!', res.data))
-
               .catch((err) => console.log(err));
           }
         }
@@ -250,26 +254,30 @@ function QRScreen({ navigation }) {
       {scan && (
         <Wrapper>
           <StatusBar></StatusBar>
-          <QRCodeScanner
-            reactivate={true}
-            showMarker={true}
-            ref={(node) => {
-              scanner.current = node;
-            }}
-            onRead={onSuccess}
-            bottomContent={
-              <View>
-                <TouchableOpacity
-                  style={styles.buttonTouchable}
-                  onPress={() => {
-                    setScan(false);
-                    navigation.navigate('Home');
-                  }}>
-                  <Text style={styles.buttonTextStyle}>Stop Scan</Text>
-                </TouchableOpacity>
-              </View>
-            }
-          />
+          <JwtConsumer>
+            {({ JWT }) => (
+              <QRCodeScanner
+                reactivate={true}
+                showMarker={true}
+                ref={(node) => {
+                  scanner.current = node;
+                }}
+                onRead={onSuccess(JWT.jwt)}
+                bottomContent={
+                  <View>
+                    <TouchableOpacity
+                      style={styles.buttonTouchable}
+                      onPress={() => {
+                        setScan(false);
+                        navigation.navigate('Home');
+                      }}>
+                      <Text style={styles.buttonTextStyle}>Stop Scan</Text>
+                    </TouchableOpacity>
+                  </View>
+                }
+              />
+            )}
+          </JwtConsumer>
         </Wrapper>
       )}
     </>
