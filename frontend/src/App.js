@@ -80,14 +80,16 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <NavigationContainer
-          ref={navigationRef}
-          onReady={() => {
-            isReadRef.current = true;
-          }}>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <TabNavigation />
-        </NavigationContainer>
+        <JwtProvider>
+          <NavigationContainer
+            ref={navigationRef}
+            onReady={() => {
+              isReadRef.current = true;
+            }}>
+            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+            <TabNavigation />
+          </NavigationContainer>
+        </JwtProvider>
       </Provider>
     </ThemeProvider>
   );

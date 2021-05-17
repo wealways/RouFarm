@@ -27,7 +27,7 @@ const Weekline = styled.View`
 
 // 한달 데이터 -10은 아예 없는 날 / -1는 루틴 안만든 날 / 0은 루틴 하나도 안한 날
 const INITIAL_MONTHDATA = [-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]
-const CustomHeatmapChart = ({navigation}) => {
+const CustomHeatmapChart = ({navigation,res}) => {
   
   const [monthdata,setMonthdata] = useState(INITIAL_MONTHDATA);
   const {heatmap,rateDispatch} = useContext(HeatmapContext);
@@ -36,11 +36,12 @@ const CustomHeatmapChart = ({navigation}) => {
 
   useEffect(() => {
     // 한달 데이터  -1는 루틴 안만든 날 / 0~100은 루틴 하나도 안한 날 API
-    const data = {
-      '2021-05':[100, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1,-1,-1,-1,-1],
-      '2021-04':[-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0],
-      '2021-03':[-1, -1, -1, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0,1]
-    }
+    // const data = {
+    //   '2021-05':[100, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1,-1,-1,-1,-1],
+    //   '2021-04':[-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0],
+    //   '2021-03':[-1, -1, -1, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0,1]
+    // }
+    const data = res[heatmap.date]['월간수확']
 
     const monthAPI = {
       '2021-05':{
@@ -110,8 +111,7 @@ const CustomHeatmapChart = ({navigation}) => {
 
     
     
-    let dataInx = Object.keys(data).indexOf(heatmap.date)
-    const Ddate = new Date(Object.keys(data)[dataInx])
+    const Ddate = new Date(heatmap.date)
     const day = Ddate.getDay() - 1
     setTempD(day)
     const lastdate = new Date(Ddate.getFullYear(),Ddate.getMonth()+1,0).getDate();
@@ -121,12 +121,12 @@ const CustomHeatmapChart = ({navigation}) => {
       if(i<day){
         return d
       }else if(i<lastdate+day){
-        const temp = Object.values(data)[dataInx][i-day]
+        const temp = data[i-day]
         if(temp>=0){
           sumV += temp
           cnt += 1
         }
-        return Object.values(data)[dataInx][i-day]
+        return data[i-day]
       }else{
         return d
       }
@@ -156,8 +156,8 @@ const CustomHeatmapChart = ({navigation}) => {
   return (
     <View>
       <View style={{flexDirection:'row'}}>
-        {yoil.map((y,idx)=>(
-          <WeekBox key={idx}>{y}</WeekBox>
+        {yoil.map((y,yIdx)=>(
+          <WeekBox key={yIdx}>{y}</WeekBox>
         ))}
       </View>
       <View>
@@ -165,7 +165,7 @@ const CustomHeatmapChart = ({navigation}) => {
           <Weekline key={wIdx}>
             {week.map((d,dIdx) =>(
               <>
-                {<Custombox onPress={() => _onPress(w,d)} key={dIdx} boxColor={monthdata[w*7+d]}/>}
+                {<Custombox key={dIdx} onPress={() => _onPress(w,d)} boxColor={monthdata[w*7+d]}/>}
               </>
             ))}
           </Weekline>
