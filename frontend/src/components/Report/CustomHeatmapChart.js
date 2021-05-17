@@ -165,7 +165,13 @@ const CustomHeatmapChart = ({navigation,res}) => {
           <Weekline key={wIdx}>
             {week.map((d,dIdx) =>(
               <>
-                {<Custombox key={dIdx} onPress={() => _onPress(w,d)} boxColor={monthdata[w*7+d]}/>}
+                {monthdata[w*7+d]!==-1 && 
+                  <Custombox key={dIdx} onPress={() => _onPress(w,d)} boxColor={monthdata[w*7+d]}/>
+                }
+                {/* 리포트없는날은 클릭 안되게 */}
+                {monthdata[w*7+d]===-1 && 
+                  <Custombox disabled={true} key={dIdx} onPress={() => _onPress(w,d)} boxColor={monthdata[w*7+d]}/>
+                }
               </>
             ))}
           </Weekline>
