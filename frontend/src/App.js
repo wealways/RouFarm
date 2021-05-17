@@ -59,6 +59,9 @@ const App = () => {
 
   // 스플래쉬 이미지 확인
   useEffect(async () => {
+    AsyncStorage.getItem('mode').then((mode) => {
+      console.log(mode, 'mode')
+    })
     // 1. 시간 딜레이 설정
     setTimeout(() => {
       // 2. JWT 토큰 정보 확인
@@ -82,7 +85,6 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-<<<<<<< HEAD
       <JwtProvider>
         <NavigationContainer
           ref={navigationRef}
@@ -93,20 +95,6 @@ const App = () => {
           <TabNavigation />
         </NavigationContainer>
       </JwtProvider>
-=======
-      <Provider store={store}>
-        <JwtProvider>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <NavigationContainer
-            ref={navigationRef}
-            onReady={() => {
-              isReadRef.current = true;
-            }}>
-            <TabNavigation />
-          </NavigationContainer>
-        </JwtProvider>
-      </Provider>
->>>>>>> 171f4ef099f89735a42ba68471fffc8836bd0c4a
     </ThemeProvider>
   );
 };

@@ -95,6 +95,14 @@ function selectMode({ navigation }) {
       };
       console.log(options, '옵션')
       let response = await axios(options);
+      // 1. 모드 정보 asyncstorage 초기화
+      AsyncStorage.removeItem('mode');
+      // 2. 넣어주기
+      AsyncStorage.setItem('mode', newMode);
+      // 3. 조회해서 확인
+      AsyncStorage.getItem('mode', (error, mode) => {
+        console.log('접속자 mode 정보', mode);
+      });
       console.log('response - put(user/)')
       console.log(response)
 
