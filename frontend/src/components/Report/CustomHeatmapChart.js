@@ -26,14 +26,13 @@ const Weekline = styled.View`
 
 
 // 한달 데이터 -10은 아예 없는 날 / -1는 루틴 안만든 날 / 0은 루틴 하나도 안한 날
-<<<<<<< HEAD
-const INITIAL_MONTHDATA = [-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]
-const CustomHeatmapChart = ({navigation,res}) => {
-  
-  const [monthdata,setMonthdata] = useState(INITIAL_MONTHDATA);
-  const {heatmap,rateDispatch} = useContext(HeatmapContext);
-  const [tempD,setTempD] = useState(0);
-  const yoil = ['월','화','수','목','금','토','일']
+const INITIAL_MONTHDATA = [-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10]
+const CustomHeatmapChart = ({ navigation, res }) => {
+
+  const [monthdata, setMonthdata] = useState(INITIAL_MONTHDATA);
+  const { heatmap, rateDispatch } = useContext(HeatmapContext);
+  const [tempD, setTempD] = useState(0);
+  const yoil = ['월', '화', '수', '목', '금', '토', '일']
 
   useEffect(() => {
     // 한달 데이터  -1는 루틴 안만든 날 / 0~100은 루틴 하나도 안한 날 API
@@ -43,23 +42,6 @@ const CustomHeatmapChart = ({navigation,res}) => {
     //   '2021-03':[-1, -1, -1, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75,0,0,0,0,1]
     // }
     const data = res[heatmap.date]['월간수확']
-=======
-const INITIAL_MONTHDATA = [-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10]
-const CustomHeatmapChart = ({ navigation }) => {
-
-  const [monthdata, setMonthdata] = useState(INITIAL_MONTHDATA);
-  const { heatmap, rateDispatch } = useContext(HeatmapContext);
-  const [tempD, setTempD] = useState(0);
-  const yoil = ['월', '화', '수', '목', '금', '토', '일']
-
-  useEffect(() => {
-    // 한달 데이터  -1는 루틴 안만든 날 / 0~100은 루틴 하나도 안한 날 API
-    const data = {
-      '2021-05': [100, 100, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-      '2021-04': [-1, 0, 10, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75, 0, 0, 0, 0],
-      '2021-03': [-1, -1, -1, 50, 100, 3, 0, 8, 6, -1, 0, 10, 100, 12, 99, 0, 10, 0, 17, 8, 0, 6, 0, 6, 10, 75, 0, 0, 0, 0, 1]
-    }
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
 
     const monthAPI = {
       '2021-05': {
@@ -126,17 +108,9 @@ const CustomHeatmapChart = ({ navigation }) => {
       { id: 3, routine: '명상하기', tag: '일상', completed: true },
     ]
 
-<<<<<<< HEAD
-    
-    
+
+
     const Ddate = new Date(heatmap.date)
-=======
-
-
-
-    let dataInx = Object.keys(data).indexOf(heatmap.date)
-    const Ddate = new Date(Object.keys(data)[dataInx])
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
     const day = Ddate.getDay() - 1
     setTempD(day)
     const lastdate = new Date(Ddate.getFullYear(), Ddate.getMonth() + 1, 0).getDate();
@@ -145,25 +119,14 @@ const CustomHeatmapChart = ({ navigation }) => {
     const update = INITIAL_MONTHDATA.map((d, i) => {
       if (i < day) {
         return d
-<<<<<<< HEAD
-      }else if(i<lastdate+day){
-        const temp = data[i-day]
-        if(temp>=0){
-          sumV += temp
-          cnt += 1
-        }
-        return data[i-day]
-      }else{
-=======
       } else if (i < lastdate + day) {
-        const temp = Object.values(data)[dataInx][i - day]
+        const temp = data[i - day]
         if (temp >= 0) {
           sumV += temp
           cnt += 1
         }
-        return Object.values(data)[dataInx][i - day]
+        return data[i - day]
       } else {
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
         return d
       }
     })
@@ -184,8 +147,9 @@ const CustomHeatmapChart = ({ navigation }) => {
     if (isNaN(new Date(date))) {
       return
     } else {
-      navigation.navigate('Hide',
-        { screen: 'Daily', params: { date: date } });
+      // navigation.navigate('Hide',
+      //   { screen: 'Daily', params: { date: date } });
+      navigation.navigate('Daily', { date: date })
       console.log('here', date)
     }
   };
@@ -193,15 +157,9 @@ const CustomHeatmapChart = ({ navigation }) => {
 
   return (
     <View>
-<<<<<<< HEAD
-      <View style={{flexDirection:'row'}}>
-        {yoil.map((y,yIdx)=>(
-          <WeekBox key={yIdx}>{y}</WeekBox>
-=======
       <View style={{ flexDirection: 'row' }}>
-        {yoil.map((y, idx) => (
-          <WeekBox key={idx}>{y}</WeekBox>
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
+        {yoil.map((y, yIdx) => (
+          <WeekBox key={yIdx}>{y}</WeekBox>
         ))}
       </View>
       <View>
@@ -209,17 +167,13 @@ const CustomHeatmapChart = ({ navigation }) => {
           <Weekline key={wIdx}>
             {week.map((d, dIdx) => (
               <>
-<<<<<<< HEAD
-                {monthdata[w*7+d]!==-1 && 
-                  <Custombox key={dIdx} onPress={() => _onPress(w,d)} boxColor={monthdata[w*7+d]}/>
+                {monthdata[w * 7 + d] !== -1 &&
+                  <Custombox key={dIdx} onPress={() => _onPress(w, d)} boxColor={monthdata[w * 7 + d]} />
                 }
                 {/* 리포트없는날은 클릭 안되게 */}
-                {monthdata[w*7+d]===-1 && 
-                  <Custombox disabled={true} key={dIdx} onPress={() => _onPress(w,d)} boxColor={monthdata[w*7+d]}/>
+                {monthdata[w * 7 + d] === -1 &&
+                  <Custombox disabled={true} key={dIdx} onPress={() => _onPress(w, d)} boxColor={monthdata[w * 7 + d]} />
                 }
-=======
-                {<Custombox onPress={() => _onPress(w, d)} key={dIdx} boxColor={monthdata[w * 7 + d]} />}
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
               </>
             ))}
           </Weekline>
