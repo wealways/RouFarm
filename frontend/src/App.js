@@ -85,20 +85,6 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-<<<<<<< HEAD
-      <Provider store={store}>
-        <JwtProvider>
-          <NavigationContainer
-            ref={navigationRef}
-            onReady={() => {
-              isReadRef.current = true;
-            }}>
-            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-            <TabNavigation />
-          </NavigationContainer>
-        </JwtProvider>
-      </Provider>
-=======
       <JwtProvider>
         <NavigationContainer
           ref={navigationRef}
@@ -109,7 +95,6 @@ const App = () => {
           <TabNavigation />
         </NavigationContainer>
       </JwtProvider>
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
     </ThemeProvider>
   );
 };

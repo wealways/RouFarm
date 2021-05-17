@@ -27,7 +27,7 @@ const HeatmapProvider = ({children}) => {
 
 
   //jwt
-  const [jwt, setJwt] = useState('ㅎㅇ');
+  const [jwt, setJwt] = useState('ㅎ');
   AsyncStorage.getItem('JWT', (err, res) => {
     setJwt(res);
 

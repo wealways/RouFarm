@@ -114,7 +114,7 @@ const Detail = ({ route }) => {
         <View style={styles.result}>
           {rate == 100 &&
             <Text style={styles.comment}>
-              훌륭합니다!! 👍👍
+              훌륭합니다!!  👍👍
             </Text>
           }
           {rate >= 50 && rate < 100 &&
