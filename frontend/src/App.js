@@ -79,7 +79,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Provider store={store}>
+      <JwtProvider>
         <NavigationContainer
           ref={navigationRef}
           onReady={() => {
@@ -88,7 +88,7 @@ const App = () => {
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
           <TabNavigation />
         </NavigationContainer>
-      </Provider>
+      </JwtProvider>
     </ThemeProvider>
   );
 

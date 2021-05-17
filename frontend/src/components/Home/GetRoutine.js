@@ -6,8 +6,9 @@ import { yoilReverse } from '../../utils/parsedate';
 const DateButton = styled.Pressable`
   padding: 8px;
   margin: 0 4px;
-  background: #382f9b;
+  background: ${({ theme }) => theme.colors.first};
   border-radius: 8px;
+  margin-bottom: 8px;
 `;
 
 // 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기

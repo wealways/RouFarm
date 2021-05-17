@@ -63,7 +63,7 @@ function QRScreen({ navigation }) {
     let quest = quests[uuid];
 
     // 존재하는 루틴 인지 확인
-    if (quest !== null) {
+    if (quest !== undefined) {
       // 시작된 루틴 인지 확인
       let [date, month, year] = [...quest.startDate.split('-')];
       if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {

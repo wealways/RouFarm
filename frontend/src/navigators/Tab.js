@@ -16,68 +16,95 @@ import {
 
 // 아이콘 사용하기
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import theme from '../theme';
 
 const Tab = createBottomTabNavigator();
 
 // Tab바 이미지 부여
 const TabIcon = ({ name, size, color }) => {
   return <MaterialCommunityIcons name={name} size={size} color={color} />;
-}
+};
 
 const TabNavigation = () => {
   return (
-    <Tab.Navigator initialRouteName="환경설정">
-      <Tab.Screen name="Home" component={Home}
+    <Tab.Navigator
+      initialRouteName="환경설정"
+      tabBarOptions={{
+        activeTintColor: '#fff',
+        activeBackgroundColor: theme.colors.first,
+        style: { height: 56, justifyContent: 'center', alignItems: 'center' },
+        labelStyle: { fontSize: 12 },
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={Home}
         options={{
-          tabBarLabel: "홈",
-          tabBarIcon: (props) => TabIcon({ ...props, name: "home" })
+          tabBarLabel: '홈',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'home' }),
         }}
       />
-      <Tab.Screen name="Report" component={Report}
+      <Tab.Screen
+        name="Report"
+        component={Report}
         options={{
-          tabBarLabel: "통계",
-          tabBarIcon: (props) => TabIcon({ ...props, name: "file-chart" })
+          tabBarLabel: '통계',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'file-chart' }),
         }}
       />
       {/* 라벨 숨기기 */}
-      <Tab.Screen name="QR" component={QR}
+      <Tab.Screen
+        name="QR"
+        component={QR}
         options={{
-          tabBarLabel: () => (null),
-          tabBarIcon: (props) => TabIcon({ ...props, name: "qrcode-scan", size: 45 })
+          tabBarLabel: () => null,
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'qrcode-scan', size: 45 }),
         }}
       />
-      <Tab.Screen name="Share" component={FriendList}
+      <Tab.Screen
+        name="Share"
+        component={FriendList}
         options={{
-          tabBarLabel: "루틴 자랑",
-          tabBarIcon: (props) => TabIcon({ ...props, name: "message-image-outline" })
+          tabBarLabel: '루틴 자랑',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
         }}
       />
-      <Tab.Screen name="CreateRoutine" component={CreateRoutine}
+      {/* <Tab.Screen
+        name="CreateRoutine"
+        component={CreateRoutine}
         options={{
-          tabBarLabel: "루틴 생성",
-          tabBarIcon: (props) => TabIcon({ ...props, name: "playlist-plus" })
+          tabBarLabel: '루틴 생성',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'playlist-plus' }),
         }}
-      />
-      <Tab.Screen name="SelectMode" component={SelectMode}
+      /> */}
+      <Tab.Screen
+        name="SelectMode"
+        component={SelectMode}
         options={{
-          tabBarLabel: "환경설정",
-          tabBarIcon: (props) => TabIcon({ ...props, name: "cog" })
+          tabBarLabel: '환경설정',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
         }}
       />
       {/* 탭에 보이지 않는 옵션 */}
-      <Tab.Screen name="Login" component={Login}
+      <Tab.Screen
+        name="Login"
+        component={Login}
         options={{
-          tabBarButton: () => (null),
+          tabBarButton: () => null,
+          tabBarVisible: false,
         }}
       />
-      <Tab.Screen name="Splash" component={Splash}
+      <Tab.Screen
+        name="Splash"
+        component={Splash}
         options={{
-          tabBarButton: () => (null),
+          tabBarButton: () => null,
         }}
       />
-      <Tab.Screen name="Daily" component={Detail}
+      <Tab.Screen
+        name="Daily"
+        component={Detail}
         options={{
-          tabBarButton: () => (null),
+          tabBarButton: () => null,
         }}
       />
     </Tab.Navigator>

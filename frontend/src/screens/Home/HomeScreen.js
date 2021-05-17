@@ -4,7 +4,7 @@ import { Wrapper, Card, Contents, QRCodeButton, UserImage } from './home.styles'
 import { JwtConsumer } from '@/contexts/jwt';
 
 // 컴포넌트
-import { QRCodeAnim, CarrotAnim } from '@/components/animations';
+import { QRCodeAnim, CarrotAnim, TractorAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
 import { EmergencyQuest, GetRoutine } from '@/components/Home';
 import { getDailyQuests } from '@/components/Home/GetRoutine';
@@ -186,24 +186,20 @@ function HomeScreen({ navigation }) {
         {/* section 1 - 프로필 */}
         <Contents>
           <View>
-            <Text style={styles.title}>유저 이름</Text>
-            <Card style={[styles.profile, styles.cardWidth]}>
-              <UserImage>
-                <CarrotAnim style={{ position: 'relative' }} />
-              </UserImage>
-            </Card>
+            <UserImage style={{ padding: 50 }}>
+              <TractorAnim style={{ width: 500 }} />
+            </UserImage>
           </View>
         </Contents>
         {/* section 1 - 일일 퀘스트 */}
         <Contents>
           <View>
-            <Text style={styles.title}>일일 퀘스트</Text>
-
             {quests !== null ? (
               <GetRoutine quests={quests} setClickedQuestUuidList={setClickedQuestUuidList} />
             ) : null}
 
-            <Card style={styles.cardWidth}>
+            <Text style={styles.title}>일일 퀘스트</Text>
+            <Card style={(styles.cardWidth, { justifyContent: 'center', alignItems: 'center' })}>
               {clickedQuestUuidList.length > 0 ? (
                 <>
                   {clickedQuestUuidList.map((uuid) => (
@@ -299,7 +295,7 @@ function HomeScreen({ navigation }) {
                 </>
               ) : (
                 <View>
-                  <Text>루틴을 생성해주세요.📝🤞💑😏😆😡🤦‍♂️🗝👍😂</Text>
+                  <Text style={{ color: '#fff' }}>루틴을 생성해주세요.📝</Text>
                 </View>
               )}
             </Card>
@@ -307,24 +303,24 @@ function HomeScreen({ navigation }) {
         </Contents>
 
         {/* section 3 - 긴급 퀘스트 */}
-        <Contents>
+        {/* <Contents>
           <View>
             <Text style={styles.title}>오늘의 긴급퀘스트</Text>
             <Card style={styles.cardWidth}>
               <EmergencyQuest />
             </Card>
           </View>
-        </Contents>
+        </Contents> */}
       </ScrollView>
 
-      <QRCodeButton
+      {/* <QRCodeButton
         style={styles.android}
         onPress={() => {
           navigation.navigate('QR');
           setQROpen(!qrOpen);
         }}>
         <QRCodeAnim active={qrOpen} />
-      </QRCodeButton>
+      </QRCodeButton> */}
 
       {/* 네비게이션 버튼 */}
       <NavigationButton navigation={navigation} />
