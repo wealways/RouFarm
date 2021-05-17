@@ -17,8 +17,24 @@ import {
 // 아이콘 사용하기
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from '../theme';
+import { createStackNavigator } from '@react-navigation/stack';
 
+const HomeStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+// 홈화면 안에서 Router 뚫기
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen name="CreateRoutine" component={CreateRoutine} />
+      <HomeStack.Screen name="UpdateRoutine" component={UpdateRoutine} />
+    </HomeStack.Navigator>
+  );
+}
 
 // Tab바 이미지 부여
 const TabIcon = ({ name, size, color }) => {
@@ -33,11 +49,11 @@ const TabNavigation = () => {
         activeTintColor: '#fff',
         activeBackgroundColor: theme.colors.first,
         style: { height: 56, justifyContent: 'center', alignItems: 'center' },
-        labelStyle: { fontSize: 12 },
+        labelStyle: { fontSize: 10 },
       }}>
       <Tab.Screen
         name="Home"
-        component={Home}
+        component={HomeStackScreen}
         options={{
           tabBarLabel: '홈',
           tabBarIcon: (props) => TabIcon({ ...props, name: 'home' }),
@@ -68,6 +84,15 @@ const TabNavigation = () => {
           tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
         }}
       />
+      {/* <Tab.Screen
+        name="CreateRoutine"
+        component={CreateRoutine}
+        options={{
+          tabBarLabel: '루틴 생성',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'playlist-plus' }),
+          tabBarOptions: 
+        }}
+      /> */}
       {/* <Tab.Screen
         name="CreateRoutine"
         component={CreateRoutine}

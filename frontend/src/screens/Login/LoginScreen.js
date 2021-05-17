@@ -99,7 +99,7 @@ function LoginPage({ navigation }) {
   // 1. 토큰 발급
   const accessKakaoToken = async () => {
     // 중간에 창 닫았을 시 처리하기 위해 선언
-    let token
+    let token;
     try {
       token = await login();
 
@@ -110,12 +110,12 @@ function LoginPage({ navigation }) {
         return prev;
       });
       // 성공시
-      return true
+      return true;
     } catch (e) {
-      console.log('카카오 토큰 발급 실패')
-      console.error(e)
+      console.log('카카오 토큰 발급 실패');
+      console.error(e);
       // 중간 실패 거르기
-      return false
+      return false;
     }
   };
   // 2. 프로필 조회
@@ -129,7 +129,7 @@ function LoginPage({ navigation }) {
         return prev;
       });
       // 3번 함수 실행의 인자로 넘겨주기
-      return profile
+      return profile;
     } catch (e) {
       console.log('카카오 프로필 조회 실패');
       console.error(e);
@@ -189,24 +189,26 @@ function LoginPage({ navigation }) {
       navigation.navigate('Home');
     } else if (data.msg === 'signup') {
       // props 넘기기
-      navigation.navigate("SelectMode")
+      navigation.navigate('SelectMode');
     }
   };
 
   // 실제 로그인
   const roufarmLogin = async () => {
     // 2 - 1. 넣어줄 리턴 값 설정
-    let getProfileData = {}
+    let getProfileData = {};
     // 1. 토큰 발급Promise.then(2번 함수)
-    const isCanceled = await accessKakaoToken()
+    const isCanceled = await accessKakaoToken();
     if (isCanceled) {
       // 2. 프로필 조회 => return 값 넣어주기
-      getProfileData = await kakaoProfile()
+      getProfileData = await kakaoProfile();
       // 2-2. 빈 객체이면 중간에 종료한 것
       if (Object.keys(getProfileData).length !== 0) {
         // 3. JWT token API
-        await getJWTToken(getProfileData)
-      } else { console.log('종료') }
+        await getJWTToken(getProfileData);
+      } else {
+        console.log('종료');
+      }
     }
   };
 
@@ -268,8 +270,8 @@ function LoginPage({ navigation }) {
 
   const cleanAsync = () => {
     AsyncStorage.removeItem('JWT');
-    console.log(AsyncStorage.getAllKeys())
-  }
+    console.log(AsyncStorage.getAllKeys());
+  };
 
   return (
     <Wrapper>
