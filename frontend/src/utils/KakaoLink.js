@@ -5,8 +5,8 @@ import RNKakaoLink from 'react-native-kakao-links';
 export async function pushQR(routineTitle, imageURI, path) {
   try {
     const options = {
-      objectType: 'custom',//required
-      templateId: '53707',//required
+      objectType: 'custom', //required
+      templateId: '53707', //required
       templateArgs: {
         title: routineTitle,
         imageURL: imageURI,
@@ -15,7 +15,7 @@ export async function pushQR(routineTitle, imageURI, path) {
         // 버튼 뒤 주소(parameter)
         path: path,
       },
-      // 앱으로 이동 버튼 클릭 시 
+      // 앱으로 이동 버튼 클릭 시
       url: 'http://k4c105.p.ssafy.io:8080',
     };
     const response = await RNKakaoLink.link(options);
@@ -29,8 +29,8 @@ export async function pushQR(routineTitle, imageURI, path) {
 export async function pushReport(nickname, path) {
   try {
     const options = {
-      objectType: 'custom',//required
-      templateId: '53263',//required
+      objectType: 'custom', //required
+      templateId: '53263', //required
       templateArgs: {
         title: 'RouFarm',
         description: `${nickname}님의 루틴 관리 정보가 도착했습니다`,
@@ -40,7 +40,7 @@ export async function pushReport(nickname, path) {
         // 버튼 뒤 주소(parameter)
         path: path,
       },
-      // 앱으로 이동 버튼 클릭 시 
+      // 앱으로 이동 버튼 클릭 시
       url: 'http://k4c105.p.ssafy.io:8080',
     };
     const response = await RNKakaoLink.link(options);

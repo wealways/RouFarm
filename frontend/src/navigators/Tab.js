@@ -20,7 +20,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 // 아이콘 사용하기
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from '../theme';
-import { createStackNavigator } from '@react-navigation/stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const HomeStack = createStackNavigator();
@@ -57,7 +56,6 @@ const TabIcon = ({ name, size, color }) => {
   return <MaterialCommunityIcons name={name} size={size} color={color} />;
 };
 
-const Tab = createBottomTabNavigator();
 // stack => header를 구현하기 위해
 const Stack = createStackNavigator();
 
