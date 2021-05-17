@@ -10,15 +10,14 @@ import {
 //styled
 import styled from 'styled-components/native';
 import {
-  Wrapper,
-  Contents,
-  TitleText,
-  SubtitleText,
-  Card,
-  MonthChartView,
-  MonthTextView,
-  FailListView,
-  ChartView,
+  Wrapper, 
+  Contents, 
+  TitleText, 
+  SubtitleText, 
+  Card, 
+  MonthChartView, 
+  MonthTextView, 
+  FailListView, 
 } from './Report.styles';
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -28,7 +27,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomHeatmapChart from '@/components/Report/CustomHeatmapChart';
 import CustomHeatmapRate from '@/components/Report/CustomHeatmapRate';
 import FailView from '@/components/Report/CustomFailList';
-import CustomFailPicker from '@/components/Report/CustomFailPicker';
 import CustomBarChart from '@/components/Report/CustomBarChart';
 import CustomPieChart from '@/components/Report/CustomPieChart';
 import CustomPieList from '@/components/Report/CustomPieList';
@@ -36,10 +34,12 @@ import CustomDropdown from '@/components/Report/CustomDropdown';
 
 //Context API
 import { HeatmapProvider } from '@/contexts/Report/Heatmap';
-import { PieProvider } from '@/contexts/Report/Pie';
-import { FailListProvider } from '@/contexts/Report/FailList';
 
-function ReportScreen({ navigation }) {
+//api
+import {http} from '@/api/temp/httpJWT'
+
+function ReportScreen({navigation}) {
+
 
   const width = useWindowDimensions().width;
   const height = useWindowDimensions().height;
@@ -127,7 +127,6 @@ function ReportScreen({ navigation }) {
               </Contents>
               {/* section 4 - 해쉬태그 별 달성률 */}
               <Contents>
-                {/* <PieProvider> */}
                 <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
                 <View>
                   <Card width={width}>
@@ -137,7 +136,6 @@ function ReportScreen({ navigation }) {
                     <CustomPieList />
                   </Card>
                 </View>
-                {/* </PieProvider> */}
               </Contents>
             </>
           }
@@ -145,18 +143,16 @@ function ReportScreen({ navigation }) {
             <>
               {/* section 2 - 실패 리스트 */}
               <Contents>
-                <FailListProvider>
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <CustomDropdown date={weekDate} flag={'week'} />
-                    <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
-                  </View>
-                  <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: 330 }}>
-                    <SubtitleText>실패리스트</SubtitleText>
-                  </View>
-                  <Card width={width}>
-                    <FailView />
-                  </Card>
-                </FailListProvider>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                  <CustomDropdown date={weekDate} flag={'week'} />
+                  <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: 330 }}>
+                  <SubtitleText>실패리스트</SubtitleText>
+                </View>
+                <Card width={width}>
+                  <FailView />
+                </Card>
               </Contents>
               {/* section 3 - 요일 별 달성률 */}
               <Contents>
