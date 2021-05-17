@@ -14,26 +14,10 @@ import {
 // styled-components
 import styled from 'styled-components/native';
 
-import { CheckBox } from 'react-native-elements';
-
-// 컴포넌트
-import QRCodeAnim from '@/components/animations/QRCodeAnim';
-import CarrotAnim from '@/components/animations/CarrotAnim';
-import NavigationButton from '@/components/common/NavigationButton';
-
-// 리덕스
-import ModalContainer from '@/containers/ModalContainer';
-
-// 디바이스 사이즈
-import { deviceWidth, deviceHeight } from '@/utils/devicesize';
-
-// kakao symbol - svg
-import { WithLocalSvg } from 'react-native-svg';
-import kakaoSymbol from '@/assets/images/Kakao_symbol.svg';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
-function selectMode({ route, navigation }) {
+function selectMode({ navigation }) {
   // 모드 변경 설명
   const [explain, setExplain] = useState('');
   // 닉네임
@@ -92,8 +76,8 @@ function selectMode({ route, navigation }) {
 
   // 사용자 정보 수정
   const modifyUserInfo = async (newNickname, newMode) => {
+    const JWT = await AsyncStorage.getItem("JWT")
     try {
-      const JWT = await AsyncStorage.getItem("JWT")
       let url = 'http://k4c105.p.ssafy.io:8080/api/user/';
       let options = {
         method: 'PUT',

@@ -8,37 +8,32 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import { pushQR, pushReport } from '../../utils/KakaoLink';
+
 
 function Friendlist({ navigation }) {
 
-  const linkCustom = async () => {
-    try {
-      const options = {
-        objectType: 'custom',//required
-        templateId: '53263',//required
-        templateArgs: {
-          title: '제목입니다',
-          description: `내용입니다`,
-          imageURL: 'http://imagescdn.gettyimagesbank.com/500/201904/jv11348625.jpg',
-          // 버튼명
-          button: '버튼 제목입니다',
-          // 버튼 뒤 주소(parameter)
-          path: '1234',
-        },
-        // 앱으로 이동 버튼 클릭 시 
-        url: 'http://k4c105.p.ssafy.io:8080',
-      };
-      const response = await RNKakaoLink.link(options);
-      console.log(response);
-    } catch (e) {
-      console.error(e);
-    }
+
+  const title = '제목'
+  const URL = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393'
+  const pathURI = 'chart?cht=qr&chs=200x200&chl=1018023613188393'
+
+  // QR 공유하기
+  const shareQR = () => {
+    pushQR(title, URL, pathURI)
+  };
+  // 링크 메세지 보내기
+  const shareLink = () => {
+    pushReport("규수", pathURI)
   }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => linkCustom()} style={styles.button}>
+      <TouchableOpacity onPress={() => shareLink()} style={styles.button}>
         <Text style={styles.buttonText}>메세지 보내기</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => shareQR()} style={styles.button}>
+        <Text style={styles.buttonText}>QR 보내기</Text>
       </TouchableOpacity>
     </View>
   );
