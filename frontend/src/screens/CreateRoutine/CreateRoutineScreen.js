@@ -1,5 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, ScrollView, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 
 import {
   Wrapper,
@@ -15,7 +23,6 @@ import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
 import { Switch } from 'react-native-elements';
-import axios from 'axios';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // 컴포넌트
@@ -28,6 +35,7 @@ import { JwtConsumer } from '@/contexts/jwt';
 import { instance } from '@/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
+import { pushQR } from '@/utils/KakaoLink';
 
 const today =
   new Date().getDate() +
@@ -67,6 +75,17 @@ function CreateRoutineScreen({ navigation }) {
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
+  const [mode, setMode] = useState('');
+
+  useEffect(async () => {
+    await AsyncStorage.getItem('mode', (err, res) => {
+      setMode(res);
+      if (res === 'hard') {
+        setIsAlarm(true);
+        setIsQR(true);
+      }
+    });
+  }, []);
 
   // 퀘스트 생성
   const handleCreate = async (jwt) => {
@@ -78,6 +97,9 @@ function CreateRoutineScreen({ navigation }) {
     let qrOnceAlarmIdList = [];
     let qrRepeatAlarmIdList = [];
 
+    const qrEndPoint = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${uuid}`;
+    const qrPath = `chart?cht=qr&chs=200x200&chl=${uuid}`;
+
     if (isAlarm) {
       if (isQR) {
         if (repeatYoilList.length === 0) {
@@ -87,6 +109,7 @@ function CreateRoutineScreen({ navigation }) {
           console.log('반복성 QR 알람 생성');
           qrRepeatAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
         }
+        pushQR(uuid.toString(), qrEndPoint, qrPath);
       } else {
         console.log('QR 없는 알람 생성');
         alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
@@ -330,17 +353,50 @@ function CreateRoutineScreen({ navigation }) {
                 </ModalComponent>
               </SettingWrapper>
 
-              {/* QR 생성 여부 */}
-              <SettingWrapper>
-                <SettingTitle>QR 생성</SettingTitle>
-                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
-              </SettingWrapper>
+              {mode === 'hard' ? (
+                <>
+                  <SettingWrapper>
+                    <SettingTitle>QR 생성</SettingTitle>
+                    <Switch
+                      onValueChange={() => {
+                        Alert.alert('😉');
+                        setIsQR(true);
+                      }}
+                      value={isQR}
+                      color="orange"
+                    />
+                  </SettingWrapper>
 
-              {/* 알람 유무 */}
-              <SettingWrapper>
-                <SettingTitle>알람</SettingTitle>
-                <Switch value={isAlarm} onValueChange={() => setIsAlarm(!isAlarm)} color="orange" />
-              </SettingWrapper>
+                  <SettingWrapper>
+                    <SettingTitle>알람</SettingTitle>
+                    <Switch
+                      value={isAlarm}
+                      onValueChange={() => {
+                        Alert.alert('😉');
+
+                        setIsAlarm(true);
+                      }}
+                      color="orange"
+                    />
+                  </SettingWrapper>
+                </>
+              ) : (
+                <>
+                  <SettingWrapper>
+                    <SettingTitle>QR 생성</SettingTitle>
+                    <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
+                  </SettingWrapper>
+
+                  <SettingWrapper>
+                    <SettingTitle>알람</SettingTitle>
+                    <Switch
+                      value={isAlarm}
+                      onValueChange={() => setIsAlarm(!isAlarm)}
+                      color="orange"
+                    />
+                  </SettingWrapper>
+                </>
+              )}
               {isAlarm ? (
                 <>
                   <SettingButton onPress={showAlarmTimePicker}>
