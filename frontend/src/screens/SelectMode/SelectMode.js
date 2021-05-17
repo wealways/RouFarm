@@ -14,78 +14,125 @@ import {
 // styled-components
 import styled from 'styled-components/native';
 
-import { CheckBox } from 'react-native-elements';
+import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
-// 컴포넌트
-import QRCodeAnim from '@/components/animations/QRCodeAnim';
-import CarrotAnim from '@/components/animations/CarrotAnim';
-import NavigationButton from '@/components/common/NavigationButton';
-
-// 리덕스
-import ModalContainer from '@/containers/ModalContainer';
-
-// 디바이스 사이즈
-import { deviceWidth, deviceHeight } from '@/utils/devicesize';
-
-// kakao symbol - svg
-import { WithLocalSvg } from 'react-native-svg';
-import kakaoSymbol from '@/assets/images/Kakao_symbol.svg';
-
-function selectMode({ route, navigation }) {
-  // 모드 변경 감지
-  const [modes, setModes] = useState('');
+function selectMode({ navigation }) {
+  // 모드 변경 설명
+  const [explain, setExplain] = useState('');
   // 닉네임
   const [nickname, setNickname] = useState('');
+  // 모드 선택 수정 정보
+  const [mode, setMode] = useState('');
 
   // 모드 설명
   const soft = '소프트 모드는 개인의 선택에 따라 서비스의 모든 기능을 취사 선택하여 이용할 수 있습니다';
   const hard = '하드 모드는 루틴 만들기에 실패하는 사용자들을 위해 준비한 모드로 강력한 알람과 알림 기능을 제공합니다';
-  // 모드 변경 클릭 시
-  const selectSoft = () => {
-    setModes(soft);
+
+  // 모드 변경 클릭 시 보여줄 글자
+  const selectExplain = (mode) => {
+    // 1. 모드 정보 체크 - 보여줄 설명 선택
+    console.log(mode, '현재 모드')
+    setMode(mode)
+    if (mode === 'hard') {
+      setExplain(hard);
+    } else if (mode === 'soft') {
+      setExplain(soft);
+    }
   };
 
-  const selectHard = () => {
-    setModes(hard);
+  // API 요청하기
+  const getUserInfo = async () => {
+    // 1. JWT 토큰을 가져온다
+    const JWT = await AsyncStorage.getItem("JWT")
+    try {
+      let url = 'http://k4c105.p.ssafy.io:8080/api/user/';
+      let options = {
+        method: 'GET',
+        url: url,
+        headers: {
+          // body가 없기 때문에 accept, content-type X
+          // 헤더에 JWT 추가
+          'Authorization': JWT,
+        },
+      };
+      // 2. 사용자 정보 요청하기
+      let response = await axios(options);
+      // 3. 받은 정보로 갱신하기
+      setNickname(response.data.profile.nickname)
+      console.log(response.data.profile.mode, '받은 정보')
+      selectExplain(response.data.profile.mode)
+    } catch (e) {
+      console.error(e)
+    }
   };
+  // 회원가입 시에는 저장된 정보를 불러와야 한다
+  useEffect(() => {
+    // 조회 결과 실행하기
+    getUserInfo()
+    return () => {
+    }
+  }, [])
 
-  // 회원가입 상태 시 가져올 정보
-  if (route) {
-    const signupProfile = route.params;
-    // useEffect로 관리
-    useEffect(() => {
-      setNickname(signupProfile.nickname)
-      console.log(signupProfile)
-    })
-  }
+  // 사용자 정보 수정
+  const modifyUserInfo = async (newNickname, newMode) => {
+    const JWT = await AsyncStorage.getItem("JWT")
+    try {
+      let url = 'http://k4c105.p.ssafy.io:8080/api/user/';
+      let options = {
+        method: 'PUT',
+        url: url,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
+          // 헤더에 JWT 추가
+          'Authorization': JWT,
+        },
+        data: {
+          nickname: newNickname,
+          mode: newMode
+        }
+      };
+      console.log(options, '옵션')
+      let response = await axios(options);
+      console.log('response - put(user/)')
+      console.log(response)
+
+      // 수정 완료 후 메인 페이지로 돌려주기
+      navigation.navigate("Home")
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <Wrapper>
-      <Text>닉네임: {nickname}</Text>
       {/* 닉네임 선택 */}
       <Content1>
         <Title>닉네임을 입력해주세요</Title>
         <NicknameInput
           value={nickname}
+          autoCorrect={false}
+          onChangeText={(nickname) => setNickname(nickname)}
         />
       </Content1>
       {/* 모드 선택 */}
       <Content2>
         <Title>모드 선택하기</Title>
         <ModeList>
-          <TouchableOpacity onPress={selectSoft}>
+          <TouchableOpacity onPress={() => selectExplain('soft')}>
             <SoftMode
               source={require('../../assets/images/slave1.png')} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={selectHard}>
+          <TouchableOpacity onPress={() => selectExplain('hard')}>
             <HardMode
               source={require('../../assets/images/slave1.png')} />
           </TouchableOpacity>
         </ModeList>
         {/* 각 모드 설명 */}
-        <Subtitle>{modes}</Subtitle>
+        <Subtitle>{explain}</Subtitle>
         {/* 완료버튼 */}
-        <Submit>
+        <Submit onPress={() => modifyUserInfo(nickname, mode)}>
           <SubmitText>완료</SubmitText>
         </Submit>
       </Content2>

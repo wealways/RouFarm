@@ -40,6 +40,8 @@ function NavigationButton({ navigation }) {
     { id: 6, path: 'SelectMode', name: '모드선택' },
     { id: 7, path: 'FriendList', name: '친구목록' },
     { id: 8, path: 'AlarmTest', name: '알람 테스트' },
+    // splash screen
+    { id: 9, path: 'SplashScreen', name: '홈화면' },
   ];
 
   const [open, setOpen] = useState(false);
