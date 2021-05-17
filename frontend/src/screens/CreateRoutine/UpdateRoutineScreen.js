@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, ScrollView, Text, View, TextInput } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  TextInput,
+} from 'react-native';
 
 import {
   Wrapper,
@@ -15,7 +23,10 @@ import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
 import { Switch } from 'react-native-elements';
+import axios from 'axios';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { instance } from '@/api';
+import { JwtConsumer } from '@/contexts/jwt';
 
 // 컴포넌트
 import ModalComponent from '@/components/common/ModalComponent';
@@ -30,7 +41,6 @@ import {
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
 
 const today =
   new Date().getDate() +
@@ -39,10 +49,17 @@ const today =
   '-' +
   new Date().getFullYear();
 
+const tagName = ['일상', '자기개발', '건강', '기타'];
+
 function UpdateRoutineScreen({ navigation, route }) {
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => {
-    setShowModal((prev) => !prev);
+  // 모달
+  const [showRepeatModal, setShowRepeatModal] = useState(false);
+  const toggleRepeatModal = () => {
+    setShowRepeatModal((prev) => !prev);
+  };
+  const [showHashTagModal, setShowHashTagModal] = useState(false);
+  const toggleHashTagModal = () => {
+    setShowHashTagModal((prev) => !prev);
   };
 
   // 모달 상태
@@ -58,6 +75,7 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [endTime, setEndTime] = useState(route.params.quest.endTime);
   const [alarmTime, setAlarmTime] = useState(route.params.quest.alarmTime);
   const [repeatYoilList, setRepeatYoilList] = useState(route.params.quest.repeatYoilList);
+  const [hashTag, setHashTag] = useState(route.params.quest.hashTag);
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(
@@ -67,12 +85,15 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [isAlarm, setIsAlarm] = useState(alarmTime !== '');
 
   // 퀘스트 생성
-  const handleCreate = async () => {
+  const handleCreate = async (jwt) => {
     // 기존의 알람 제거
     await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
     await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
     await route.params.quest.qrRepeatAlarmIdList.map((v) => deleteAlarm(v));
     console.log('delete alarm!');
+
+    // 퀘스트 uuid 생성
+    let uuid = parseInt(Math.random() * Math.pow(10, 16));
 
     // 새로운 알람 생성
     let alarmIdList = [];
@@ -109,9 +130,13 @@ function UpdateRoutineScreen({ navigation, route }) {
     // 메모리에 저장
     AsyncStorage.getItem('quests', async (err, res) => {
       let quests = JSON.parse(res);
-      if (quests === null) quests = {};
+      if (quests === null) {
+        quests = {};
+      } else {
+        delete quests[route.params.uuid];
+      }
 
-      quests[route.params.uuid] = {
+      quests[uuid] = {
         startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
         questName,
         alarmTime,
@@ -122,6 +147,7 @@ function UpdateRoutineScreen({ navigation, route }) {
         alarmIdList, // 알람id 리스트 (int 타입)
         qrOnceAlarmIdList, // 일회성 QR알람id 리스트 (int 타입)
         qrRepeatAlarmIdList, // 반복성 QR알람id 리스트 (int 타입)
+        hashTag,
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
@@ -131,6 +157,29 @@ function UpdateRoutineScreen({ navigation, route }) {
 
       if (err) console.log(err);
     });
+
+    // header에 jwt토큰 삽입
+    instance.defaults.headers.common['Authorization'] = jwt;
+
+    // 삭제 요청
+    instance
+      .delete(`routine/${route.params.uuid}`)
+      .then((res) => console.log('delete response', res.data))
+      .catch((err) => console.log(err));
+    // 생성 요청
+    instance
+      .post('routine/', {
+        uuid,
+        startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
+        questName,
+        startTime,
+        endTime,
+        alarmTime,
+        repeatYoilList,
+        category: hashTag,
+      })
+      .then((res) => console.log('post response!', res.data))
+      .catch((err) => console.log(err));
   };
 
   // 모달 활성/비활성
@@ -218,7 +267,7 @@ function UpdateRoutineScreen({ navigation, route }) {
               {/* 반복 유무 */}
               <SettingWrapper>
                 <SettingTitle>반복</SettingTitle>
-                <SettingButton onPress={toggleModal} onCancel={() => console.log('@')}>
+                <SettingButton onPress={toggleRepeatModal} onCancel={() => console.log('@')}>
                   {repeatYoilList.map((value, index) =>
                     value ? (
                       <Text key={index} style={{ opacity: 0.5 }}>
@@ -227,8 +276,8 @@ function UpdateRoutineScreen({ navigation, route }) {
                     ) : null,
                   )}
                 </SettingButton>
-                <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-                  <Repreat setShowModal={setShowModal} setIsReapeat={setRepeatYoilList} />
+                <ModalComponent showModal={showRepeatModal} setShowModal={setShowRepeatModal}>
+                  <Repreat setShowModal={setShowRepeatModal} setIsReapeat={setRepeatYoilList} />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -277,6 +326,35 @@ function UpdateRoutineScreen({ navigation, route }) {
                 </View>
               </SettingWrapper>
 
+              {/* 해시태그 */}
+              <SettingWrapper>
+                <SettingTitle>해시태그</SettingTitle>
+                <SettingButton onPress={toggleHashTagModal} onCancel={() => console.log('@')}>
+                  <Text>{hashTag ? hashTag : null}</Text>
+                </SettingButton>
+
+                <ModalComponent showModal={showHashTagModal} setShowModal={setShowHashTagModal}>
+                  <>
+                    {tagName.map((v, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        onPress={() => {
+                          setHashTag(v);
+                          toggleHashTagModal();
+                        }}>
+                        <Text>{v}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                </ModalComponent>
+              </SettingWrapper>
+
+              {/* QR 생성 여부 */}
+              <SettingWrapper>
+                <SettingTitle>QR 생성</SettingTitle>
+                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
+              </SettingWrapper>
+
               {/* 알람 유무 */}
               <SettingWrapper>
                 <SettingTitle>알람</SettingTitle>
@@ -298,12 +376,6 @@ function UpdateRoutineScreen({ navigation, route }) {
                   />
                 </>
               ) : null}
-
-              {/* QR 생성 여부 */}
-              <SettingWrapper>
-                <SettingTitle>QR 생성</SettingTitle>
-                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
-              </SettingWrapper>
             </Card>
           </View>
         </Contents>
@@ -318,13 +390,18 @@ function UpdateRoutineScreen({ navigation, route }) {
             }}
           />
         </View>
-        <ButtonWrapper
-          style={{ marginBottom: 50 }}
-          onPress={() => {
-            handleCreate();
-          }}>
-          <Text style={{ color: 'white' }}>퀘스트 생성</Text>
-        </ButtonWrapper>
+        {/* 전역에 있는 토큰 불러와서 적용 */}
+        <JwtConsumer>
+          {({ JWT }) => (
+            <ButtonWrapper
+              style={{ marginBottom: 50 }}
+              onPress={() => {
+                handleCreate(JWT.jwt);
+              }}>
+              <Text style={{ color: 'white' }}>퀘스트 생성</Text>
+            </ButtonWrapper>
+          )}
+        </JwtConsumer>
       </ScrollView>
 
       <NavigationButton navigation={navigation} />

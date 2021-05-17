@@ -1,6 +1,6 @@
-import React from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
-
+import React, { useState } from 'react';
+import { Modal, StyleSheet, View, Text } from 'react-native';
+import { Overlay } from 'react-native-elements';
 const ModalComponent = ({
   showModal,
   setShowModal,
@@ -10,6 +10,7 @@ const ModalComponent = ({
     <>
       {showModal ? (
         <View>
+          <Overlay isVisible={showModal} />
           <Modal
             animationType="fade"
             transparent={true}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, ScrollView, Text, View, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
 import {
   Wrapper,
@@ -15,17 +15,19 @@ import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
 import { Switch } from 'react-native-elements';
+import axios from 'axios';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // 컴포넌트
 import ModalComponent from '@/components/common/ModalComponent';
 import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
+import { JwtConsumer } from '@/contexts/jwt';
 
 // 유틸
+import { instance } from '@/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
-import axios from 'axios';
 
 const today =
   new Date().getDate() +
@@ -34,10 +36,17 @@ const today =
   '-' +
   new Date().getFullYear();
 
+const tagName = ['일상', '자기개발', '건강'];
+
 function CreateRoutineScreen({ navigation }) {
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => {
-    setShowModal((prev) => !prev);
+  // 모달
+  const [showRepeatModal, setShowRepeatModal] = useState(false);
+  const toggleRepeatModal = () => {
+    setShowRepeatModal((prev) => !prev);
+  };
+  const [showHashTagModal, setShowHashTagModal] = useState(false);
+  const toggleHashTagModal = () => {
+    setShowHashTagModal((prev) => !prev);
   };
 
   // 모달 상태
@@ -53,13 +62,14 @@ function CreateRoutineScreen({ navigation }) {
   const [endTime, setEndTime] = useState('');
   const [alarmTime, setAlarmTime] = useState('');
   const [repeatYoilList, setRepeatYoilList] = useState([]);
+  const [hashTag, setHashTag] = useState('');
 
   // 스위치 상태
   const [isQR, setIsQR] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
 
   // 퀘스트 생성
-  const handleCreate = async () => {
+  const handleCreate = async (jwt) => {
     // 퀘스트 uuid 생성
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
 
@@ -67,6 +77,7 @@ function CreateRoutineScreen({ navigation }) {
     let alarmIdList = [];
     let qrOnceAlarmIdList = [];
     let qrRepeatAlarmIdList = [];
+
     if (isAlarm) {
       if (isQR) {
         if (repeatYoilList.length === 0) {
@@ -110,9 +121,10 @@ function CreateRoutineScreen({ navigation }) {
         alarmTime,
         repeatYoilList,
         repeatDateList,
-        alarmIdList,
+        hashTag: hashTag ? hashTag : '기타',
         qrOnceAlarmIdList,
         qrRepeatAlarmIdList,
+        alarmIdList,
       };
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
@@ -122,6 +134,32 @@ function CreateRoutineScreen({ navigation }) {
 
       if (err) console.log(err);
     });
+
+    // 생성 요청
+    // instance.defaults.headers.common['Authorization'] = jwt;
+    instance
+      .post(
+        'routine/',
+        {
+          uuid,
+          startDate: tempRepeatDateList.length ? tempRepeatDateList[0] : startDate,
+          questName,
+          startTime,
+          endTime,
+          alarmTime,
+          repeatYoilList,
+          category: hashTag,
+        },
+        {
+          headers: {
+            Authorization: jwt,
+          },
+        },
+      )
+      .then((res) => console.log('post response!', res.data))
+      .catch((err) => console.log('post error!', err));
+
+    console.log(jwt);
   };
 
   // 모달 활성/비활성
@@ -207,7 +245,7 @@ function CreateRoutineScreen({ navigation }) {
               {/* 반복 유무 */}
               <SettingWrapper>
                 <SettingTitle>반복</SettingTitle>
-                <SettingButton onPress={toggleModal} onCancel={() => console.log('@')}>
+                <SettingButton onPress={toggleRepeatModal} onCancel={() => console.log('@')}>
                   {repeatYoilList.map((value, index) =>
                     value ? (
                       <Text key={index} style={{ opacity: 0.5 }}>
@@ -216,8 +254,11 @@ function CreateRoutineScreen({ navigation }) {
                     ) : null,
                   )}
                 </SettingButton>
-                <ModalComponent showModal={showModal} setShowModal={setShowModal}>
-                  <Repreat setShowModal={setShowModal} setRepeatYoilList={setRepeatYoilList} />
+                <ModalComponent showModal={showRepeatModal} setShowModal={setShowRepeatModal}>
+                  <Repreat
+                    setShowModal={setShowRepeatModal}
+                    setRepeatYoilList={setRepeatYoilList}
+                  />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -266,6 +307,35 @@ function CreateRoutineScreen({ navigation }) {
                 </View>
               </SettingWrapper>
 
+              {/* 해시태그 */}
+              <SettingWrapper>
+                <SettingTitle>해시태그</SettingTitle>
+                <SettingButton onPress={toggleHashTagModal} onCancel={() => console.log('@')}>
+                  <Text>{hashTag ? hashTag : null}</Text>
+                </SettingButton>
+
+                <ModalComponent showModal={showHashTagModal} setShowModal={setShowHashTagModal}>
+                  <>
+                    {tagName.map((v, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        onPress={() => {
+                          setHashTag(v);
+                          toggleHashTagModal();
+                        }}>
+                        <Text>{v}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                </ModalComponent>
+              </SettingWrapper>
+
+              {/* QR 생성 여부 */}
+              <SettingWrapper>
+                <SettingTitle>QR 생성</SettingTitle>
+                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
+              </SettingWrapper>
+
               {/* 알람 유무 */}
               <SettingWrapper>
                 <SettingTitle>알람</SettingTitle>
@@ -287,33 +357,31 @@ function CreateRoutineScreen({ navigation }) {
                   />
                 </>
               ) : null}
-
-              {/* QR 생성 여부 */}
-              <SettingWrapper>
-                <SettingTitle>QR 생성</SettingTitle>
-                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
-              </SettingWrapper>
             </Card>
           </View>
         </Contents>
         {/* section 2 끝 */}
 
         {/* 루틴을 생성하면 qr코드화면으로 넘어가게 + 루틴의  */}
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Image
             style={styles.qrImage}
             source={{
               uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393',
             }}
           />
-        </View>
-        <ButtonWrapper
-          style={{ marginBottom: 50 }}
-          onPress={() => {
-            handleCreate();
-          }}>
-          <Text style={{ color: 'white' }}>퀘스트 생성</Text>
-        </ButtonWrapper>
+        </View> */}
+        <JwtConsumer>
+          {({ JWT }) => (
+            <ButtonWrapper
+              style={{ marginBottom: 50 }}
+              onPress={() => {
+                handleCreate(JWT.jwt);
+              }}>
+              <Text style={{ color: 'white' }}>퀘스트 생성</Text>
+            </ButtonWrapper>
+          )}
+        </JwtConsumer>
       </ScrollView>
 
       <NavigationButton navigation={navigation} />

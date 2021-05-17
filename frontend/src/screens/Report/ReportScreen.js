@@ -35,7 +35,11 @@ import CustomDropdown from '@/components/Report/CustomDropdown';
 //Context API
 import { HeatmapProvider } from '@/contexts/Report/Heatmap';
 
+//api
+import {http} from '@/api/temp/httpJWT'
+
 function ReportScreen({navigation}) {
+
 
   const width = useWindowDimensions().width;
   const height = useWindowDimensions().height;
