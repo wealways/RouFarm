@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useState, useContext,useEffect } from 'react';
-=======
-import React, { useState, useContext, useEffect } from 'react';
->>>>>>> 656e08f4ca978d2d7ce4eab86c9be12abba4996c
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import styled from 'styled-components/native';
 
@@ -29,18 +25,12 @@ const CustomDropdown = ({ date, flag }) => {
   };
 
   // 디폴트값 만들기
-<<<<<<< HEAD
   const onDefault = () =>{
     if(flag==='month') dateDispatch(date[0])
     if(flag==='week') {
       console.log('gg',date[0])
       weekDateDispatch(date[0]) 
     }
-=======
-  const onDefault = () => {
-    if (flag === 'month') dateDispatch(date[0])
-    else weekDateDispatch(date[0])
->>>>>>> 656e08f4ca978d2d7ce4eab86c9be12abba4996c
   };
   useEffect(() => {
     onDefault()

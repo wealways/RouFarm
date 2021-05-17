@@ -29,13 +29,13 @@ const Tab = createBottomTabNavigator();
 
 // route 이름 가져오기
 function getHeaderTitle(route) {
-  console.log(route, 'route정보');
-  console.log(route.params.date, 'route정보');
+  // console.log(route, 'route정보');
+  // console.log(route.params.date, 'route정보');
   // 날짜가 있으면 날짜를 반환하고 없으면 하루라는 정보 보여주기
   const routeName = 'Daily';
   // 확인
-  console.log(routeName, 'routeName');
-  console.log(route, 'routeName');
+  // console.log(routeName, 'routeName');
+  // console.log(route, 'routeName');
   return routeName;
 }
 
@@ -167,15 +167,8 @@ const TabNavigation = () => {
           headerTitle: getHeaderTitle(route),
         })}
       />
-      <Stack.Screen name="Splash" component={Detail} />
-      <Stack.Screen
-        name="Login"
-        component={Detail}
-        options={({ route }) => ({
-          // header title
-          headerTitle: getHeaderTitle(route),
-        })}
-      />
+      <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
