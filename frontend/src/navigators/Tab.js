@@ -104,23 +104,6 @@ function HomeTabs() {
           tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
         }}
       />
-      {/* <Tab.Screen
-        name="CreateRoutine"
-        component={CreateRoutine}
-        options={{
-          tabBarLabel: '루틴 생성',
-          tabBarIcon: (props) => TabIcon({ ...props, name: 'playlist-plus' }),
-          tabBarOptions: 
-        }}
-      /> */}
-      {/* <Tab.Screen
-        name="CreateRoutine"
-        component={CreateRoutine}
-        options={{
-          tabBarLabel: '루틴 생성',
-          tabBarIcon: (props) => TabIcon({ ...props, name: 'playlist-plus' }),
-        }}
-      /> */}
       <Tab.Screen
         name="SelectMode"
         component={SelectMode}
@@ -134,36 +117,36 @@ function HomeTabs() {
 }
 
 // Hidestack
-function HideTabs() {
-  return (
-    <Tab.Navigator>
-      {/* 로그인 */}
-      <Tab.Screen
-        name="Login"
-        component={Login}
-        options={{
-          tabBarButton: () => null,
-        }}
-      />
-      {/* splash */}
-      <Tab.Screen
-        name="Splash"
-        component={Splash}
-        options={{
-          tabBarButton: () => null,
-        }}
-      />
-      {/* report detail */}
-      <Tab.Screen
-        name="Daily"
-        component={Detail}
-        options={{
-          tabBarButton: () => null,
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
+// function HideTabs() {
+//   return (
+//     <Tab.Navigator>
+//       {/* 로그인 */}
+//       <Stack.Screen
+//         name="Login"
+//         component={Login}
+//         options={{
+//           // tabBarButton: () => null,
+//         }}
+//       />
+//       {/* splash */}
+//       <Stack.Screen
+//         name="Splash"
+//         component={Splash}
+//         options={{
+//           // tabBarButton: () => null,
+//         }}
+//       />
+//       {/* report detail */}
+//       <Stack.Screen
+//         name="Daily"
+//         component={Detail}
+//         options={{
+//           // tabBarButton: () => null,
+//         }}
+//       />
+//     </Tab.Navigator>
+//   );
+// }
 
 const TabNavigation = () => {
   useEffect(() => {
@@ -171,10 +154,20 @@ const TabNavigation = () => {
   }, []);
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeTabs} />
+      <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false }} />
+      {/* 하단 탭에 안 보이는 부분 */}
       <Stack.Screen
-        name="Hide"
-        component={HideTabs}
+        name="Daily"
+        component={Detail}
+        options={({ route }) => ({
+          // header title
+          headerTitle: getHeaderTitle(route),
+        })}
+      />
+      <Stack.Screen name="Splash" component={Detail} />
+      <Stack.Screen
+        name="Login"
+        component={Detail}
         options={({ route }) => ({
           // header title
           headerTitle: getHeaderTitle(route),

@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React,{useState,useContext, useEffect} from 'react';
-import {View,Text,TouchableOpacity,ScrollView} from 'react-native'
-=======
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
 import styled from 'styled-components/native';
 
 import Modal from '@/components/common/ModalComponent'
@@ -21,27 +16,22 @@ const weekText = styled.Text`
 `
 
 
-<<<<<<< HEAD
-const CustomDropdown = ({date,flag}) => {
-  const {heatmap,dateDispatch,weekDateDispatch} = useContext(HeatmapContext);
-=======
 const CustomDropdown = ({ date, flag }) => {
   const { heatmap, dateDispatch, weekDateDispatch } = useContext(HeatmapContext);
 
->>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
 
   // 디폴트값 만들기
-  const onDefault = () =>{
-    if(flag==='month') dateDispatch(date[0])
+  const onDefault = () => {
+    if (flag === 'month') dateDispatch(date[0])
     else weekDateDispatch(date[0])
   };
-  useEffect(()=>{
+  useEffect(() => {
     onDefault()
-  },[])
+  }, [])
 
   const onValueChange = (item) => {
     if (flag === 'month') {
