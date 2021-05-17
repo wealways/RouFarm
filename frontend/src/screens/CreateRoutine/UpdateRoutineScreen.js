@@ -381,15 +381,6 @@ function UpdateRoutineScreen({ navigation, route }) {
         </Contents>
         {/* section 2 끝 */}
 
-        {/* 루틴을 생성하면 qr코드화면으로 넘어가게 + 루틴의  */}
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Image
-            style={styles.qrImage}
-            source={{
-              uri: `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${startTime}`,
-            }}
-          />
-        </View>
         {/* 전역에 있는 토큰 불러와서 적용 */}
         <JwtConsumer>
           {({ JWT }) => (

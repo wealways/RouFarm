@@ -31,17 +31,15 @@ const HideButton = styled.TouchableOpacity`
 
 function NavigationButton({ navigation }) {
   const paths = [
-    { id: 1, path: 'Home', name: '홈' },
-    { id: 2, path: 'Report', name: '리포트' },
-    { id: 3, path: 'CreateRoutine', name: '퀘스트 생성' },
-    { id: 4, path: 'Settings', name: '환경설정' },
+    { id: 1, path: 'CreateRoutine', name: '퀘스트 생성' },
+    { id: 2, path: 'Settings', name: '환경설정' },
     // 스크린 테스트용 - 나중에 변경
-    { id: 5, path: 'Login', name: '로그인' },
-    { id: 6, path: 'SelectMode', name: '모드선택' },
-    { id: 7, path: 'FriendList', name: '친구목록' },
-    { id: 8, path: 'AlarmTest', name: '알람 테스트' },
+    { id: 3, path: 'Login', name: '로그인' },
+    { id: 4, path: 'SelectMode', name: '모드선택' },
+    { id: 5, path: 'FriendList', name: '친구목록' },
+    { id: 6, path: 'AlarmTest', name: '알람 테스트' },
     // splash screen
-    { id: 9, path: 'SplashScreen', name: '홈화면' },
+    { id: 7, path: 'SplashScreen', name: '홈화면' },
   ];
 
   const [open, setOpen] = useState(false);

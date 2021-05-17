@@ -55,6 +55,7 @@ function QRScreen({ navigation }) {
   };
 
   const onSuccess = async (e, jwt) => {
+    console.log(jwt);
     setResult(e);
     setScan(false);
     setScanResult(true);
@@ -63,57 +64,82 @@ function QRScreen({ navigation }) {
     let quest = quests[uuid];
 
     // 존재하는 루틴 인지 확인
-    if (quest !== null) {
+    if (quest !== undefined) {
       // 시작된 루틴 인지 확인
       let [date, month, year] = [...quest.startDate.split('-')];
       if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
-        // QR알람이 존재하는지 확인
-        if (quest.qrOnceAlarmIdList.length + quest.qrRepeatAlarmIdList.length !== 0) {
-          let isQuit = true;
+        let isQuit = true;
 
-          // 일회성 QR알람 인지 확인
-          if (quest.qrOnceAlarmIdList.length !== 0) {
-            // 같은 요일 인지 확인
-            if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
+        // 일회성 QR
+        if (quest.repeatYoilList.length === 0) {
+          // 오늘 알림이 맞으면
+          if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
+            // QR알람이 존재하는지 확인
+            if (quest.qrOnceAlarmIdList.length !== 0) {
+              isQuit = true;
               deleteAlarm(quest.qrOnceAlarmIdList[0]);
               quest.qrOnceAlarmIdList = [];
-
-              isQuit = true;
             }
+
+            // quests에 quest 삭제
+            delete quests[uuid];
+            instance
+              .delete(`routine/${uuid}`, {
+                headers: {
+                  Authorization: jwt,
+                },
+              })
+              .then((res) => console.log('delete response', res.data))
+              .catch((err) => console.log(err));
           }
-          // 반복성 QR알람 인지 확인
-          else {
-            let i = -1;
+        } else {
+          // 반복성 QR
+          let i = -1;
 
-            quest.repeatYoilList.map((val, idx) => {
-              // 같은 요일 인지 확인
-              if (yoilReverse[val] === new Date().getDay()) {
-                i = idx;
-                isQuit = true;
-              }
-            });
+          quest.repeatYoilList.map((val, idx) => {
+            // 루틴 완료!
+            // 같은 요일 인지 확인
+            if (yoilReverse[val] === new Date().getDay()) {
+              isQuit = true;
+              i = idx;
+            }
+          });
 
-            if (i !== -1) {
+          // 오늘 루틴이 맞으면
+          if (i !== -1) {
+            // 추가 알람 시간 계산
+            let alarmDate = new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              new Date().getDate() + 7,
+            );
+            alarmDate =
+              alarmDate.getDate() +
+              '-' +
+              (alarmDate.getMonth() * 1 + 1) +
+              '-' +
+              alarmDate.getFullYear();
+
+            // quest.startDate 계산
+            quest.repeatDateList[i] = alarmDate;
+
+            let tempRepeatDateList = [].concat(quest.repeatDateList);
+            tempRepeatDateList &&
+              tempRepeatDateList.sort((a, b) => {
+                const [dayA, monthA, yearA] = a.split('-');
+                const [dayB, monthB, yearB] = b.split('-');
+                return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
+              });
+            quest.startDate = tempRepeatDateList[0];
+
+            // 알람 다음주로 변경!
+            // 알람이 존재하는지 확인
+            if (quest.qrRepeatAlarmIdList !== 0) {
               // 기존 알람 삭제
               await deleteAlarm(quest.qrRepeatAlarmIdList[i]);
-
               // 향후 알람 추가
-              let startDate = new Date(
-                new Date().getFullYear(),
-                new Date().getMonth(),
-                new Date().getDate() + 7,
-              );
-              startDate =
-                startDate.getDate() +
-                '-' +
-                (startDate.getMonth() * 1 + 1) +
-                '-' +
-                startDate.getFullYear();
-
-              quest.repeatDateList[i] = startDate;
-
               const alarmId = await makeQRAlarm(
-                startDate,
+                alarmDate,
                 [quest.repeatYoilList[i]],
                 quest.questName,
                 quest.alarmTime,
@@ -121,112 +147,49 @@ function QRScreen({ navigation }) {
               console.log(alarmId);
               quest.qrRepeatAlarmIdList[i] = alarmId[0];
             }
-          }
 
-          // QR을 삭제/종료 했다면
-          if (isQuit) {
-            // 알람이 울린 후이면, 알람 종료
-            let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
-            if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
-              stopAlarmSound();
-            }
-
-            // 메모리에 저장
+            // quests 수정
             quests[uuid] = quest;
-            await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
-              console.log('정보 저장 완료');
-              navigation.navigate('Home');
-            });
-
-            // 퀘스트 로그 생성
-            date = date.length == 1 ? '0' + date : date;
-            month = month.length == 1 ? '0' + month : month;
-
-            instance
-              .post(
-                'routineLog/',
-                {
-                  routineId: uuid,
-                  time: date + '-' + month + '-' + year,
-                  isSuccess: 'true',
-                },
-                {
-                  headers: {
-                    Authorization: jwt,
-                  },
-                },
-              )
-              .then((res) => console.log('post response!', res.data))
-              .catch((err) => console.log(err));
           }
+        }
+
+        // QR을 삭제/종료 했다면
+        if (isQuit) {
+          // 알람이 울린 후이면, 알람 종료
+          let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
+          if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
+            stopAlarmSound();
+          }
+
+          // 메모리에 저장
+          await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
+            console.log('정보 저장 완료');
+            navigation.navigate('Home');
+          });
+
+          // 퀘스트 로그 생성
+          date = date.length == 1 ? '0' + date : date;
+          month = month.length == 1 ? '0' + month : month;
+
+          instance
+            .post(
+              'routineLog/',
+              {
+                routineId: uuid,
+                time: date + '-' + month + '-' + year,
+                isSuccess: 'true',
+              },
+              {
+                headers: {
+                  Authorization: jwt,
+                },
+              },
+            )
+            .then((res) => console.log('post response!', res.data))
+            .catch((err) => console.log(err));
         }
       }
     }
-
-    // // 존재하는 루틴 인지 확인
-    // if (quest !== null) {
-    //   // 시작된 루틴 인지 확인
-    //   let [date, month, year] = [...quest.startDate.split('-')];
-    //   if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
-    //     // 알람이 존재하는지 확인
-    //     if (quest.alarmIdList.length !== 0) {
-    //       // 알람이 울린 후이면, 알람 종료
-    //       let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
-    //       if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
-    //         stopAlarmSound();
-    //       }
-
-    //       // 알람이 울리기 전이면, 알람 삭제 및 생성
-    //       if (quest.repeatYoilList.length === 0) {
-    //         // 일회성
-    //         // 기존 알림 삭제
-    //         if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
-    //           if (quest.alarmIdList.length) {
-    //             deleteAlarm(quest.alarmIdList[0]);
-    //             quest.alarmIdList = [];
-    //           }
-    //         }
-    //       } else {
-    //         // 반복성
-    //         await Promise.all(
-    //           quest.repeatYoilList.map(async (v, i) => {
-    //             if (yoilReverse[v] === new Date().getDay()) {
-    //               // 기존 알람 삭제
-    //               await deleteAlarm(quest.alarmIdList[i]);
-
-    //               // 향후 알람 추가
-    //               const startDate = await makeRepeatDate(
-    //                 new Date().getDate() +
-    //                   '-' +
-    //                   (new Date().getMonth() * 1 + 1).toString() +
-    //                   '-' +
-    //                   new Date().getFullYear(),
-    //                 v,
-    //               );
-    //               quest.repeatDateList[i] = startDate;
-
-    //               const alarmId = await makeAlarm(
-    //                 startDate,
-    //                 [quest.repeatYoilList[i]],
-    //                 quest.questName,
-    //                 quest.alarmTime,
-    //               );
-    //               console.log(alarmId);
-    //               quest.alarmIdList[i] = alarmId[0];
-    //             }
-    //           }),
-    //         );
-    //       }
-
-    //       // 메모리에 저장
-    //       quests[uuid] = quest;
-    //       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
-    //         console.log('정보 저장 완료');
-    //         navigation.navigate('Home');
-    //       });
-    //     }
-    //   }
-    // }
   };
 
   const scanAgain = () => {
@@ -262,7 +225,7 @@ function QRScreen({ navigation }) {
                 ref={(node) => {
                   scanner.current = node;
                 }}
-                onRead={onSuccess(JWT.jwt)}
+                onRead={(e) => onSuccess(e, JWT.jwt)}
                 bottomContent={
                   <View>
                     <TouchableOpacity

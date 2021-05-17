@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
-import { yoilReverse } from '../../utils/parsedate';
+import { yoilReverse, yoil } from '../../utils/parsedate';
 
 const DateButton = styled.Pressable`
   padding: 8px;
   margin: 0 4px;
-  background: #382f9b;
+  background: ${(props) => (props.clickedIdx === props.i ? '#2C5061' : '#FFFAEC')};
   border-radius: 8px;
+  width: 80px;
 `;
 
 // 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기
@@ -42,29 +43,35 @@ export const getDailyQuests = (quests, date) => {
 
   uuidList = uuidList === null ? [] : uuidList;
 
-  console.log(uuidList);
-
   return uuidList;
 };
 
 function GetRoutine({ quests, setClickedQuestUuidList }) {
   let date = new Date();
-  let sevenDays = new Array(7);
+  let sevenDays = new Array(8);
+
+  const [clickedIdx, setClickedIdx] = useState(0);
 
   for (let i = 0; i < sevenDays.length; i++) {
     sevenDays[i] =
       date.getDate() + i + '-' + (date.getMonth() * 1 + 1).toString() + '-' + date.getFullYear();
   }
-
+  console.log(sevenDays);
   return (
     <ScrollView horizontal={true}>
       {sevenDays.map((v, i) => (
         <React.Fragment key={i}>
           <DateButton
+            clickedIdx={clickedIdx}
+            i={i}
             onPress={() => {
               setClickedQuestUuidList(getDailyQuests(quests, v));
+              setClickedIdx(i);
             }}>
-            <Text style={{ color: '#fff' }}>{v}</Text>
+            <Text style={{ color: '#000' }}>
+              {yoil[new Date(v.split('-')[2], v.split('-')[1] * 1 - 1, v.split('-')[0]).getDay()]}
+            </Text>
+            <Text style={{ color: '#000' }}>{v.split('-')[1] + '월' + v.split('-')[0] + '일'}</Text>
           </DateButton>
         </React.Fragment>
       ))}

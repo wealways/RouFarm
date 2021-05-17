@@ -11,8 +11,13 @@ const fontSizes = {
 
 const colors = {
   first: '#2C5061',
+<<<<<<< HEAD
   second: '#FFEBD4',
   third: '#fffaec',
+=======
+  second: '#2C5061',
+  third: '#FFFAED',
+>>>>>>> 78ecc540036ef5369093ce5fb924e0754288cb04
   navy: '#4d426a',
   purpleOne: '#8653a8',
   purpleTwo: '#6f0d99',

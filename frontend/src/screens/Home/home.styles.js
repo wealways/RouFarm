@@ -11,13 +11,18 @@ const Contents = styled.View`
   height: 100%;
   align-items: center;
   margin: 8px 0;
+  padding: 0 16px;
 `;
 
 const Card = styled.View`
+  width: 100%;
+  margin: 8px 0;
   padding: 16px;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   border-radius: 8px;
-  background: ${({ theme }) => theme.colors.second};
+  background: ${({ theme }) => theme.colors.first};
 `;
 
 const UserImage = styled.View`
