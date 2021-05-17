@@ -182,7 +182,7 @@ function ReportScreen({navigation}) {
                 <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
                 <View>
                   <Card width={width}>
-                    <CustomPieChart date={monthDate} />
+                    <CustomPieChart date={monthDate}  res={monthRes}/>
                   </Card>
                   <Card width={width}>
                     <CustomPieList />
