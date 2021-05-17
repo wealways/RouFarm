@@ -60,6 +60,12 @@ const Fail = () => {
       { id: 2, routine: '헬스장 가기3', tag:'건강' },
       { id: 3, routine: '명상하기3', tag:'일상' },
       { id: 4, routine: '게임3', tag:'없음' },
+    ],
+    '2021-05-w4':[
+      { id: 1, routine: '코딩 테스트 문제 풀기3', tag:'자기개발' },
+      { id: 2, routine: '헬스장 가기3', tag:'건강' },
+      { id: 3, routine: '명상하기3', tag:'일상' },
+      { id: 4, routine: '게임3', tag:'없음' },
     ]
   }
   let renderData = {}
