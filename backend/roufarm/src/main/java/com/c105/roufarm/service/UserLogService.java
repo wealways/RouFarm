@@ -1,9 +1,11 @@
 package com.c105.roufarm.service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -397,7 +399,7 @@ public class UserLogService {
                         if(!routineLog.getIsSuccess().equals("true")){
                               Routine failRoutine = routineService.findRoutineById(routineLog.getRoutineId());
                               HashMap<String,Object> failRoutineLog = new HashMap<>();
-                              failRoutineLog.put("id", routineLog.getId());
+                              failRoutineLog.put("id", routineLog.getRoutineId());
                               failRoutineLog.put("routine", failRoutine.getQuestName());
                               failRoutineLog.put("tag", failRoutine.getCategory());
                               failLogWeek.add(failRoutineLog);
@@ -412,6 +414,55 @@ public class UserLogService {
       // 번외. 숫자로 요일 구하기
       public String convertYoil(int num){
             return yoil.get(num);
+      }
+
+      // 10. 로그가 있는 주간만 구하기 ( 최신순으로 정렬 )
+      public ArrayList<String> findLogWeek(){
+            HashSet<String> logWeekSet = new HashSet<>();
+            UserLog userLog = findUserLogById();
+            HashMap<String,Object> days = userLog.getDays();
+            for(String date : days.keySet()){
+                  System.out.println(date);
+                  int year = Integer.parseInt(date.substring(6));
+                  int month = Integer.parseInt(date.substring(3,5))-1;
+                  int day = Integer.parseInt(date.substring(0,2));
+                  Calendar calendar = new GregorianCalendar(year,month,day);
+                  int week = calendar.get(calendar.WEEK_OF_MONTH);
+                  String weekKey = date.substring(6)+"-"+date.substring(3,5)+"-w"+week;
+                  logWeekSet.add(weekKey);
+            }
+            ArrayList<String> logWeek = new ArrayList<>(logWeekSet);
+            logWeek.sort(new Comparator<String>(){
+                  @Override
+                  public int compare(String o1, String o2) {
+                        int year1 = Integer.parseInt(o1.substring(0,4));
+                        int year2 = Integer.parseInt(o2.substring(0, 4));
+                        if(year1 < year2){
+                              return 1;
+                        }
+                        else if(year1 > year2){
+                              return -1;
+                        }
+                        int month1 = Integer.parseInt(o1.substring(5, 7));
+                        int month2 = Integer.parseInt(o2.substring(5, 7));
+                        if(month1 < month2){
+                              return 1;
+                        }
+                        else if(month1 > month2){
+                              return -1;
+                        }
+                        int date1 = Integer.parseInt(o1.substring(9));
+                        int date2 = Integer.parseInt(o2.substring(9));
+                        if (date1 < date2){
+                              return 1;
+                        }
+                        else if(date1 > date2){
+                              return -1;
+                        }
+                        return 0;
+                  }
+            });
+            return logWeek;
       }
 
 }
