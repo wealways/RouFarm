@@ -18,22 +18,25 @@ const CustomPieChart = ({date,res}) => {
   ];
 
   useEffect(()=>{
-    const temp = res[heatmap.date]['해쉬태그별']
-    Object.keys(temp)
-    .forEach(i=>{
-      temp[i].forEach(j=>{
-        if(i==='운동') HashTagData[0]['y']+=j['cnt']
-        else if(i==='지식') HashTagData[1]['y']+=j['cnt']
-        else if(i==='자기개발') HashTagData[2]['y']+=j['cnt']
-        else HashTagData[3]['y']+=j['cnt']
-
+    if(res[heatmap.date]!==undefined){
+      console.log('파이차트')
+      const temp = res[heatmap.date]['해쉬태그별']
+      Object.keys(temp)
+      .forEach(i=>{
+        temp[i].forEach(j=>{
+          if(i==='운동') HashTagData[0]['y']+=j['cnt']
+          else if(i==='지식') HashTagData[1]['y']+=j['cnt']
+          else if(i==='자기개발') HashTagData[2]['y']+=j['cnt']
+          else HashTagData[3]['y']+=j['cnt']
+  
+        })
       })
-    })
-
-    const myData = HashTagData.map((val)=>{
-      return {x:val['x'],y:val['y']}
-    })
-    setMyData(myData)
+  
+      const myData = HashTagData.map((val)=>{
+        return {x:val['x'],y:val['y']}
+      })
+      setMyData(myData)
+    }
   },[heatmap.date])
   
   

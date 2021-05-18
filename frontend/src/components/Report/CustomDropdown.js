@@ -16,7 +16,7 @@ const weekText = styled.Text`
 `
 
 
-const CustomDropdown = ({ date, flag }) => {
+const CustomDropdown = ({ date,weekDate, flag }) => {
   const { heatmap, dateDispatch, weekDateDispatch } = useContext(HeatmapContext);
 
   const [showModal, setShowModal] = useState(false);
@@ -26,14 +26,12 @@ const CustomDropdown = ({ date, flag }) => {
 
   // 디폴트값 만들기
   const onDefault = () =>{
-    if(flag==='month') dateDispatch(date[0])
-    if(flag==='week') {
-      console.log('gg',date[0])
-      weekDateDispatch(date[0]) 
-    }
+    dateDispatch(date[0])
+    weekDateDispatch(weekDate[0])
+    console.log(weekDate[0])
   };
   useEffect(() => {
-    onDefault()
+    if(flag==='month') onDefault()
   }, [])
 
   const onValueChange = (item) => {

@@ -24,6 +24,7 @@ import HeatmapContext from '@/contexts/Report/Heatmap';
 // ]
 
 const CustomBarChart = ({res}) => {
+
   const {heatmap} = useContext(HeatmapContext)
   const [MeanData,setMeanData] = useState([])
   const [NowData,setNowData] = useState([])

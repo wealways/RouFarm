@@ -1,6 +1,8 @@
 import React,{createContext,useState} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import { instance } from '@/api';
+
 const HeatmapContext = createContext({
   heatmap:{date:'',weekDate:'',rate:'',pieClick:''},
   JWT: { jwt: '' },
@@ -25,6 +27,7 @@ const HeatmapProvider = ({children}) => {
   const [rate, setRate] = useState(0);
   const [pieClick,setpieClick] = useState('')
 
+  
 
   //jwt
   const [jwt, setJwt] = useState('ㅎ');
