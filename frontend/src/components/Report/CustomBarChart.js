@@ -48,7 +48,7 @@ const CustomBarChart = ({res}) => {
           onLoad: { duration: 1000 }
         }}
         style={{
-          background: { fill: "#fff" }
+          background: { fill: "#fefdfa" }
         }}
       >
         <VictoryLegend 
