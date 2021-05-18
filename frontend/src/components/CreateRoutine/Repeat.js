@@ -9,16 +9,22 @@ const ButtonWrapper = styled.View`
   justify-content: space-between;
 `;
 const Button = styled.TouchableOpacity`
-  background: ${(props) => (props.checked ? '#D1DEFC' : '#fff')};
+  background: ${(props) => (props.checked ? '#2C5061' : '#fff')};
   padding: 8px;
   margin: 8px;
-  border: 3px solid ${({ theme }) => theme.colors.third};
-  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.colors.first};
+  border-radius: 4px;
 `;
 const ConfigButton = styled.TouchableOpacity`
-  background: ${(props) => (props.confirm ? '#382F9B' : '#fff')};
+  background: ${(props) => (props.confirm ? '#2C5061' : '#fff')};
   padding: 8px 16px;
   border-radius: 8px;
+`;
+
+const ButtonText = styled.Text`
+  color: ${(props) =>
+    props.idx === 0 ? '#B8210D' : props.idx === 6 ? '#1F02B8' : props.checked ? '#fff' : '#000'};
+  font-size: 16px;
 `;
 
 function Repeat({ setRepeatYoilList, setShowModal }) {
@@ -53,14 +59,16 @@ function Repeat({ setRepeatYoilList, setShowModal }) {
   return (
     <View>
       <ButtonWrapper>
-        {yoil.map((value) => (
+        {yoil.map((value, idx) => (
           <React.Fragment key={value.id}>
             <Button
               onPress={() => {
                 onToggle(value.id);
               }}
               checked={value.checked}>
-              <Text>{value.day}</Text>
+              <ButtonText checked={value.checked} idx={idx}>
+                {value.day}
+              </ButtonText>
             </Button>
           </React.Fragment>
         ))}
@@ -68,13 +76,14 @@ function Repeat({ setRepeatYoilList, setShowModal }) {
       <ButtonWrapper>
         <ButtonWrapper>
           <Switch
+            color="orange"
             onChange={() => {
               setSwitchToggle(!switchToggle);
               onSwitchToggle();
             }}
             value={switchToggle}
           />
-          <Text>매일 반복</Text>
+          <Text style={{ fontSize: 12 }}>매일 반복</Text>
         </ButtonWrapper>
         <View style={{ flexDirection: 'row' }}>
           <ConfigButton

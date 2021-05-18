@@ -7,7 +7,7 @@ const ButtonWrapper = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   position: absolute;
-  right: 0;
+  left: 0;
   bottom: 0;
   width: 64px;
   height: 48px;
@@ -20,7 +20,7 @@ const HideButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   position: absolute;
-  right: 0;
+  left: 0;
   bottom: ${(props) => (props.open ? props.order * 56 + 'px' : 0)};
   width: 64px;
   height: 48px;

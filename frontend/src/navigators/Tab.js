@@ -8,6 +8,7 @@ import {
   CreateRoutine,
   UpdateRoutine,
   Login,
+  AlarmTest,
   SelectMode,
   FriendList,
   Detail,
@@ -21,7 +22,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from '../theme';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-
 
 const HomeStack = createStackNavigator();
 // tab navi
@@ -49,6 +49,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Home" component={Home} />
       <HomeStack.Screen name="CreateRoutine" component={CreateRoutine} />
       <HomeStack.Screen name="UpdateRoutine" component={UpdateRoutine} />
+      <HomeStack.Screen name="AlarmTest" component={AlarmTest} />
     </HomeStack.Navigator>
   );
 }
@@ -153,7 +154,7 @@ function HomeTabs() {
 
 const TabNavigation = () => {
   useEffect(() => {
-    return () => { };
+    return () => {};
   }, []);
   return (
     <Stack.Navigator>

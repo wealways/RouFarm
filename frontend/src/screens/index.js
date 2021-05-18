@@ -3,6 +3,7 @@ export { default as Report } from './Report/ReportScreen';
 export { default as QR } from './QRCode/QRScreen';
 export { default as CreateRoutine } from './CreateRoutine/CreateRoutineScreen';
 export { default as UpdateRoutine } from './CreateRoutine/UpdateRoutineScreen';
+export { default as AlarmTest } from './AlarmTest';
 // 화면 테스트 중
 export { default as Login } from './Login/LoginScreen';
 export { default as SelectMode } from './SelectMode/SelectMode';

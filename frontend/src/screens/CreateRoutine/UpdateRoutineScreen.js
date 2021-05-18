@@ -41,6 +41,7 @@ import {
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
+import theme from '../../theme';
 
 const today =
   new Date().getDate() +
@@ -245,7 +246,7 @@ function UpdateRoutineScreen({ navigation, route }) {
         {/* section 1 시작 */}
         <Contents>
           <View>
-            <Text style={styles.title}>퀘스트 이름</Text>
+            <Text style={styles.title}>루틴 이름</Text>
             <Card style={styles.cardWidth}>
               <TextInput
                 onChangeText={(text) => setQuestname(text)}
@@ -262,7 +263,7 @@ function UpdateRoutineScreen({ navigation, route }) {
         {/* section 2 시작 */}
         <Contents>
           <View>
-            <Text style={styles.title}>퀘스트 환경 설정</Text>
+            <Text style={styles.title}>루틴 설정</Text>
             <Card style={styles.cardWidth}>
               {/* 반복 유무 */}
               <SettingWrapper>
@@ -270,7 +271,7 @@ function UpdateRoutineScreen({ navigation, route }) {
                 <SettingButton onPress={toggleRepeatModal} onCancel={() => console.log('@')}>
                   {repeatYoilList.map((value, index) =>
                     value ? (
-                      <Text key={index} style={{ opacity: 0.5 }}>
+                      <Text key={index} style={styles.buttonText}>
                         {value}{' '}
                       </Text>
                     ) : null,
@@ -285,7 +286,13 @@ function UpdateRoutineScreen({ navigation, route }) {
               <SettingWrapper style={{ marginBottom: 0 }}>
                 <SettingTitle>일시</SettingTitle>
                 <SettingButton onPress={showDatePicker}>
-                  <Text style={{ opacity: 0.5 }}>{!startDate ? today : startDate}</Text>
+                  <Text style={styles.buttonText}>
+                    {!startDate
+                      ? `${today.split('-')[2]}.${today.split('-')[1]}.${today.split('-')[0]}`
+                      : `${startDate.split('-')[2].slice(2)}년 ${startDate.split('-')[1]}월 ${
+                          startDate.split('-')[0]
+                        }일`}
+                  </Text>
                 </SettingButton>
                 <DateTimePickerModal
                   isVisible={isDatePickerVisible}
@@ -300,8 +307,12 @@ function UpdateRoutineScreen({ navigation, route }) {
                 <SettingTitle></SettingTitle>
                 <View style={{ flex: 4, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <SmallButton onPress={showStartTimePicker}>
-                    <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {!startTime ? '시작 시간' : startTime}
+                    <Text style={styles.buttonTimeText}>
+                      {!startTime
+                        ? '시작 시간'
+                        : startTime.split(':')[0] > 12
+                        ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
+                        : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <DateTimePickerModal
@@ -312,8 +323,12 @@ function UpdateRoutineScreen({ navigation, route }) {
                     onCancel={hideStartTimePicker}
                   />
                   <SmallButton onPress={showEndTimePicker}>
-                    <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {!endTime ? '종료 시간' : endTime}
+                    <Text style={styles.buttonTimeText}>
+                      {!endTime
+                        ? '종료 시간'
+                        : endTime.split(':')[0] > 12
+                        ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
+                        : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <DateTimePickerModal
@@ -329,8 +344,8 @@ function UpdateRoutineScreen({ navigation, route }) {
               {/* 해시태그 */}
               <SettingWrapper>
                 <SettingTitle>해시태그</SettingTitle>
-                <SettingButton onPress={toggleHashTagModal} onCancel={() => console.log('@')}>
-                  <Text>{hashTag ? hashTag : null}</Text>
+                <SettingButton onPress={toggleHashTagModal} onCanccel={() => console.log('@')}>
+                  <Text style={styles.buttonText}>{hashTag ? hashTag : null}</Text>
                 </SettingButton>
 
                 <ModalComponent showModal={showHashTagModal} setShowModal={setShowHashTagModal}>
@@ -363,8 +378,12 @@ function UpdateRoutineScreen({ navigation, route }) {
               {isAlarm ? (
                 <>
                   <SettingButton onPress={showAlarmTimePicker}>
-                    <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {alarmTime === '' ? '알람 시간 설정' : alarmTime}
+                    <Text style={styles.buttonTimeText}>
+                      {alarmTime === ''
+                        ? '알람 설정'
+                        : alarmTime.split(':')[0] > 12
+                        ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
+                        : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
                     </Text>
                   </SettingButton>
                   <DateTimePickerModal
@@ -402,7 +421,9 @@ function UpdateRoutineScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   title: {
+    fontFamily: 'DungGeunMo',
     fontSize: 18,
+    fontWeight: 'bold',
     color: '#000',
     marginTop: 8,
     marginBottom: 8,
@@ -428,8 +449,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+    color: '#f2f3f6',
   },
-  qrTextInput: {},
+  buttonText: {
+    color: theme.colors.text.first,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  buttonTimeText: {
+    color: theme.colors.text.first,
+    fontWeight: 'bold',
+    fontSize: 10,
+  },
 });
 
 export default UpdateRoutineScreen;

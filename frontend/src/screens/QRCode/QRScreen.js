@@ -28,6 +28,7 @@ const deviceHeight = Dimensions.get('screen').height;
 
 const Wrapper = styled.View`
   flex: 1;
+  height: 100%;
   justify-content: space-around;
   align-items: center;
   background: ${({ theme }) => theme.colors.first};
@@ -226,18 +227,6 @@ function QRScreen({ navigation }) {
                   scanner.current = node;
                 }}
                 onRead={(e) => onSuccess(e, JWT.jwt)}
-                bottomContent={
-                  <View>
-                    <TouchableOpacity
-                      style={styles.buttonTouchable}
-                      onPress={() => {
-                        setScan(false);
-                        navigation.navigate('Home');
-                      }}>
-                      <Text style={styles.buttonTextStyle}>Stop Scan</Text>
-                    </TouchableOpacity>
-                  </View>
-                }
               />
             )}
           </JwtConsumer>
@@ -297,8 +286,8 @@ const styles = StyleSheet.create({
   },
 
   buttonTouchable: {
-    fontSize: 21,
-    backgroundColor: theme.colors.second,
+    // fontSize: 21,
+    // backgroundColor: theme.colors.second,
     marginTop: 32,
 
     width: deviceWidth - 62,

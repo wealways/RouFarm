@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { Text, ScrollView } from 'react-native';
+import { Text, View, ScrollView, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import { yoilReverse, yoil } from '../../utils/parsedate';
 
 const DateButton = styled.Pressable`
+  justify-content: center;
+  align-items: center;
   padding: 8px;
-  margin: 0 4px;
+  margin: 8px 4px;
   background: ${(props) => (props.clickedIdx === props.i ? '#2C5061' : '#FFFAEC')};
   border-radius: 8px;
   width: 80px;
+`;
+
+const DateText = styled.Text`
+  color: ${(props) => (props.clickedIdx === props.idx ? '#fff' : '#222')};
 `;
 
 // 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기
@@ -48,35 +54,49 @@ export const getDailyQuests = (quests, date) => {
 
 function GetRoutine({ quests, setClickedQuestUuidList }) {
   let date = new Date();
-  let sevenDays = new Array(8);
+  let listOfDays = new Array(14);
 
   const [clickedIdx, setClickedIdx] = useState(0);
 
-  for (let i = 0; i < sevenDays.length; i++) {
-    sevenDays[i] =
+  for (let i = 0; i < listOfDays.length; i++) {
+    listOfDays[i] =
       date.getDate() + i + '-' + (date.getMonth() * 1 + 1).toString() + '-' + date.getFullYear();
   }
-  console.log(sevenDays);
   return (
-    <ScrollView horizontal={true}>
-      {sevenDays.map((v, i) => (
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      {listOfDays.map((v, i) => (
         <React.Fragment key={i}>
           <DateButton
+            style={styles.android}
             clickedIdx={clickedIdx}
             i={i}
             onPress={() => {
               setClickedQuestUuidList(getDailyQuests(quests, v));
               setClickedIdx(i);
             }}>
-            <Text style={{ color: '#000' }}>
+            <DateText style={styles.yoilText} clickedIdx={clickedIdx} idx={i}>
               {yoil[new Date(v.split('-')[2], v.split('-')[1] * 1 - 1, v.split('-')[0]).getDay()]}
-            </Text>
-            <Text style={{ color: '#000' }}>{v.split('-')[1] + '월' + v.split('-')[0] + '일'}</Text>
+            </DateText>
+            <DateText style={styles.dateText} clickedIdx={clickedIdx} idx={i}>
+              {v.split('-')[1] + '월 ' + v.split('-')[0] + '일'}
+            </DateText>
           </DateButton>
         </React.Fragment>
       ))}
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  android: {
+    elevation: 6,
+  },
+  dateText: {
+    fontSize: 12,
+  },
+  yoilText: {
+    fontSize: 11,
+  },
+});
 
 export default GetRoutine;
