@@ -40,6 +40,8 @@ function NavigationButton({ navigation }) {
     { id: 6, path: 'AlarmTest', name: '알람 테스트' },
     // splash screen
     { id: 7, path: 'SplashScreen', name: '홈화면' },
+    // qr리스트
+    { id: 8, path: 'QRList', name: '큐알리스트' },
   ];
 
   const [open, setOpen] = useState(false);

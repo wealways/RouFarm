@@ -12,6 +12,7 @@ import {
   FriendList,
   Detail,
   Splash,
+  QRList,
 } from '../screens/index';
 
 // 네비게이션 스택
@@ -171,6 +172,7 @@ const TabNavigation = () => {
       />
       <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      <Stack.Screen name="QRList" component={QRList} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

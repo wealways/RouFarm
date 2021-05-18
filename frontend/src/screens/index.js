@@ -10,3 +10,5 @@ export { default as FriendList } from './FriendList/FriendList';
 export { default as Splash } from './Splash/Splash';
 // 디테일 페이지 테스트 중
 export { default as Detail } from './Report/DetailScreen';
+// settings/QRlist 스크린
+export {default as QRList} from './settings/QRListScreen';
