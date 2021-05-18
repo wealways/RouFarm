@@ -27,8 +27,9 @@ const TagText = styled.Text`
   padding:5px;
   margin-right:10px;
   border-radius:10px;
-  background-color:${({name}) => name==="건강" ? "#6f95aa" : name==="자기개발" ? "#0c985e" : name==="일상" ? "#dce8ef" : "#687396"};
-  color:${({name}) => name!="일상"?"white":"#000"};
+  /* background-color:${({name}) => name==="건강" ? "#6f95aa" : name==="자기개발" ? "#0c985e" : name==="일상" ? "#dce8ef" : "#687396"}; */
+  background-color:${({name}) => name==="운동" ? "#DE9E9B" : name==="지식" ? "#7EC07A" : name==="자기개발" ? "#86C5C9" : "#E75B46"};
+  color:${({ name }) => name != "자기개발" ? "white" : "#000"};
 `
 
 const Fail = ({res}) => {

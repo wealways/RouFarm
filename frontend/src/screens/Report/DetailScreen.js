@@ -25,7 +25,7 @@ const Card = styled.View`
   background: #fff;
   width: ${({ width }) => width - 20}px;
   max-height: ${({ height }) => height / 2}px;
-  
+  background-color:#fefdfa;
   elevation: 12;
 `;
 const ListView = styled.View`
@@ -44,8 +44,9 @@ const TagText = styled.Text`
   padding:5px;
   margin-right:10px;
   border-radius:10px;
-  background-color:${({ name }) => name === "건강" ? "#6f95aa" : name === "자기개발" ? "#0c985e" : name === "일상" ? "#dce8ef" : "#687396"};
-  color:${({ name }) => name != "일상" ? "white" : "#000"};
+  /* background-color:${({ name }) => name === "건강" ? "#6f95aa" : name === "자기개발" ? "#0c985e" : name === "일상" ? "#dce8ef" : "#687396"}; */
+  background-color:${({name}) => name==="운동" ? "#DE9E9B" : name==="지식" ? "#7EC07A" : name==="자기개발" ? "#86C5C9" : "#E75B46"};
+  color:${({ name }) => name != "자기개발" ? "white" : "#000"};
 `
 
 
@@ -95,7 +96,7 @@ const Detail = ({ route }) => {
   const rate = completed.length / res.length * 100
   return (
     <LinearGradient
-      colors={['#dce8ef', '#fff']}
+      colors={['#fffaed', '#fff']}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={styles.container}

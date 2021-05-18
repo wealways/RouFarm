@@ -165,7 +165,8 @@ const TabNavigation = () => {
         options={({ route }) => ({
           // header title
           headerTitle: getHeaderTitle(route),
-          headerStyle: {backgroundColor: '#dce8ef'},
+          // headerStyle: {backgroundColor: '#dce8ef'},
+          headerStyle: {backgroundColor: '#fffaec'},
         })}
       />
       <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />

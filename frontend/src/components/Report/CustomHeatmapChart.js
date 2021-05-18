@@ -13,8 +13,10 @@ const Custombox = styled.TouchableOpacity`
   border-radius:5px;
   width:25px;
   height:25px;
+  /* color:#216e39 */
   /* background-color:#ebedf0;ebedf0 */
-  background-color:${({ boxColor }) => boxColor >= 100 ? '#216e39' : boxColor >= 50 ? '#30a14e' : boxColor > 0 ? '#9be9a8' : boxColor == 0 ? '#ff0101' : boxColor == -1 ? '#ebedf0' : '#fff'};
+  /* background-color:${({ boxColor }) => boxColor >= 100 ? '#216e39' : boxColor >= 50 ? '#30a14e' : boxColor > 0 ? '#9be9a8' : boxColor == 0 ? '#ff0101' : boxColor == -1 ? '#ebedf0' : '#fff'}; */
+  background-color:${({ boxColor }) => boxColor >= 100 ? '#05D962' : boxColor >= 50 ? '#80C27C' : boxColor > 0 ? '#B8D980' : boxColor == 0 ? '#E0DB87' : boxColor == -1 ? '#e2e0d8' : '#fefdfa'};
   margin:2px;
 `
 const Weekline = styled.View`

@@ -58,16 +58,18 @@ const CustomPieChart = ({date,res}) => {
           gutter={30}
           orientation="horizontal"
           // style={{ border: { stroke: "black" } }}
-          colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
+          // colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
+          colorScale={["#DE9E9B", "#7EC07A","#86C5C9","#E75B46" ]}
           data={[
             { name: "운동" }, { name: "지식" },{ name: "자기개발" }, { name: "기타" }
           ]}
         />
         <VictoryPie 
           innerRadius={50}
-          colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
+          // colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
+          colorScale={["#DE9E9B", "#7EC07A","#86C5C9","#E75B46" ]}
           animate={{
-            duration: 1000,
+            duration: 1500,
             onLoad: { duration: 1000 }
           }}
           domainPadding={{ x: [0, 100] }}

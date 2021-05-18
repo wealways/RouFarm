@@ -119,7 +119,7 @@ function ReportScreen({navigation}) {
     tabs: ['월간 리포트', '주간 리포트'],
     lineColor: '#000066',
     noSelectedStyled: { color: '#525252', fontSize: 14 },
-    selectedStyle: { color: 'black', fontWeight: 'bold', fontSize: 14 },
+    selectedStyle: { color: 'white', fontWeight: 'bold', fontSize: 14 },
     tabStyle: { paddingTop: 12, paddingBottom: 5, marginRight: 10 }
   })
 
@@ -132,7 +132,7 @@ function ReportScreen({navigation}) {
     
     <LinearGradient
       // colors={['#dce8ef', '#fff']}
-      colors={['#FFFAEC', '#fff']}
+      colors={['#fffaec', '#fff']}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={styles.container}
@@ -155,8 +155,10 @@ function ReportScreen({navigation}) {
                   }}
                   style={{
                     borderBottomWidth: showIndex === idx ? 1 : 0,
-                    borderBottomColor: TopTab.lineColor,
+                    // borderBottomColor: TopTab.lineColor,
+                    backgroundColor:showIndex===idx ? '#2c5061': '#fffaec',
                     width: width / 2,
+                    height: 45,
                     alignItems: 'center'
                   }}
                 >
@@ -181,7 +183,7 @@ function ReportScreen({navigation}) {
                   <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <SubtitleText>월간 수확</SubtitleText>
+                  <SubtitleText>월간 수확   </SubtitleText>
                 </View>
                 <View>
                   <Card width={width}>
@@ -196,7 +198,9 @@ function ReportScreen({navigation}) {
               </Contents>
               {/* section 4 - 해쉬태그 별 달성률 */}
               <Contents>
-                <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SubtitleText>해쉬태그 별 루틴 개수   </SubtitleText>
+                </View>
                 <View>
                   <Card width={width}>
                     <CustomPieChart date={monthDate} res={monthRes}/>
@@ -217,7 +221,7 @@ function ReportScreen({navigation}) {
                   <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: 330 }}>
-                  <SubtitleText>실패리스트</SubtitleText>
+                  <SubtitleText>실패리스트   </SubtitleText>
                 </View>
                 <Card width={width}>
                   <FailView res={weekRes}/>
@@ -225,7 +229,9 @@ function ReportScreen({navigation}) {
               </Contents>
               {/* section 3 - 요일 별 달성률 */}
               <Contents>
-                <SubtitleText>요일 별 달성률</SubtitleText>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SubtitleText>요일별 달성률   </SubtitleText>
+                </View>
                 <View>
                   <Card width={width}>
                     <CustomBarChart res={weekRes}/>
