@@ -14,6 +14,7 @@ import {
   Splash,
   Setting,
   QRList,
+  Test,
 } from '../screens/index';
 
 // 네비게이션 스택
@@ -23,6 +24,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from '../theme';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+
+// 로딩 - 메세지 공유
+import commonLoading from '../components/common/commonLoading';
 
 
 const HomeStack = createStackNavigator();
@@ -103,7 +107,7 @@ function HomeTabs() {
       {/* 루틴 자랑 */}
       <Tab.Screen
         name="Share"
-        component={FriendList}
+        component={commonLoading}
         options={{
           tabBarLabel: '루틴 자랑',
           tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
@@ -176,7 +180,7 @@ const TabNavigation = () => {
           // header title
           headerTitle: getHeaderTitle(route),
           // headerStyle: {backgroundColor: '#dce8ef'},
-          headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: { backgroundColor: '#fffaec' },
         })}
       />
       <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
@@ -185,9 +189,9 @@ const TabNavigation = () => {
         name="QRList"
         component={QRList}
         options={{
-          headerTitle:'Setting',
+          headerTitle: 'Setting',
           // headerStyle: {backgroundColor: '#fffaec'},
-          headerStyle: {backgroundColor: '#2c5061'},
+          headerStyle: { backgroundColor: '#2c5061' },
           headerTintColor: '#fff'
           // tabBarButton: () => null,
         }}
@@ -196,9 +200,9 @@ const TabNavigation = () => {
         name="SelectMode"
         component={SelectMode}
         options={{
-          headerTitle:'Setting',
+          headerTitle: 'Setting',
           // headerStyle: {backgroundColor: '#fffaec'},
-          headerStyle: {backgroundColor: '#2c5061'},
+          headerStyle: { backgroundColor: '#2c5061' },
           headerTintColor: '#fff'
           // tabBarButton: () => null,
         }}

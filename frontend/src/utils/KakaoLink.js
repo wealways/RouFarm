@@ -28,13 +28,15 @@ export async function pushQR(routineTitle, imageURI, path) {
 // 내 기록 자랑하기
 export async function pushReport(nickname, path) {
   try {
+    console.log(nickname, '닉네임')
+    console.log(path, 'path')
     const options = {
       objectType: 'custom', //required
       templateId: '53263', //required
       templateArgs: {
         title: 'RouFarm',
         description: `${nickname}님의 루틴 관리 정보가 도착했습니다`,
-        imageURL: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393',
+        imageURL: 'https://i.imgur.com/l0HxNlH.png',
         // 버튼명
         button: '자세히 보기',
         // 버튼 뒤 주소(parameter)

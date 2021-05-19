@@ -183,7 +183,6 @@ function LoginPage({ navigation }) {
     AsyncStorage.getItem('mode', (error, mode) => {
       console.log('접속자 mode 정보', mode);
     });
-
     // 이동하기 - 에러 처리
     if (data.msg === 'login') {
       navigation.navigate('Home');
@@ -239,33 +238,6 @@ function LoginPage({ navigation }) {
   // alert 창 실패 시 메세지 담아서
   const showAlert = (msg) => {
     Alert.alert('버튼을 다시 클릭해주세요', msg);
-  };
-
-  // RN - BE 통신 테스트 (회원 닉네임 변경 - 정보 가져오기)
-  const testPut = async () => {
-    try {
-      let url = 'http://k4c105.p.ssafy.io:8080/api/user/';
-      let options = {
-        method: 'PUT',
-        url: url,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json;charset=UTF-8',
-          // 헤더에 JWT 추가
-          Authorization: JWT,
-        },
-        data: {
-          nickname: '나야',
-          mode: '너야?',
-        },
-      };
-      console.log(options, '옵션');
-      let response = await axios(options);
-      console.log('response - put(user/)');
-      console.log(response);
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const cleanAsync = () => {
