@@ -16,3 +16,5 @@ export { default as Setting } from './Settings/SettingScreen';
 export {default as QRList} from './Settings/QRListScreen';
 // settings / 내 정보 변경
 export {default as SelectMode} from './Settings/SelectMode';
+// settings / about
+export {default as About} from './Settings/AboutScreen';
