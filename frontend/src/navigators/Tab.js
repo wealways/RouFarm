@@ -114,14 +114,6 @@ function HomeTabs() {
         }}
       />
       <Tab.Screen
-        name="Login"
-        component={Login}
-        options={{
-          tabBarLabel: '설정',
-          tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
-        }}
-      />
-      <Tab.Screen
         name="Settings"
         component={Setting}
         options={{
