@@ -1,6 +1,11 @@
 // kakao link 라이브러리
 import RNKakaoLink from 'react-native-kakao-links';
 
+// 카카오 로그아웃
+import { logout } from '@react-native-seoul/kakao-login';
+// AsyncStorage
+import AsyncStorage from '@react-native-community/async-storage';
+
 // QR코드 보내기
 export async function pushQR(routineTitle, imageURI, path) {
   try {
@@ -49,5 +54,24 @@ export async function pushReport(nickname, path) {
     console.log(response);
   } catch (e) {
     console.error(e);
+  }
+}
+
+// 카카오 로그아웃
+export async function roufarmlogout(navigation) {
+  console.log('here')
+  // 1. 카카오 로그아웃
+  try {
+    const message = await logout();
+    console.log(message, 'here')
+    // 2. asyncstorage 비워주기
+    AsyncStorage.clear()
+    // 2-1. 조회하기
+    const isClear = AsyncStorage.getAllKeys()
+    console.log(isClear)
+    // 3. 로그인화면으로 이동시키기
+    navigation.navigate('Login')
+  } catch (e) {
+    console.error(e)
   }
 }

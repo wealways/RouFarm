@@ -71,11 +71,11 @@ const Stack = createStackNavigator();
 function HomeTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="환경설정"
+      initialRouteName="Home"
       tabBarOptions={{
         activeTintColor: '#fff',
         activeBackgroundColor: theme.colors.first,
-        style: { height: 56, justifyContent: 'center', alignItems: 'center' },
+        style: { height: 56, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FCFAF5' },
         labelStyle: { fontSize: 10 },
       }}>
       <Tab.Screen
