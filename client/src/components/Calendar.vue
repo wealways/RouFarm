@@ -1,20 +1,21 @@
 <template>
   <v-row>
     <v-col>
-      <v-sheet height="500">
-        <v-calendar :now="today" :value="today" color="primary">
-          <template v-slot:day="{ past, date }">
+      <div>5월</div>
+      <v-sheet height="450">
+        <v-calendar :now="today" :value="today" color="#FFFAEC">
+          <template v-slot:day="{ date }">
             <v-row class="fill-height">
-              <template v-if="past && tracked[date]">
+              <template>
                 <v-sheet
-                  v-for="(percent, i) in tracked[date]"
+                  v-for="i in tracked[date]"
                   :key="i"
-                  :title="category[i]"
-                  :color="colors[i]"
-                  :width="`${percent}%`"
+                  :color="i"
+                  width="100%"
                   height="100%"
                   tile
-                ></v-sheet>
+                  >{{ i }}</v-sheet
+                >
               </template>
             </v-row>
           </template>
@@ -29,20 +30,48 @@ export default {
   name: "Calendar",
   data() {
     return {
-      today: "2019-01-10",
+      today: "2021-05-19",
+      Month: {
+        "2021-03": [
+          100,
+          100,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+        ],
+      },
       tracked: {
-        "2019-01-09": [23, 45, 10],
-        "2019-01-08": [10],
-        "2019-01-07": [0, 78, 5],
-        "2019-01-06": [0, 0, 50],
-        "2019-01-05": [0, 10, 23],
-        "2019-01-04": [2, 90],
-        "2019-01-03": [10, 32],
-        "2019-01-02": [80, 10, 10],
-        "2019-01-01": [100],
+        "2021-05-28": ["#1867c0"],
+        "2021-05-08": ["#fb8c00"],
+        "2021-05-07": ["#000000"],
       },
       colors: ["#1867c0", "#fb8c00", "#000000"],
-      category: ["Development", "Meetings", "Slacking"],
     };
   },
 };

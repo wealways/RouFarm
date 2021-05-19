@@ -21,3 +21,48 @@ export function calcDuringDay(target) {
   // 5. 올림해서 반환(00일 째니까)
   return Math.ceil(duringDay)
 }
+
+// 잔디 보여줄 형식 변경
+export function manipulateMonthInfo(Month) {
+  // console.log(Month)
+  // console.log('parameter')
+  // 0. 현재 월 추출하기
+  const today = new Date()
+  const year = String(today.getFullYear())
+  // 1월 => 0
+  // 한자리 수 월에는 0 붙여주기
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+
+  const currentMonth = [year, month].join('-')
+
+  // console.log(Month[currentMonth])
+
+  const newDateInfo = {}
+  // 1. 날짜(key), 숫자(value) 형식으로 변환
+  for (const i in Month[currentMonth]) {
+    // 1 - 1. 키값 형식 맞게 생성
+    let key = currentMonth + '-' + String(Number(i) + 1).padStart(2, '0')
+    // 1-2. 숫자를 색상코드로 변환
+    let val = Month[currentMonth][i]
+
+    // 조건문
+    let temp = val >= 100 ? '#216e39' : val >= 50 ? '#30a14e' : val > 0 ? '#9be9a8' : val == 0 ? '#ff0101' : val == -1 ? '#ebedf0' : '#fff'
+    // 1-3. key: value 형식으로 저장
+    newDateInfo[key] = [temp]
+  }
+  // 2. 오늘날짜 넣어주기
+  const now = [year, month, String(today.getDate()).padStart(2, '0')].join('-')
+  // 3. 이번 달 정보 넣어주기
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  const monthName = monthNames[Number(month) - 1]
+
+  // 최종 객체 반환
+  const result = {
+    title: monthName + ' ' + year,
+    today: now,
+    info: newDateInfo,
+  }
+
+  return result
+}
