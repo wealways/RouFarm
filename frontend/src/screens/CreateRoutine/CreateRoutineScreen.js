@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Pressable,
 } from 'react-native';
 
 import {
@@ -20,7 +21,8 @@ import {
   SettingButton,
 } from './styles';
 import { deviceWidth } from '@/utils/devicesize';
-
+import QuestionMarkSvg from '../../assets/images/question-mark.svg';
+import { Tooltip } from 'react-native-elements';
 // 라이브러리
 import { Switch } from 'react-native-elements';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -373,7 +375,21 @@ function CreateRoutineScreen({ navigation }) {
               {mode === 'hard' ? (
                 <>
                   <SettingWrapper>
-                    <SettingTitle>QR 생성</SettingTitle>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
+                    <Pressable style={{ position: 'absolute', left: 90 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={150}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {`루틴을 완료하기 위한 QR코드를 발급합니다.
+                            
+QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시킬 수 있습니다.`}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
                     <Switch
                       onValueChange={() => {
                         Alert.alert('😉');
@@ -385,7 +401,19 @@ function CreateRoutineScreen({ navigation }) {
                   </SettingWrapper>
 
                   <SettingWrapper>
-                    <SettingTitle>알람</SettingTitle>
+                    <Text style={styles.settingTitle}>알람</Text>
+                    <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={100}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {'우측 버튼을 토글하여 체크하여 알람 시간을 설정할 수 있습니다.'}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
                     <Switch
                       value={isAlarm}
                       onValueChange={() => {
@@ -400,12 +428,38 @@ function CreateRoutineScreen({ navigation }) {
               ) : (
                 <>
                   <SettingWrapper>
-                    <SettingTitle>QR 생성</SettingTitle>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
+                    <Pressable style={{ position: 'absolute', left: 90 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={150}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {`루틴을 완료하기 위한 QR코드를 발급합니다.
+                            
+QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시킬 수 있습니다.`}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
                     <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
                   </SettingWrapper>
 
                   <SettingWrapper>
-                    <SettingTitle>알람</SettingTitle>
+                    <Text style={styles.settingTitle}>알람</Text>
+                    <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={100}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {'우측 버튼을 토글하여 체크하여 알람 시간을 설정할 수 있습니다.'}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
                     <Switch
                       value={isAlarm}
                       onValueChange={() => setIsAlarm(!isAlarm)}
@@ -464,6 +518,11 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 8,
     marginBottom: 8,
+  },
+  settingTitle: {
+    flex: 1,
+    fontSize: 18,
+    color: theme.colors.text.first,
   },
   routineTitle: {
     flex: 1,
