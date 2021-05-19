@@ -271,7 +271,7 @@ function LoginPage({ navigation }) {
 // 메인 배경
 const Wrapper = styled.View`
   flex: 1;
-  background: #f4f4f4;
+  background: #FFFAEC;
 `;
 
 // 각 섹션

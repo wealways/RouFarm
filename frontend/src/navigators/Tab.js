@@ -113,14 +113,14 @@ function HomeTabs() {
           tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
         }}
       />
-      {/* <Tab.Screen
-        name="SelectMode"
-        component={SelectMode}
+      <Tab.Screen
+        name="Login"
+        component={Login}
         options={{
           tabBarLabel: '설정',
           tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
         }}
-      /> */}
+      />
       <Tab.Screen
         name="Settings"
         component={Setting}
