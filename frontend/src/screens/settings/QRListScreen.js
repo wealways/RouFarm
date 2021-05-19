@@ -5,6 +5,8 @@ import LinearGradient from 'react-native-linear-gradient'
 //api
 import { instance } from '@/api';
 import jwtContext from '@/contexts/jwt';
+//kakao
+import { pushQR } from '@/utils/KakaoLink';
 
 const Btn = styled.TouchableOpacity`
   padding:10px;
@@ -19,6 +21,12 @@ const QRListScreen = () => {
   //jwt
   const {JWT} = useContext(jwtContext);
   const [QRList,setQRList] = useState([])
+
+  const _onPress = (uuid) =>{
+    const qrEndPoint = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${uuid}`;
+    const qrPath = `chart?cht=qr&chs=200x200&chl=${uuid}`;
+    pushQR(uuid.toString(), qrEndPoint, qrPath);
+  }
 
   useEffect(()=>{
     instance.get(`routine/`, {
@@ -49,9 +57,7 @@ const QRListScreen = () => {
           {QRList.map(qr=>(
             <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',margin:10,alignItems:'center'}}>
               <Text style={{fontSize:20}}>{qr.questName}</Text>
-              <Btn onPress={()=>{
-                console.log(qr.uuid)
-              }}><Text style={{color:'white'}}>내보내기</Text></Btn>
+              <Btn onPress={_onPress(qr.uuid)}><Text style={{color:'white'}}>내보내기</Text></Btn>
             </View>
           ))}
         </View>

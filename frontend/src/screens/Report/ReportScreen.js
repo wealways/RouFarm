@@ -44,7 +44,6 @@ import { instance } from '@/api';
 
 
 function ReportScreen({navigation}) {
-
   const [res,setRes] = useState('')
   const [loading, setLoading] = useState(true);
   // 1 모든데이터 렌더링하겠다. 0 0개데이터렌더링하겠다. -1 로딩중이다.
@@ -61,7 +60,6 @@ function ReportScreen({navigation}) {
   
   //jwt
   const {JWT} = useContext(jwtContext);
-  console.log('JWT',JWT.jwt)
   
   //데이터 가져오기
   useEffect(()=>{
@@ -77,7 +75,7 @@ function ReportScreen({navigation}) {
         tempres = {...tempres,...data}
         return Object.keys(data)[0]
       })
-      console.log('리포트스크린입니다.',tempdate.length)
+      
       if(tempdate.length===0){
         setIsRender(0)
       }
@@ -117,7 +115,7 @@ function ReportScreen({navigation}) {
 
   const TopTab = ({
     tabs: ['월간 리포트', '주간 리포트'],
-    lineColor: '#000066',
+    lineColor: '#2c5061',
     noSelectedStyled: { color: '#525252', fontSize: 14 },
     selectedStyle: { color: 'white', fontWeight: 'bold', fontSize: 14 },
     tabStyle: { paddingTop: 12, paddingBottom: 5, marginRight: 10 }
@@ -154,8 +152,8 @@ function ReportScreen({navigation}) {
                     }
                   }}
                   style={{
-                    borderBottomWidth: showIndex === idx ? 1 : 0,
-                    // borderBottomColor: TopTab.lineColor,
+                    borderBottomWidth: showIndex === idx ? 0 : 1,
+                    borderBottomColor: TopTab.lineColor,
                     backgroundColor:showIndex===idx ? '#2c5061': '#fffaec',
                     width: width / 2,
                     height: 45,

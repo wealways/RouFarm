@@ -12,6 +12,7 @@ import {
   FriendList,
   Detail,
   Splash,
+  Setting,
   QRList,
 } from '../screens/index';
 
@@ -108,9 +109,17 @@ function HomeTabs() {
           tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="SelectMode"
         component={SelectMode}
+        options={{
+          tabBarLabel: '설정',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
+        }}
+      /> */}
+      <Tab.Screen
+        name="Settings"
+        component={Setting}
         options={{
           tabBarLabel: '설정',
           tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
@@ -172,7 +181,29 @@ const TabNavigation = () => {
       />
       <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-      <Stack.Screen name="QRList" component={QRList} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="QRList"
+        component={QRList}
+        options={{
+          headerTitle:'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: {backgroundColor: '#2c5061'},
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
+      />
+      <Stack.Screen
+        name="SelectMode"
+        component={SelectMode}
+        options={{
+          headerTitle:'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: {backgroundColor: '#2c5061'},
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
+      />
+      {/* <Stack.Screen name="QRList" component={QRList} options={{ headerShown: false }} /> */}
     </Stack.Navigator>
   );
 };
