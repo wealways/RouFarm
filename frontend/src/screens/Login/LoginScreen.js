@@ -249,15 +249,17 @@ function LoginPage({ navigation }) {
     <Wrapper>
       {/* App name */}
       <Content1>
-        <AppName>
+        {/* <AppName>
           Rou
-          <Text style={{ color: '#55f27c' }}>Farm</Text>
-        </AppName>
+          <Text style={{ color: '#2c5061' }}>Farm</Text>
+        </AppName> */}
+        {/* app name image */}
+        <AppImage resizeMode={'contain'} source={require('../../assets/images/name.png')}></AppImage>
         <Subtitle>부지런한 농부의 마음으로 시작하는 루틴 관리</Subtitle>
       </Content1>
       <Content2>
         {/* App Logo */}
-        <Logo resizeMode={'contain'} source={require('../../assets/images/slave1.png')}></Logo>
+        <Logo resizeMode={'contain'} source={require('../../assets/images/login.png')}></Logo>
         {/* kakao login btn */}
         <Btn onPress={() => roufarmLogin()}>
           <WithLocalSvg asset={kakaoSymbol} width={15} height={20} fill={'#000000'} />
@@ -281,16 +283,17 @@ const Content1 = styled.View`
   align-items: center;
 `;
 const AppName = styled.Text`
-  color: white;
-  font-size: 40px;
-  font-family: 'SHOWG';
-  color: #fcc004;
-  margin-bottom: 4px;
+  font-size: 60px;
+  font-family: 'COPRGTB';
+  font-weight: 900;
+  color: #ffc111;
+  margin-bottom: 0px;
 `;
 const Subtitle = styled.Text`
   align-self: center;
-  font-size: 12px;
-  font-family: 'NotoSansKR-Regular';
+  font-size: 14px;
+  /* font-family: 'NotoSansKR-Regular'; */
+  font-family: 'COPRGTB';
   color: #606c80;
 `;
 
@@ -299,16 +302,24 @@ const Content2 = styled.View`
   flex: 2;
   align-items: center;
   justify-content: flex-start;
-  margin: 20px;
-  margin-top: 40px;
+  /* margin: 20px; */
+  margin-top: 0px;
 `;
-const Logo = styled.Image``;
+const Logo = styled.Image`
+  width: 300px;
+  height: 300px;
+`;
+// app name image test
+const AppImage = styled.Image`
+  width: 400px;
+  height: 80px;
+`;
 // 카카오 로그인 - 규칙에 따라
 const Btn = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
   align-content: space-between;
-  margin-top: 40px;
+  margin-top: 0px;
   background: #fee500;
   padding: 15px;
   border-radius: 12px;
