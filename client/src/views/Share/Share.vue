@@ -96,6 +96,7 @@ export default {
   display: flex;
   justify-content: space-evenly;
   flex-direction: column;
+  height: 100vh;
 }
 /* 컨테이너 */
 .container {
