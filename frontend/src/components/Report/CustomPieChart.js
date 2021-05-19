@@ -19,7 +19,6 @@ const CustomPieChart = ({date,res}) => {
 
   useEffect(()=>{
     if(res[heatmap.date]!==undefined){
-      console.log('파이차트')
       const temp = res[heatmap.date]['해쉬태그별']
       Object.keys(temp)
       .forEach(i=>{

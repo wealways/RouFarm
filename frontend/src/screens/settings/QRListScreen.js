@@ -35,7 +35,7 @@ const QRListScreen = () => {
         // Authorization: JWT.jwt,
       },
     }).then(res => {
-      console.log('res', res.data)
+      
       setQRList(res.data)
     }).catch(err => {
       console.error(err)
