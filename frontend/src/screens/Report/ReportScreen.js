@@ -32,6 +32,7 @@ import CustomBarChart from '@/components/Report/CustomBarChart';
 import CustomPieChart from '@/components/Report/CustomPieChart';
 import CustomPieList from '@/components/Report/CustomPieList';
 import CustomDropdown from '@/components/Report/CustomDropdown';
+import Loading from '@/components/Report/Loading';
 
 //Context API
 import { HeatmapProvider } from '@/contexts/Report/Heatmap';
@@ -244,7 +245,7 @@ function ReportScreen({navigation}) {
       </HeatmapProvider>
     }
     {loading===true && isRender===-1 &&
-      <Text>로딩중입니다...</Text>
+      <Loading />
     }
     </LinearGradient>
   );
