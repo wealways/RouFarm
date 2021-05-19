@@ -74,20 +74,9 @@ const CustomBarChart = ({res}) => {
             data={MeanData}
             // labels={({ datum }) => datum.y}
           />
-          {/* <VictoryBar
-            categories={{
-              x: ["Mon", "Tue", "Wen", "Thu", "Fri", "Sat", 'Sun']
-            }}
-            data={MeanData}
-            style={{
-              data: { fill: "#6f95aa", fillOpacity: 0.6, }
-            }}
-            barRatio={1}
-            barWidth={10}
-          /> */}
           <VictoryBar
             categories={{
-              x: ["Mon", "Tue", "Wen", "Thu", "Fri", "Sat", 'Sun']
+              x: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", 'Sun']
             }}
             data={NowData}
             style={{
