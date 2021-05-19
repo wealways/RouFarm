@@ -60,3 +60,6 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+##메모리누수
+*.hprof

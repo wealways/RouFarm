@@ -166,13 +166,14 @@ const NicknameInput = styled.TextInput`
   height: 40px;
   margin-left: 8px;
   margin-right: 8px;
-  border: #55f27c 2px;
+  padding:10px;
+  border: #2c5061 2px;
   border-radius: 14px;
   background: #e8e8e8;
 `;
 // 모드 선택
 const Content2 = styled.View`
-  flex: 2;
+  flex: 3;
   justify-content: flex-start;
   margin: 30px;
   margin-top: 15px;
@@ -217,8 +218,8 @@ const Submit = styled.TouchableOpacity`
   justify-content: center;
   align-self: flex-end;
   align-items: center;
-  background: #55f27c;
-  width: 60px;
+  background: #2c5061;
+  width: 80px;
   height: 30px;
   border-radius: 10px;
 `;

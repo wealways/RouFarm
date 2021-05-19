@@ -24,6 +24,7 @@ import HeatmapContext from '@/contexts/Report/Heatmap';
 // ]
 
 const CustomBarChart = ({res}) => {
+
   const {heatmap} = useContext(HeatmapContext)
   const [MeanData,setMeanData] = useState([])
   const [NowData,setNowData] = useState([])
@@ -47,14 +48,15 @@ const CustomBarChart = ({res}) => {
           onLoad: { duration: 1000 }
         }}
         style={{
-          background: { fill: "#fff" }
+          background: { fill: "#fefdfa" }
         }}
       >
         <VictoryLegend 
           x = {180}
           orientation="horizontal"
           gutter={20}
-          colorScale={[ "#6f95aa", "#ff844b" ]}
+          // colorScale={[ "#6f95aa", "#ff844b" ]}
+          colorScale={[ "#86C5C9", "#E75B46" ]}
           data={[
             { name: "평균" }, { name: week }
           ]}
@@ -64,7 +66,8 @@ const CustomBarChart = ({res}) => {
         >
           <VictoryLine
             style={{
-              data: { stroke: "#6f95aa" },
+              // data: { stroke: "#6f95aa" },
+              data: { stroke: "#86C5C9" },
               parent: { border: "2px solid #ccc",borderRadius:10}
             }}
             // interpolation="basis"
@@ -88,7 +91,8 @@ const CustomBarChart = ({res}) => {
             }}
             data={NowData}
             style={{
-              data: { fill: "#ff844b", fillOpacity: 0.6 }
+              // data: { fill: "#ff844b", fillOpacity: 0.6 }
+              data: { fill: "#E75B46", fillOpacity: 0.6 }
             }}
             barRatio={1}
             barWidth={15}
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     // backgroundColor: "#f5fcff"
-    backgroundColor: "#fff"
+    backgroundColor:'#fefdfa'
   }
 });
 

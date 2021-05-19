@@ -21,6 +21,7 @@ const SubtitleText = styled.Text`
   font-size:${({theme}) => theme.fontSizes.md}px;
   color: #000;
   margin: 8px 2px;
+  border-bottom-width:2px;
 `
 // const StyledText = styled.Text`
 //   font-size: ${FontSize}px;
@@ -36,25 +37,28 @@ const Card = styled.View`
   background: #fff;
   width: ${({width}) => width - 20}px;
   elevation: 12;
+  background-color:#fefdfa;
 `;
 
 // 월간 수확
 const MonthChartView = styled.View`
   flex:4;
-  background:#fff;
+  background-color:#fefdfa;
   border-radius:8px;
   padding: 0 8px;
+  
 `
 const MonthTextView = styled.View`
   flex:2;
   margin-left:8px;
   align-items:center;
   justify-content:center;
+  background-color:#fefdfa;
 `
 
 // 실패 리스트
 const FailListView = styled.View`
-  background:#fff;
+  background-color:#fefdfa;
   elevation:12;
   border-radius:8px;
   padding: 16px;
@@ -63,7 +67,7 @@ const FailListView = styled.View`
 `
 // 요일별 달성률
 const ChartView = styled.View`
-  background:#fff;
+  background-color:#fefdfa;
   elevation:12;
   border-radius:8px;
   padding: 16px;

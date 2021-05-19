@@ -12,6 +12,8 @@ import {
   FriendList,
   Detail,
   Splash,
+  Setting,
+  QRList,
 } from '../screens/index';
 
 // 네비게이션 스택
@@ -29,13 +31,13 @@ const Tab = createBottomTabNavigator();
 
 // route 이름 가져오기
 function getHeaderTitle(route) {
-  console.log(route, 'route정보');
-  console.log(route.params.date, 'route정보');
+  // console.log(route, 'route정보');
+  // console.log(route.params.date, 'route정보');
   // 날짜가 있으면 날짜를 반환하고 없으면 하루라는 정보 보여주기
   const routeName = 'Daily';
   // 확인
-  console.log(routeName, 'routeName');
-  console.log(route, 'routeName');
+  // console.log(routeName, 'routeName');
+  // console.log(route, 'routeName');
   return routeName;
 }
 
@@ -107,9 +109,17 @@ function HomeTabs() {
           tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="SelectMode"
         component={SelectMode}
+        options={{
+          tabBarLabel: '설정',
+          tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
+        }}
+      /> */}
+      <Tab.Screen
+        name="Settings"
+        component={Setting}
         options={{
           tabBarLabel: '설정',
           tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
@@ -165,17 +175,35 @@ const TabNavigation = () => {
         options={({ route }) => ({
           // header title
           headerTitle: getHeaderTitle(route),
+          // headerStyle: {backgroundColor: '#dce8ef'},
+          headerStyle: {backgroundColor: '#fffaec'},
         })}
       />
-      <Stack.Screen name="Splash" component={Detail} />
+      <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
       <Stack.Screen
-        name="Login"
-        component={Detail}
-        options={({ route }) => ({
-          // header title
-          headerTitle: getHeaderTitle(route),
-        })}
+        name="QRList"
+        component={QRList}
+        options={{
+          headerTitle:'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: {backgroundColor: '#2c5061'},
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
       />
+      <Stack.Screen
+        name="SelectMode"
+        component={SelectMode}
+        options={{
+          headerTitle:'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: {backgroundColor: '#2c5061'},
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
+      />
+      {/* <Stack.Screen name="QRList" component={QRList} options={{ headerShown: false }} /> */}
     </Stack.Navigator>
   );
 };

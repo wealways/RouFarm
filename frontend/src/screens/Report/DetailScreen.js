@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
 import styled from 'styled-components/native';
 import LinearGradient from 'react-native-linear-gradient'
 
+import { instance } from '@/api';
 
 const Contents = styled.View`
   flex: 1;
@@ -24,7 +25,7 @@ const Card = styled.View`
   background: #fff;
   width: ${({ width }) => width - 20}px;
   max-height: ${({ height }) => height / 2}px;
-  
+  background-color:#fefdfa;
   elevation: 12;
 `;
 const ListView = styled.View`
@@ -43,15 +44,35 @@ const TagText = styled.Text`
   padding:5px;
   margin-right:10px;
   border-radius:10px;
-  background-color:${({ name }) => name === "건강" ? "#6f95aa" : name === "자기개발" ? "#0c985e" : name === "일상" ? "#dce8ef" : "#687396"};
-  color:${({ name }) => name != "일상" ? "white" : "#000"};
+  /* background-color:${({ name }) => name === "건강" ? "#6f95aa" : name === "자기개발" ? "#0c985e" : name === "일상" ? "#dce8ef" : "#687396"}; */
+  background-color:${({name}) => name==="운동" ? "#DE9E9B" : name==="지식" ? "#7EC07A" : name==="자기개발" ? "#86C5C9" : "#E75B46"};
+  color:${({ name }) => name != "자기개발" ? "white" : "#000"};
 `
 
 
 const Detail = ({ route }) => {
+
+  const [res,setRes] = useState([])
+  const date = route.params.date.split('-')
+  const year = date[0]
+  const month = date[1]
+  const day = date[2]
+
+
+
   useEffect(() => {
-    console.log('here')
-    console.log(route, 'route')
+
+    instance.get(`report/dailyAPI/${year}${month}${day}`, {
+      headers: {
+        Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI0ODYiLCJpYXQiOjE2MjA5NzA0MDcsImV4cCI6MTYyMzU2MjQwN30.CtvAR1QeW4pR_NbF8JU8_YDqrw5aWZAJJ87vQ5l6dgLwImMIestqlFlKWwSKHC4hYhbfX5CUkKpAHcs5-1XwJQ',
+      },
+    }).then(res=>{
+      console.log('res',res.data)
+      setRes(res.data)
+    }).catch(err=>{
+      console.error(err)
+    })
+
     return () => {
 
     }
@@ -60,25 +81,22 @@ const Detail = ({ route }) => {
   const width = useWindowDimensions().width;
   const height = useWindowDimensions().height;
 
-  const date = route.params.date.split('-')
-  const year = date[0]
-  const month = date[1]
-  const day = date[2]
 
 
-  const res = [
-    { id: 1, routine: '코딩 테스트 문제 풀기', tag: '자기개발', completed: false },
-    { id: 2, routine: '헬스장 가기', tag: '건강', completed: true },
-    { id: 3, routine: '명상하기', tag: '일상', completed: true },
-    { id: 3, routine: '명상하기', tag: '일상', completed: true },
-    { id: 3, routine: '명상하기', tag: '일상', completed: true },
-  ]
+  // const res = [
+  //   { id: 1, routine: '코딩 테스트 문제 풀기', tag: '자기개발', completed: false },
+  //   { id: 2, routine: '헬스장 가기', tag: '건강', completed: true },
+  //   { id: 3, routine: '명상하기', tag: '일상', completed: true },
+  //   { id: 3, routine: '명상하기', tag: '일상', completed: true },
+  //   { id: 3, routine: '명상하기', tag: '일상', completed: true },
+  // ]
+
   const completed = res.filter(r => r.completed)
   const notCompleted = res.filter(r => !r.completed)
   const rate = completed.length / res.length * 100
   return (
     <LinearGradient
-      colors={['#dce8ef', '#fff']}
+      colors={['#fffaed', '#fff']}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={styles.container}
@@ -114,7 +132,7 @@ const Detail = ({ route }) => {
         <View style={styles.result}>
           {rate == 100 &&
             <Text style={styles.comment}>
-              훌륭합니다!! 👍👍
+              훌륭합니다!!  👍👍
             </Text>
           }
           {rate >= 50 && rate < 100 &&
