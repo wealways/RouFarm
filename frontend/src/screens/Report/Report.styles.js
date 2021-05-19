@@ -21,7 +21,7 @@ const SubtitleText = styled.Text`
   font-size:${({theme}) => theme.fontSizes.md}px;
   color: #000;
   margin: 8px 2px;
-  border-bottom-width:2;
+  border-bottom-width:2px;
 `
 // const StyledText = styled.Text`
 //   font-size: ${FontSize}px;

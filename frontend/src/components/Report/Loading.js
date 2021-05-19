@@ -7,7 +7,7 @@ const Loading = () => {
   return (
     <Container>
       <ActivityIndicator size="large" color="#2c5061" />
-      <StyledText size={20}>데이터 가져오는 중</StyledText>
+      <StyledText size={20}>리포트 생성하는 중...</StyledText>
     </Container>
   )
 }
@@ -20,6 +20,7 @@ const Container = styled.View`
 const StyledText = styled.Text`
   font-size:${({size}) => size}px;
   color: #2c5061;
+  margin-top:10px;
 `
 
 export default Loading;
