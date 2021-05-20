@@ -12,10 +12,10 @@ export { default as Splash } from './Splash/Splash';
 export { default as Detail } from './Report/DetailScreen';
 
 // settings 
-export { default as Setting } from './Settings/SettingScreen';
+export { default as Setting } from './settings/SettingScreen';
 // settings / QRlist 스크린
-export { default as QRList } from './Settings/QRListScreen';
+export { default as QRList } from './settings/QRListScreen';
 // settings / 내 정보 변경
-export {default as SelectMode} from './Settings/SelectMode';
+export { default as SelectMode } from './settings/SelectMode';
 // settings / about
-export {default as About} from './Settings/AboutScreen';
+export { default as About } from './settings/AboutScreen';
