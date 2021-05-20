@@ -8,7 +8,7 @@ const TagText = styled.Text`
   padding:7px;
   font-size:14px;
   border-radius:10px;
-  background-color:${({ name }) => name === "운동" ? "#DE9E9B" : name === "지식" ? "#7EC07A" : name === "자기개발" ? "#86C5C9" : "#E75B46"};
+  background-color:${({ name }) => name === "일상" ? "#DE9E9B" : name === "건강" ? "#7EC07A" : name === "자기개발" ? "#86C5C9" : "#E75B46"};
   color:${({ name }) => name != "자기개발" ? "white" : "#000"};
 `
 const ItemView = styled.View`

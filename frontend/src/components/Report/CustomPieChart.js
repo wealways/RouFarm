@@ -12,8 +12,8 @@ const CustomPieChart = ({ date, res }) => {
   const { heatmap, pieClickDispatch } = useContext(HeatmapContext);
   const [myData, setMyData] = useState([])
   const HashTagData = [
-    { x: "운동", y: 0 },
-    { x: "지식", y: 0 },
+    { x: "일상", y: 0 },
+    { x: "건강", y: 0 },
     { x: "자기개발", y: 0 },
     { x: "기타", y: 0 },
   ];
@@ -24,10 +24,10 @@ const CustomPieChart = ({ date, res }) => {
       Object.keys(temp)
         .forEach(i => {
           temp[i].forEach(j => {
-            if (i === '운동') HashTagData[0]['y'] += j['cnt']
-            else if (i === '지식') HashTagData[1]['y'] += j['cnt']
+            if (i === '일상') HashTagData[0]['y'] += j['cnt']
+            else if (i === '건강') HashTagData[1]['y'] += j['cnt']
             else if (i === '자기개발') HashTagData[2]['y'] += j['cnt']
-            else HashTagData[3]['y'] += j['cnt']
+            else if (i === '기타') HashTagData[3]['y'] += j['cnt']
 
           })
         })
@@ -61,7 +61,7 @@ const CustomPieChart = ({ date, res }) => {
           // colorScale={["#6f95aa", "#0c985e","#dce8ef","#687396" ]}
           colorScale={["#DE9E9B", "#7EC07A", "#86C5C9", "#E75B46"]}
           data={[
-            { name: "운동" }, { name: "지식" }, { name: "자기개발" }, { name: "기타" }
+            { name: "일상" }, { name: "건강" }, { name: "자기개발" }, { name: "기타" }
           ]}
         />
         <VictoryPie
