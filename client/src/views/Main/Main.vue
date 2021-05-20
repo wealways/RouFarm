@@ -25,6 +25,14 @@
           />
           <div class="google__desc">google 스토어 바로가기</div>
         </div>
+        <!-- <div>
+          <img
+            class="splash"
+            src="@/assets/background.jpg"
+            alt="splash"
+            srcset=""
+          />
+        </div> -->
       </main>
     </div>
     <!-- <div class="page">
@@ -128,6 +136,21 @@ export default {
   padding: 0.8rem;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+.page1::before {
+  /* 그림 속성 */
+  content: "";
+  background-image: url("../../assets/background.jpg");
+  background-size: cover;
+  opacity: 0.2;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  /* width: 160px;
+  height: 160px; */
 }
 .page1 > header {
   position: absolute;
@@ -196,6 +219,7 @@ main {
   flex: 1;
 }
 .content__h1 {
+  position: relative;
   font-size: 48px;
   line-height: 72px;
   font-weight: 700;
@@ -203,13 +227,16 @@ main {
   text-align: center;
 }
 .content__h2 {
+  position: relative;
   margin-top: 43px;
   font-size: 17px;
+  font-weight: 600;
   line-height: 26px;
   color: rgb(85, 85, 85);
   text-align: center;
 }
 .googleBtn {
+  position: relative;
   cursor: pointer;
   margin-top: 33px;
   width: 328px;
@@ -301,5 +328,10 @@ main {
   .img__scan {
     height: 30vh;
   }
+}
+/* splash 이미지 1페이지 */
+.splash {
+  width: 100%;
+  height: 100%;
 }
 </style>
