@@ -67,13 +67,12 @@ function UpdateRoutineScreen({ navigation, route }) {
     setShowAlert(false);
   };
 
-  const [createdUuid, setCreatedUuid] = useState(0);
-
   // 모달 상태
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [startTimeShow, setStartTimeShow] = useState(false);
   const [endTimeShow, setEndTimeShow] = useState(false);
   const [alarmTimeShow, setAlarmTimeShow] = useState(false);
+  const [createdUuid, setCreatedUuid] = useState(0);
 
   // 생성시 넘길 데이터
   const [questName, setQuestname] = useState(route.params.quest.questName);
@@ -92,8 +91,26 @@ function UpdateRoutineScreen({ navigation, route }) {
   const [isAlarm, setIsAlarm] = useState(alarmTime !== '');
   const [mode, setMode] = useState('');
 
+  useEffect(async () => {
+    await AsyncStorage.getItem('mode', (err, res) => {
+      setMode(res);
+      if (res === 'hard') {
+        setIsAlarm(true);
+        setIsQR(true);
+      }
+    });
+  }, []);
+
   // 퀘스트 생성
   const handleCreate = async (jwt) => {
+    if (questName === '') {
+      Alert.alert('루틴이름을 기입해주세요 !');
+      return;
+    } else if (isQR && !isAlarm) {
+      Alert.alert('알람을 설정해주세요 !');
+      return;
+    }
+
     // 기존의 알람 제거
     await route.params.quest.alarmIdList.map((v) => deleteAlarm(v));
     await route.params.quest.qrOnceAlarmIdList.map((v) => deleteAlarm(v));
@@ -102,11 +119,13 @@ function UpdateRoutineScreen({ navigation, route }) {
 
     // 퀘스트 uuid 생성
     let uuid = parseInt(Math.random() * Math.pow(10, 16));
+    setCreatedUuid(uuid);
 
     // 새로운 알람 생성
     let alarmIdList = [];
     let qrOnceAlarmIdList = [];
     let qrRepeatAlarmIdList = [];
+
     if (isAlarm) {
       if (isQR) {
         if (repeatYoilList.length === 0) {
@@ -118,7 +137,6 @@ function UpdateRoutineScreen({ navigation, route }) {
         alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
       }
     }
-    console.log('create alarm!');
 
     // 반복일 계산
     let repeatDateList = [];
@@ -160,7 +178,12 @@ function UpdateRoutineScreen({ navigation, route }) {
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
         console.log('정보 저장 완료');
-        navigation.navigate('Home');
+
+        if (isQR) {
+          showAlertModal();
+        } else {
+          navigation.navigate('Home');
+        }
       });
 
       if (err) console.log(err);
@@ -189,16 +212,6 @@ function UpdateRoutineScreen({ navigation, route }) {
       .then((res) => console.log('post response!', res.data))
       .catch((err) => console.log(err));
   };
-
-  useEffect(async () => {
-    await AsyncStorage.getItem('mode', (err, res) => {
-      setMode(res);
-      if (res === 'hard') {
-        setIsAlarm(true);
-        setIsQR(true);
-      }
-    });
-  }, []);
 
   // 모달 활성/비활성
   const showDatePicker = () => {
@@ -407,7 +420,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                     </Pressable>
                     <Switch
                       onValueChange={() => {
-                        Alert.alert('😉');
+                        Alert.alert('하드모드에서는 QR 생성이 필수입니다!');
                       }}
                       value={isQR}
                       color="orange"
@@ -431,7 +444,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                     <Switch
                       value={isAlarm}
                       onValueChange={() => {
-                        Alert.alert('😉');
+                        Alert.alert('하드모드에서는 알람 생성이 필수입니다!');
                       }}
                       color="orange"
                     />

@@ -17,7 +17,7 @@ const DateText = styled.Text`
   color: ${(props) => (props.clickedIdx === props.idx ? '#fff' : '#222')};
 `;
 
-// 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기
+// 요일 버튼을 누르면 해당 요일에 루틴 uuid를 가져오기
 export const getDailyQuests = (quests, date) => {
   const [day1, month1, year1] = date.split('-');
 
