@@ -22,10 +22,11 @@ const QRListScreen = () => {
   const { JWT } = useContext(jwtContext);
   const [QRList, setQRList] = useState([])
 
-  const _onPress = (uuid) => {
-    const qrEndPoint = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${uuid}`;
-    const qrPath = `chart?cht=qr&chs=200x200&chl=${uuid}`;
-    pushQR(uuid.toString(), qrEndPoint, qrPath);
+  const _onPress = (qr) => {
+    console.log(qr)
+    const qrEndPoint = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${qr.uuid}`;
+    const qrPath = `chart?cht=qr&chs=200x200&chl=${qr.uuid}`;
+    pushQR(qr.questName, qrEndPoint, qrPath);
   }
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const QRListScreen = () => {
         Authorization: JWT.jwt,
       },
     }).then(res => {
-      
+
       setQRList(res.data)
     }).catch(err => {
       console.error(err)
@@ -54,10 +55,10 @@ const QRListScreen = () => {
         <Text style={{ margin: 10, fontSize: 30 }}>QR 리스트</Text>
         {QRList.length !== 0 &&
           <View style={{ margin: 10, justifyContent: 'center' }}>
-            {QRList.map((qr,idx) => (
+            {QRList.map((qr, idx) => (
               <View key={idx} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', margin: 10, alignItems: 'center' }}>
                 <Text style={{ fontSize: 20 }}>{qr.questName}</Text>
-                <Btn onPress={() => _onPress(qr.uuid)}><Text style={{ color: 'white' }}>내보내기</Text></Btn>
+                <Btn onPress={() => _onPress(qr)}><Text style={{ color: 'white' }}>내보내기</Text></Btn>
               </View>
             ))}
           </View>

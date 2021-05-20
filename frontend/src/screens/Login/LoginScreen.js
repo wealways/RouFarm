@@ -14,8 +14,9 @@ import {
 import styled from 'styled-components/native';
 
 // kakao symbol - svg
-import { WithLocalSvg } from 'react-native-svg';
-import kakaoSymbol from '@/assets/images/Kakao_symbol.svg';
+// import { WithLocalSvg } from 'react-native-svg';
+import KakaoSymbol from '@/assets/images/Kakao_symbol.svg';
+// import { kakaoSymbol } from '@/assets/svgs/Icons.js';
 
 // 카카오 로그인 활용하기
 import {
@@ -33,6 +34,8 @@ import {
 // axios
 import axios from 'axios';
 
+// loading 화면
+import { loadingSplash } from '@/screens/Splash/Splash';
 /*
 // 카카오 로그인
 const signInWithKakao = async () => {
@@ -85,6 +88,7 @@ const getAccessTokenInfo = async () => {
 // AsyncStorage
 import AsyncStorage from '@react-native-community/async-storage';
 import { configs } from 'eslint-plugin-prettier';
+import LodingSplash from '../Splash/Splash';
 
 function LoginPage({ navigation }) {
   // 카카오 정보 조회
@@ -92,6 +96,15 @@ function LoginPage({ navigation }) {
     token: null,
     profile: null,
   });
+
+  // 로딩 중
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // 마운트되면 로딩 끝
+    setIsLoading(false);
+  }, [])
+
   // 카카오 연결 끊기
   const unlinkKakao = async () => {
     const message = await unlink();
@@ -183,17 +196,20 @@ function LoginPage({ navigation }) {
     AsyncStorage.getItem('mode', (error, mode) => {
       console.log('접속자 mode 정보', mode);
     });
+    setIsLoading(false)
     // 이동하기 - 에러 처리
     if (data.msg === 'login') {
-      navigation.navigate('Home');
+      navigation.navigate('Home')
     } else if (data.msg === 'signup') {
       // props 넘기기
-      navigation.navigate('SelectMode');
+      navigation.navigate('SelectMode')
     }
   };
 
   // 실제 로그인
   const roufarmLogin = async () => {
+    // 2 - 0. 로딩중 화면 이동
+    setIsLoading(true);
     // 2 - 1. 넣어줄 리턴 값 설정
     let getProfileData = {};
     // 1. 토큰 발급Promise.then(2번 함수)
@@ -245,7 +261,7 @@ function LoginPage({ navigation }) {
     console.log(AsyncStorage.getAllKeys());
   };
 
-  return (
+  return !isLoading ? (
     <Wrapper>
       {/* App name */}
       <Content1>
@@ -262,12 +278,14 @@ function LoginPage({ navigation }) {
         <Logo resizeMode={'contain'} source={require('../../assets/images/login.png')}></Logo>
         {/* kakao login btn */}
         <Btn onPress={() => roufarmLogin()}>
-          <WithLocalSvg asset={kakaoSymbol} width={15} height={20} fill={'#000000'} />
+          <KakaoSymbol width={15} height={20} fill={'#000000'} />
           <BtnText>카카오 로그인</BtnText>
         </Btn>
       </Content2>
     </Wrapper>
-  );
+  ) : (
+    <LodingSplash />
+  )
 }
 
 // 메인 배경

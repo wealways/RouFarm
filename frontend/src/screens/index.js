@@ -6,7 +6,6 @@ export { default as UpdateRoutine } from './CreateRoutine/UpdateRoutineScreen';
 export { default as AlarmTest } from './AlarmTest';
 // 화면 테스트 중
 export { default as Login } from './Login/LoginScreen';
-export { default as FriendList } from './FriendList/FriendList';
 export { default as Splash } from './Splash/Splash';
 // 디테일 페이지 테스트 중
 export { default as Detail } from './Report/DetailScreen';
