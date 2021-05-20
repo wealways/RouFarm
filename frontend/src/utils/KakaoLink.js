@@ -21,7 +21,7 @@ export async function pushQR(routineTitle, imageURI, path) {
         path: path,
       },
       // 앱으로 이동 버튼 클릭 시
-      url: 'http://k4c105.p.ssafy.io:8080',
+      url: 'http://k4c105.p.ssafy.io',
     };
     const response = await RNKakaoLink.link(options);
     console.log(response);
@@ -48,7 +48,7 @@ export async function pushReport(nickname, path) {
         path: path,
       },
       // 앱으로 이동 버튼 클릭 시
-      url: 'http://k4c105.p.ssafy.io:8080',
+      url: 'http://k4c105.p.ssafy.io',
     };
     const response = await RNKakaoLink.link(options);
     console.log(response);
