@@ -1,30 +1,26 @@
-import React from 'react';
-import {
-  View,
-  ScrollView,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-// styled-components
+import AsyncStorage from '@react-native-community/async-storage';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
-
-function Splash({ navigation }) {
-
+const LodingSplash = ({ navigation }) => {
   return (
-    <Wrapper>
-    </Wrapper >
-  );
+    <Container>
+      <ActivityIndicator size="large" color="#2c5061" />
+    </Container>
+  )
 }
 
-// 메인 배경
-const Wrapper = styled.View`
+const Container = styled.View`
   flex:1;
-  background: #fffaec;
-`;
+  justify-content:center;
+  align-items:center;
+  background-color: #FFFAEC; 
+`
+const StyledText = styled.Text`
+  font-size:${({ size }) => size}px;
+  color: #2c5061;
+  margin-top:10px;
+`
 
-export default Splash;
+export default LodingSplash;

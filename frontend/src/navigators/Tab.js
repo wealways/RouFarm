@@ -10,7 +10,6 @@ import {
   Login,
   AlarmTest,
   SelectMode,
-  FriendList,
   Detail,
   Splash,
   Setting,
@@ -73,7 +72,6 @@ const Stack = createStackNavigator();
 function HomeTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
       tabBarOptions={{
         activeTintColor: '#fff',
         activeBackgroundColor: theme.colors.first,
@@ -161,10 +159,10 @@ function HomeTabs() {
 
 const TabNavigation = () => {
   useEffect(() => {
-    return () => {};
+    return () => { };
   }, []);
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false }} />
       {/* 하단 탭에 안 보이는 부분 */}
       <Stack.Screen
@@ -205,9 +203,9 @@ const TabNavigation = () => {
         name="About"
         component={About}
         options={{
-          headerTitle:'Setting',
+          headerTitle: 'Setting',
           // headerStyle: {backgroundColor: '#fffaec'},
-          headerStyle: {backgroundColor: '#2c5061'},
+          headerStyle: { backgroundColor: '#2c5061' },
           headerTintColor: '#fff'
           // tabBarButton: () => null,
         }}

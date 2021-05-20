@@ -67,17 +67,17 @@ const App = () => {
       // 2. JWT 토큰 정보 확인
       AsyncStorage.getItem('JWT').then((JWT) => {
         setJwt(JWT);
-        // // 토큰이 있다
-        // if (JWT !== null) {
-        //   RootNavigation.reset({ routes: [{ name: 'Home' }] });
-        // } else {
-        //   // 토큰이 없다
-        //   RootNavigation.reset({ routes: [{ name: 'Login' }] });
-        // }
-        // Home에서 페이지 리로드가 두번되는 것 방지
-        if (JWT === null) {
+        // 토큰이 있다
+        if (JWT !== null) {
+          RootNavigation.reset({ routes: [{ name: 'Home' }] });
+        } else {
+          // 토큰이 없다
           RootNavigation.reset({ routes: [{ name: 'Login' }] });
         }
+        // // Home에서 페이지 리로드가 두번되는 것 방지
+        // if (JWT === null) {
+        //   RootNavigation.reset({ routes: [{ name: 'Login' }] });
+        // }
       });
     }, 1000);
     SplashScreen.hide();
