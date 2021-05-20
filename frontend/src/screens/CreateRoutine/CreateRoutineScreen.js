@@ -376,7 +376,7 @@ function CreateRoutineScreen({ navigation }) {
                 <>
                   <SettingWrapper>
                     <Text style={styles.settingTitle}>QR 생성</Text>
-                    <Pressable style={{ position: 'absolute', left: 90 }} hitSlop={40}>
+                    <Pressable hitSlop={40}>
                       <Tooltip
                         width={300}
                         height={150}
