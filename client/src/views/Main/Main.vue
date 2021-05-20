@@ -13,7 +13,7 @@
           작심삼일이 습관이신가요?<br>
           3일마다 마음먹도록 도와드릴게요
         </div>
-        <div class="googleBtn">
+        <div class="googleBtn" @click="_onClick">
           <img class="google__img" src="@/assets/googlePlay.png" alt="구글플레이" srcset="">
           <div class="google__desc">
             google 스토어 바로가기
@@ -21,23 +21,23 @@
         </div>
       </main>
     </div>
-    <div class="page">
+    <!-- <div class="page">
       1페이지
-    </div>
+    </div> -->
     <!-- 3페이지-->
     <div class="page3" style="background-color: #2c5061">
       <main>
         <div class="content">
           <div class="content__h1" style="color:#fff">습관을 위해</div>
           <div style="display:flex; justify-content: center;">
-            <div class="content__h1" style="color:#fff;margin-right:10px">매일 한 컷씩</div>
+            <div class="content__h1" style="color:#fff;margin-right:10px">매일 한 번씩</div>
             <img class="img__qrcode" src="@/assets/qrcode.png" alt="qrcode" srcset="">
           </div>
           <div class="content__h2" style="color:#fff;margin-top:10px;">
             <div>채워지는 잔디와 꾸준함</div>
             <div>지금 시작하세요!</div>
           </div>
-          <div class="googleBtn2">
+          <div class="googleBtn2" @click="_onClick">
             <img class="google__img2" src="@/assets/googlePlay.png" alt="구글플레이" srcset="">
             <div class="google__desc2">
               google 스토어 바로가기
@@ -45,7 +45,7 @@
           </div>
         </div>
         <div class="content__img">
-          <img class="img__scan" src="@/assets/scan.jpg" alt="" srcset="">
+          <img class="img__scan" src="@/assets/login.jpg" alt="" srcset="">
         </div>
       </main>
       <footer>
@@ -68,6 +68,11 @@
 <script>
 export default {
   name: "Main",
+  methods:{
+    _onClick() {
+      alert('심사중에 있습니다. 조금만 기다려주세요😅')
+    }
+  }
 };
 </script>
 
@@ -75,7 +80,7 @@ export default {
 .container {
   max-width: 100vw;
   width: 100vw;
-  height: 300vh;
+  height: 200vh;
   padding: 0;
   background-color: #fff;
 }
