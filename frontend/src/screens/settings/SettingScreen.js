@@ -7,32 +7,6 @@ import LinearGradient from 'react-native-linear-gradient'
 // 로그아웃
 import { roufarmlogout } from '../../utils/KakaoLink';
 
-
-const Container = styled.View`
-  flex:1;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-`
-const Title = styled.Text`
-  font-size:30px;
-  color:#fff;
-`
-const StlyedText = styled.Text`
-  font-size:${({ size }) => size}px;
-`
-const ListView = styled.View`
-  margin-top:20px;
-  justify-content:center;
-  align-items:center;
-`
-const StyledBtn = styled.TouchableOpacity`
-  /* border-width:1; */
-  padding:10px;
-  margin:10px;
-`
-
 const SettingScreen = ({ navigation }) => {
 
   return (
@@ -55,11 +29,9 @@ const SettingScreen = ({ navigation }) => {
             <StlyedText size={20}>QRCode 관리</StlyedText>
           </StyledBtn>
 
-          <StyledBtn onPress={()=> navigation.navigate('About')}>
+          <StyledBtn onPress={() => navigation.navigate('About')}>
             <StlyedText size={20}>About</StlyedText>
           </StyledBtn>
-          <StyledBtn>
-            <StlyedText size={20} style={{color:'#E75B46',fontWeight:'bold'}}>로그아웃</StlyedText>
 
           <StyledBtn onPress={() => roufarmlogout(navigation)}>
             <StlyedText size={20} style={{ color: '#E75B46', fontWeight: 'bold' }}>로그아웃</StlyedText>
@@ -84,7 +56,7 @@ const Title = styled.Text`
   color:#fff;
 `
 const StlyedText = styled.Text`
-  font-size:${({size}) => size}px;
+  font-size:${({ size }) => size}px;
 `
 const ListView = styled.View`
   margin-top:20px;
