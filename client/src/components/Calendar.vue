@@ -3,7 +3,7 @@
     <v-col>
       <div class="month">{{ grassInfo.title }}</div>
       <v-sheet height="450">
-        <v-calendar :now="today" :value="grassInfo.today" color="#ffe497">
+        <v-calendar :now="grassInfo.today" color="#ffe497">
           <template v-slot:day="{ past, date }">
             <v-row class="fill-height">
               <template v-if="past">
@@ -11,8 +11,8 @@
                   v-for="val in grassInfo.info[date]"
                   :key="val"
                   :color="val"
-                  width="100%"
-                  height="100%"
+                  width="100"
+                  height="100"
                   tile
                 ></v-sheet>
               </template>
