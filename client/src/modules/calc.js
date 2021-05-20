@@ -29,8 +29,8 @@ export function calcDuringDay(target) {
 
 // 잔디 보여줄 형식 변경
 export function manipulateMonthInfo(Month) {
-  // console.log(Month)
-  // console.log('parameter')
+  console.log(Month)
+  console.log('parameter')
   // 0. 현재 월 추출하기
   const today = new Date()
   const year = String(today.getFullYear())
@@ -41,7 +41,7 @@ export function manipulateMonthInfo(Month) {
 
   const currentMonth = [year, month].join('-')
 
-  // console.log(Month[currentMonth])
+  console.log(Month[currentMonth])
 
   const newDateInfo = {}
   // 1. 날짜(key), 숫자(value) 형식으로 변환
@@ -71,6 +71,8 @@ export function manipulateMonthInfo(Month) {
     today: now,
     info: newDateInfo,
   }
+
+  console.log('최종 결과물', result)
 
   return result
 }

@@ -96,11 +96,11 @@ export default {
           method: "GET",
           url: url + `${user_id}`,
         };
-        // console.log(options, "옵션 here");
+        console.log(options, "옵션 here");
         let response = await axios(options);
         // 테스트용 조회
-        // console.log("response - get(user/)");
-        // console.log(response);
+        console.log("response - get(user/)");
+        console.log(response);
         // 1. 닉네임 변환
         this.user = response.data.profile.nickname;
         // 2. 콤보 정보 변환
@@ -109,6 +109,7 @@ export default {
         this.duringDay = calcDuringDay(response.data.profile.signindate);
         // 4. 잔디 정보 형태변화
         this.dateInfo = manipulateMonthInfo(response.data.Month);
+        console.log(this.dateInfo, "dateInfo");
       } catch (e) {
         console.error(e);
         // console.log("get error");
