@@ -1,21 +1,20 @@
 <template>
   <v-row>
     <v-col>
-      <div>5월</div>
+      <div class="month">{{ grassInfo.title }}</div>
       <v-sheet height="450">
-        <v-calendar :now="today" :value="today" color="#FFFAEC">
-          <template v-slot:day="{ date }">
+        <v-calendar :now="today" :value="grassInfo.today" color="#ffe497">
+          <template v-slot:day="{ past, date }">
             <v-row class="fill-height">
-              <template>
+              <template v-if="past">
                 <v-sheet
-                  v-for="i in tracked[date]"
+                  v-for="i in grassInfo.info[date]"
                   :key="i"
                   :color="i"
                   width="100%"
                   height="100%"
                   tile
-                  >{{ i }}</v-sheet
-                >
+                ></v-sheet>
               </template>
             </v-row>
           </template>
@@ -28,6 +27,9 @@
 <script>
 export default {
   name: "Calendar",
+  props: {
+    grassInfo: Object,
+  },
   data() {
     return {
       today: "2021-05-19",
@@ -77,5 +79,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.month {
+  font-size: 100%;
+  font-weight: 600;
+  margin: 2% 0 2% 0;
+}
 </style>

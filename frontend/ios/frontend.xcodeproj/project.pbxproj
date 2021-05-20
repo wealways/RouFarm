@@ -40,6 +40,16 @@
 		FB46CDC06FDE48A78528089F /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2FA8CEC772974800B48A8BB9 /* NotoSansKR-Medium.otf */; };
 		5DB4887A0F36496E9B523048 /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = F0179CC5CEFF4E5EA9083B63 /* NotoSansKR-Regular.otf */; };
 		018FDE2F890543EFB3CCF9B1 /* NotoSansKR-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A7595D21E6F545919DC17BD2 /* NotoSansKR-Thin.otf */; };
+		0862AF4B269A4215B970B133 /* 11443.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 46B6972F76364AF78851D555 /* 11443.jpg */; };
+		A20FCCB92F1B46C3B36FF378 /* alarm.svg in Resources */ = {isa = PBXBuildFile; fileRef = B1C0B90CCFF4461E8FB7ECD3 /* alarm.svg */; };
+		EE5A89F06A954D2C9E89F441 /* appicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DB3A5FF04CD4A4B8D0D0CA9 /* appicon.png */; };
+		BAD432E3AFE34A80A4926F10 /* flag.svg in Resources */ = {isa = PBXBuildFile; fileRef = 9009138E3E9346FF965DDDF1 /* flag.svg */; };
+		AD7B78E6877B4D298D456A4C /* Kakao_symbol.svg in Resources */ = {isa = PBXBuildFile; fileRef = 3485101EBEBC41C3998F121A /* Kakao_symbol.svg */; };
+		5A3BE8D050E748119CB95079 /* login.png in Resources */ = {isa = PBXBuildFile; fileRef = 60D16EAE69604FA893D44F4C /* login.png */; };
+		68DFC2172BC7478DBEFDFD57 /* splashscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8432118B89E6420EBAAAC672 /* splashscreen.png */; };
+		45D7C48F06F645EB82178417 /* start.svg in Resources */ = {isa = PBXBuildFile; fileRef = 8013A6F3FB6B48579A3251F3 /* start.svg */; };
+		90642839A65C43548472059D /* COPRGTB.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 4554E720B1FD4468AAC0680D /* COPRGTB.TTF */; };
+		D0F61C07F1224A47801655BE /* COPRGTL.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 1ADA5C7C6E68462EA0FAC303 /* COPRGTL.TTF */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +102,16 @@
 		2FA8CEC772974800B48A8BB9 /* NotoSansKR-Medium.otf */ = {isa = PBXFileReference; name = "NotoSansKR-Medium.otf"; path = "../src/assets/fonts/NotoSansKR-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		F0179CC5CEFF4E5EA9083B63 /* NotoSansKR-Regular.otf */ = {isa = PBXFileReference; name = "NotoSansKR-Regular.otf"; path = "../src/assets/fonts/NotoSansKR-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		A7595D21E6F545919DC17BD2 /* NotoSansKR-Thin.otf */ = {isa = PBXFileReference; name = "NotoSansKR-Thin.otf"; path = "../src/assets/fonts/NotoSansKR-Thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		46B6972F76364AF78851D555 /* 11443.jpg */ = {isa = PBXFileReference; name = "11443.jpg"; path = "../src/assets/images/11443.jpg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B1C0B90CCFF4461E8FB7ECD3 /* alarm.svg */ = {isa = PBXFileReference; name = "alarm.svg"; path = "../src/assets/images/alarm.svg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6DB3A5FF04CD4A4B8D0D0CA9 /* appicon.png */ = {isa = PBXFileReference; name = "appicon.png"; path = "../src/assets/images/appicon.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9009138E3E9346FF965DDDF1 /* flag.svg */ = {isa = PBXFileReference; name = "flag.svg"; path = "../src/assets/images/flag.svg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3485101EBEBC41C3998F121A /* Kakao_symbol.svg */ = {isa = PBXFileReference; name = "Kakao_symbol.svg"; path = "../src/assets/images/Kakao_symbol.svg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		60D16EAE69604FA893D44F4C /* login.png */ = {isa = PBXFileReference; name = "login.png"; path = "../src/assets/images/login.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8432118B89E6420EBAAAC672 /* splashscreen.png */ = {isa = PBXFileReference; name = "splashscreen.png"; path = "../src/assets/images/splashscreen.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8013A6F3FB6B48579A3251F3 /* start.svg */ = {isa = PBXFileReference; name = "start.svg"; path = "../src/assets/images/start.svg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4554E720B1FD4468AAC0680D /* COPRGTB.TTF */ = {isa = PBXFileReference; name = "COPRGTB.TTF"; path = "../src/assets/fonts/COPRGTB.TTF"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1ADA5C7C6E68462EA0FAC303 /* COPRGTL.TTF */ = {isa = PBXFileReference; name = "COPRGTL.TTF"; path = "../src/assets/fonts/COPRGTL.TTF"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +232,16 @@
 				2FA8CEC772974800B48A8BB9 /* NotoSansKR-Medium.otf */,
 				F0179CC5CEFF4E5EA9083B63 /* NotoSansKR-Regular.otf */,
 				A7595D21E6F545919DC17BD2 /* NotoSansKR-Thin.otf */,
+				46B6972F76364AF78851D555 /* 11443.jpg */,
+				B1C0B90CCFF4461E8FB7ECD3 /* alarm.svg */,
+				6DB3A5FF04CD4A4B8D0D0CA9 /* appicon.png */,
+				9009138E3E9346FF965DDDF1 /* flag.svg */,
+				3485101EBEBC41C3998F121A /* Kakao_symbol.svg */,
+				60D16EAE69604FA893D44F4C /* login.png */,
+				8432118B89E6420EBAAAC672 /* splashscreen.png */,
+				8013A6F3FB6B48579A3251F3 /* start.svg */,
+				4554E720B1FD4468AAC0680D /* COPRGTB.TTF */,
+				1ADA5C7C6E68462EA0FAC303 /* COPRGTL.TTF */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -335,6 +365,16 @@
 				FB46CDC06FDE48A78528089F /* NotoSansKR-Medium.otf in Resources */,
 				5DB4887A0F36496E9B523048 /* NotoSansKR-Regular.otf in Resources */,
 				018FDE2F890543EFB3CCF9B1 /* NotoSansKR-Thin.otf in Resources */,
+				0862AF4B269A4215B970B133 /* 11443.jpg in Resources */,
+				A20FCCB92F1B46C3B36FF378 /* alarm.svg in Resources */,
+				EE5A89F06A954D2C9E89F441 /* appicon.png in Resources */,
+				BAD432E3AFE34A80A4926F10 /* flag.svg in Resources */,
+				AD7B78E6877B4D298D456A4C /* Kakao_symbol.svg in Resources */,
+				5A3BE8D050E748119CB95079 /* login.png in Resources */,
+				68DFC2172BC7478DBEFDFD57 /* splashscreen.png in Resources */,
+				45D7C48F06F645EB82178417 /* start.svg in Resources */,
+				90642839A65C43548472059D /* COPRGTB.TTF in Resources */,
+				D0F61C07F1224A47801655BE /* COPRGTL.TTF in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

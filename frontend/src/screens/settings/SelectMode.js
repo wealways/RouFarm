@@ -27,9 +27,9 @@ function selectMode({ navigation }) {
 
   // 모드 설명
   const soft =
-    '소프트 모드는 개인의 선택에 따라 서비스의 모든 기능을 취사 선택하여 이용할 수 있습니다';
+    `소프트 모드는 개인의 선택에 따라 서비스의 \n모든 기능을 취사 선택하여 이용할 수 있습니다`;
   const hard =
-    '하드 모드는 루틴 만들기에 실패하는 사용자들을 위해 준비한 모드로 강력한 알람과 알림 기능을 제공합니다';
+    `하드 모드는 루틴 만들기에 실패하는 \n사용자들을 위해 준비한 모드로 \n강력한 알람과 알림 기능을 제공합니다`;
 
   // 모드 변경 클릭 시 보여줄 글자
   const selectExplain = (mode) => {
@@ -72,7 +72,7 @@ function selectMode({ navigation }) {
   useEffect(() => {
     // 조회 결과 실행하기
     getUserInfo();
-    return () => {};
+    return () => { };
   }, []);
 
   // 사용자 정보 수정
@@ -114,6 +114,9 @@ function selectMode({ navigation }) {
     }
   };
 
+  // 선택된 속성
+  const isSelect = '1px solid black';
+
   return (
     <Wrapper>
       {/* 닉네임 선택 */}
@@ -130,10 +133,16 @@ function selectMode({ navigation }) {
         <Title>모드 선택하기</Title>
         <ModeList>
           <TouchableOpacity onPress={() => selectExplain('soft')}>
-            <SoftMode source={require('../../assets/images/slave1.png')} />
+            <SoftMode
+              source={require('../../assets/images/soft.png')} style={{
+                backgroundColor: mode === "soft" ? "#2C5061" : "#FFFAEC"
+              }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => selectExplain('hard')}>
-            <HardMode source={require('../../assets/images/slave1.png')} />
+            <HardMode source={require('../../assets/images/hard.png')}
+              style={{
+                backgroundColor: mode === "hard" ? "#2C5061" : "#FFFAEC"
+              }} />
           </TouchableOpacity>
         </ModeList>
         {/* 각 모드 설명 */}
@@ -150,7 +159,7 @@ function selectMode({ navigation }) {
 // 메인 배경
 const Wrapper = styled.View`
   flex: 1;
-  background: #f4f4f4;
+  background: #FFFAEC;
 `;
 
 // 닉네임 선택 - 질문
@@ -182,7 +191,7 @@ const Content2 = styled.View`
 // 선택지 질문
 const Title = styled.Text`
   font-size: 18px;
-  font-family: 'NotoSansKR-Regular';
+  font-family: 'NotoSansKR-Bold';
   color: #606c80;
   margin-bottom: 10px;
 `;
@@ -190,30 +199,35 @@ const Title = styled.Text`
 const ModeList = styled.View`
   flex-direction: row;
   justify-content: space-between;
-`;
+`
 // 모드 이미지 스타일
 const SoftMode = styled.Image`
-  background: pink;
   width: 150px;
   height: 150px;
-  /* border: #55f27c 5px;  */
   border-radius: 100px;
   margin-bottom: 20px;
+  border-width: 8px;
+  border-color: #2c5061;
 `;
 const HardMode = styled.Image`
-  background: red;
   width: 150px;
   height: 150px;
   border-radius: 100px;
   margin-bottom: 20px;
+  border-width: 8px;
+  border-color: #2c5061;
 `;
 // 모드 설명 스타일
 const Subtitle = styled.Text`
+  font-family: 'NotoSansKR-Medium';
   margin: 20px;
   font-size: 14px;
+  text-align: center;
+  color: #606c80;
 `;
 // 완료 버튼
 const Submit = styled.TouchableOpacity`
+  font-family: 'COPRGTB';
   flex-direction: row;
   justify-content: center;
   align-self: flex-end;
@@ -226,4 +240,5 @@ const Submit = styled.TouchableOpacity`
 const SubmitText = styled.Text`
   color: #fff;
 `;
+
 export default selectMode;
