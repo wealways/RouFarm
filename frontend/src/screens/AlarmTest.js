@@ -41,7 +41,7 @@ const repeatAlarmNotifData = {
   interval_value: 5, // repeat after 5 minutes
 };
 
-class App extends Component {
+class AlarmTest extends Component {
   _subscribeOpen;
   _subscribeDismiss;
 
@@ -276,4 +276,4 @@ const styles = StyleSheet.create({
   margin: { marginVertical: 8 },
 });
 
-export default App;
+export default AlarmTest;

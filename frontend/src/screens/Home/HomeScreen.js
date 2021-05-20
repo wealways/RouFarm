@@ -8,19 +8,27 @@ import {
   Modal,
   Alert,
   Image,
+  Pressable,
 } from 'react-native';
-import { Wrapper, Card, Contents, QRCodeButton, UserImage } from './home.styles';
+import {
+  Wrapper,
+  Card,
+  Contents,
+  EditDeleteCompleteButton,
+  RoutineCreateButton,
+} from './home.styles';
 import { JwtConsumer } from '@/contexts/jwt';
 
 // 컴포넌트
-import { TractorAnim } from '@/components/animations';
 import { NavigationButton } from '@/components/common';
 import { GetRoutine } from '@/components/Home';
 import { getDailyQuests } from '@/components/Home/GetRoutine';
 import { stopAlarmSound } from '@/components/CreateRoutine/AlarmNotifi';
-import { WithLocalSvg } from 'react-native-svg';
-import AlarmIcon from '@/assets/images/alarm.svg';
-import StartIcon from '@/assets/images/flag.svg';
+import AlarmSvg from '@/assets/images/alarm.svg';
+import StartSvg from '@/assets/images/flag.svg';
+import MenuSvg from '@/assets/images/menu.svg';
+import SeedsSvg from '@/assets/images/seeds.svg';
+import FarmerAnim from '../../components/animations/FarmerAnim';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
@@ -30,7 +38,7 @@ import { Overlay } from 'react-native-elements';
 import { yoilReverse } from '../../utils/parsedate';
 
 // 디바이스 사이즈
-import { deviceWidth } from '@/utils/devicesize';
+import { deviceWidth, deviceHeight } from '@/utils/devicesize';
 
 // 페이지 리로드관련 hook
 import { useIsFocused } from '@react-navigation/native';
@@ -221,23 +229,37 @@ function HomeScreen({ navigation }) {
     <Wrapper>
       <ScrollView>
         <Overlay isVisible={showModal} />
-
-        {/* section 1 - 프로필 */}
-        <Contents>
+        {new Date().getHours() >= 6 && new Date().getHours() < 18 ? (
           <View>
-            <UserImage style={{ padding: 50 }}>
-              <TractorAnim style={{ width: 500 }} />
-            </UserImage>
+            <Image
+              style={styles.backgroundImageWrapper}
+              source={require('../../assets/images/morning.jpg')}></Image>
+            <FarmerAnim
+              style={{
+                position: 'absolute',
+                alignItems: 'center',
+                left: -27,
+                bottom: -23,
+                width: 510,
+              }}
+            />
           </View>
-        </Contents>
+        ) : new Date().getHours() >= 18 && new Date().getHours() < 22 ? (
+          <Image
+            style={styles.backgroundImageWrapper}
+            source={require('../../assets/images/morning.jpg')}></Image>
+        ) : (
+          <Image
+            style={styles.backgroundImageWrapper}
+            source={require('../../assets/images/night.jpg')}></Image>
+        )}
         {/* section 1 - 일일 퀘스트 */}
         <Contents style={styles.android}>
           <View>
             {quests !== null ? (
               <GetRoutine quests={quests} setClickedQuestUuidList={setClickedQuestUuidList} />
             ) : null}
-
-            <Text style={styles.title}>일일 퀘스트</Text>
+            <Text style={styles.title}>루틴 목록</Text>
             {clickedQuestUuidList.length > 0 ? (
               <>
                 {clickedQuestUuidList.map((uuid) => (
@@ -245,75 +267,80 @@ function HomeScreen({ navigation }) {
                     {quests[uuid] ? (
                       <Card style={styles.cardWrapper}>
                         <>
-                          <TouchableOpacity
-                            onPress={() => {
-                              setClickedUuid(uuid);
-                              toggleModal();
-                            }}>
-                            <View>
-                              <Text style={styles.cardTitle}>{quests[uuid].questName}</Text>
-                              {quests[uuid].alarmTime !== '' && (
+                          <View>
+                            <Text style={styles.cardTitle}>{quests[uuid].questName}</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                              <StartSvg
+                                width={12}
+                                height={12}
+                                fill={'#fff'}
+                                style={{ marginRight: 8 }}
+                              />
+                              <Text style={styles.cardTime}>
+                                {quests[uuid].startTime.split(':')[0] > 12
+                                  ? `PM ${quests[uuid].startTime.split(':')[0] - 12}시 ${
+                                      quests[uuid].startTime.split(':')[1]
+                                    }분 ~ `
+                                  : `AM ${quests[uuid].startTime.split(':')[0]}시 ${
+                                      quests[uuid].startTime.split(':')[1]
+                                    }분 ~ `}
+                              </Text>
+                              {quests[uuid].endTime !== '' && (
                                 <>
                                   <View style={{ flexDirection: 'row' }}>
-                                    <WithLocalSvg
-                                      asset={AlarmIcon}
+                                    <Text style={styles.cardTime}>
+                                      {quests[uuid].endTime.split(':')[0] > 12
+                                        ? `PM ${quests[uuid].endTime.split(':')[0] - 12}: ${
+                                            quests[uuid].endTime.split(':')[1]
+                                          }`
+                                        : `AM ${quests[uuid].endTime.split(':')[0]}:${
+                                            quests[uuid].endTime.split(':')[1]
+                                          }`}
+                                    </Text>
+                                  </View>
+                                </>
+                              )}
+                            </View>
+                            {quests[uuid].alarmTime !== '' && (
+                              <>
+                                <View style={{ flexDirection: 'row' }}>
+                                  <View>
+                                    <AlarmSvg
                                       width={12}
                                       height={12}
                                       fill={'#fff'}
                                       style={{ marginRight: 8 }}
                                     />
-                                    <Text style={styles.cardTime}>
-                                      {quests[uuid].alarmTime.split(':')[0] > 12
-                                        ? `PM ${quests[uuid].alarmTime.split(':')[0] - 12}시 ${
-                                            quests[uuid].alarmTime.split(':')[1]
-                                          }분 ~ `
-                                        : `AM ${quests[uuid].alarmTime.split(':')[0]}시 ${
-                                            quests[uuid].alarmTime.split(':')[1]
-                                          }분 ~ `}
-                                    </Text>
                                   </View>
-                                </>
-                              )}
-                              <View style={{ flexDirection: 'row' }}>
-                                <WithLocalSvg
-                                  asset={StartIcon}
-                                  width={12}
-                                  height={12}
-                                  fill={'#fff'}
-                                  style={{ marginRight: 8 }}
-                                />
-                                <Text style={styles.cardTime}>
-                                  {quests[uuid].startTime.split(':')[0] > 12
-                                    ? `PM ${quests[uuid].startTime.split(':')[0] - 12}시 ${
-                                        quests[uuid].startTime.split(':')[1]
-                                      }분 ~ `
-                                    : `AM ${quests[uuid].startTime.split(':')[0]}시 ${
-                                        quests[uuid].startTime.split(':')[1]
-                                      }분 ~ `}
-                                </Text>
-                                {quests[uuid].endTime !== '' && (
-                                  <>
-                                    <View style={{ flexDirection: 'row' }}>
-                                      <Text style={styles.cardTime}>
-                                        {quests[uuid].endTime.split(':')[0] > 12
-                                          ? `PM ${quests[uuid].endTime.split(':')[0] - 12}: ${
-                                              quests[uuid].endTime.split(':')[1]
-                                            }`
-                                          : `AM ${quests[uuid].endTime.split(':')[0]}:${
-                                              quests[uuid].endTime.split(':')[1]
-                                            }`}
-                                      </Text>
-                                    </View>
-                                  </>
-                                )}
-                              </View>
-                            </View>
-                          </TouchableOpacity>
+                                  <Text style={styles.cardTime}>
+                                    {quests[uuid].alarmTime.split(':')[0] > 12
+                                      ? `PM ${quests[uuid].alarmTime.split(':')[0] - 12}시 ${
+                                          quests[uuid].alarmTime.split(':')[1]
+                                        }분`
+                                      : `AM ${quests[uuid].alarmTime.split(':')[0]}시 ${
+                                          quests[uuid].alarmTime.split(':')[1]
+                                        }분`}
+                                  </Text>
+                                </View>
+                              </>
+                            )}
+                          </View>
                         </>
                         <>
-                          <TouchableOpacity onPress={() => {}}>
-                            <Text style={{ color: '#fff' }}>Check!</Text>
-                          </TouchableOpacity>
+                          <Pressable
+                            hitSlop={40}
+                            onPress={() => {
+                              setClickedUuid(uuid);
+                              toggleModal();
+                            }}>
+                            {({ pressed }) => (
+                              <MenuSvg
+                                width={20}
+                                height={20}
+                                fill={pressed ? 'rgba(255,255,255,0.3)' : '#fff'}
+                              />
+                            )}
+                          </Pressable>
                         </>
                       </Card>
                     ) : null}
@@ -329,7 +356,9 @@ function HomeScreen({ navigation }) {
                           }}>
                           <View style={styles.centeredView}>
                             <View style={styles.modalView}>
-                              <TouchableOpacity
+                              <Text style={styles.modalTitle}>어떤 작업을 하시겠어요? 🤔</Text>
+                              <EditDeleteCompleteButton
+                                type="edit"
                                 onPress={() => {
                                   navigation.navigate('UpdateRoutine', {
                                     uuid: clickedUuid,
@@ -337,12 +366,13 @@ function HomeScreen({ navigation }) {
                                   });
                                   toggleModal();
                                 }}>
-                                <Text>수정</Text>
-                              </TouchableOpacity>
+                                <Text style={styles.modalText}>수정</Text>
+                              </EditDeleteCompleteButton>
                               <JwtConsumer>
                                 {({ JWT }) => (
                                   <>
-                                    <TouchableOpacity
+                                    <EditDeleteCompleteButton
+                                      type="delete"
                                       onPress={() => {
                                         quests[clickedUuid].alarmIdList.map((v) => deleteAlarm(v));
                                         quests[clickedUuid].qrOnceAlarmIdList.map((v) =>
@@ -372,15 +402,17 @@ function HomeScreen({ navigation }) {
 
                                         toggleModal();
                                       }}>
-                                      <Text>삭제</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
+                                      <Text style={styles.modalText}>삭제</Text>
+                                    </EditDeleteCompleteButton>
+                                    <EditDeleteCompleteButton
+                                      type="complete"
                                       onPress={() => {
                                         console.log(JWT.jwt);
                                         handleComplete(JWT.jwt);
+                                        toggleModal();
                                       }}>
-                                      <Text>완료</Text>
-                                    </TouchableOpacity>
+                                      <Text style={styles.modalText}>완료</Text>
+                                    </EditDeleteCompleteButton>
                                   </>
                                 )}
                               </JwtConsumer>
@@ -399,42 +431,35 @@ function HomeScreen({ navigation }) {
             )}
           </View>
         </Contents>
-
-        {/* section 3 - 긴급 퀘스트 */}
-        {/* <Contents>
-          <View>
-            <Text style={styles.title}>오늘의 긴급퀘스트</Text>
-            <Card style={styles.cardWidth}>
-              <EmergencyQuest />
-            </Card>
-          </View>
-        </Contents> */}
       </ScrollView>
-
-      {/* <QRCodeButton
-        style={styles.android}
-        onPress={() => {
-          navigation.navigate('QR');
-          setQROpen(!qrOpen);
-        }}>
-        <QRCodeAnim active={qrOpen} />
-      </QRCodeButton> */}
-
       {/* 네비게이션 버튼 */}
       <NavigationButton navigation={navigation} />
+      <RoutineCreateButton
+        onPress={() => {
+          navigation.navigate('CreateRoutine');
+        }}>
+        <SeedsSvg width={40} height={40} fill={'#fff'} />
+      </RoutineCreateButton>
     </Wrapper>
   );
 }
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  backgroundImageWrapper: {
+    width: '100%',
+    height: deviceHeight / 2.7,
+    margin: 0,
+    padding: 0,
+    backgroundColor: '#A78870',
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalView: {
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.third,
     borderRadius: 20,
     padding: 30,
     alignItems: 'center',
@@ -446,6 +471,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  modalText: {
+    color: '#f2f3f6',
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 18,
@@ -464,6 +498,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: '#f2f3f6',
     fontSize: 16,
+    marginBottom: 10,
   },
   cardTime: {
     color: '#f2f3f6',
@@ -471,16 +506,5 @@ const styles = StyleSheet.create({
   },
   android: {
     elevation: 12,
-  },
-  checkbox: {
-    alignSelf: 'center',
-  },
-
-  increaseButton: {
-    width: 150,
-    height: 50,
-    backgroundColor: theme.colors.first,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

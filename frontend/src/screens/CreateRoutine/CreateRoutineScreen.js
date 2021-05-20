@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Pressable,
 } from 'react-native';
 
 import {
@@ -20,7 +21,8 @@ import {
   SettingButton,
 } from './styles';
 import { deviceWidth } from '@/utils/devicesize';
-
+import QuestionMarkSvg from '../../assets/images/question-mark.svg';
+import { Tooltip } from 'react-native-elements';
 // 라이브러리
 import { Switch } from 'react-native-elements';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -36,6 +38,7 @@ import { instance } from '@/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import { makeQRAlarm, makeAlarm, makeRepeatDate } from '../../components/CreateRoutine/AlarmNotifi';
 import { pushQR } from '@/utils/KakaoLink';
+import theme from '../../theme';
 
 const today =
   new Date().getDate() +
@@ -248,12 +251,13 @@ function CreateRoutineScreen({ navigation }) {
         {/* section 1 시작 */}
         <Contents>
           <View>
-            <Text style={styles.title}>퀘스트 이름</Text>
+            <Text style={styles.title}>루틴 이름</Text>
             <Card style={styles.cardWidth}>
               <TextInput
                 onChangeText={(text) => setQuestname(text)}
                 style={styles.textInput}
-                placeholder="어떤 퀘스트인가요?"
+                placeholder="어떤 루틴인가요?"
+                placeholderTextColor="#d2e3e6"
                 maxLength={30}></TextInput>
             </Card>
           </View>
@@ -263,7 +267,7 @@ function CreateRoutineScreen({ navigation }) {
         {/* section 2 시작 */}
         <Contents>
           <View>
-            <Text style={styles.title}>퀘스트 환경 설정</Text>
+            <Text style={styles.title}>루틴 설정</Text>
             <Card style={styles.cardWidth}>
               {/* 반복 유무 */}
               <SettingWrapper>
@@ -271,7 +275,7 @@ function CreateRoutineScreen({ navigation }) {
                 <SettingButton onPress={toggleRepeatModal} onCancel={() => console.log('@')}>
                   {repeatYoilList.map((value, index) =>
                     value ? (
-                      <Text key={index} style={{ opacity: 0.5 }}>
+                      <Text key={index} style={styles.buttonText}>
                         {value}{' '}
                       </Text>
                     ) : null,
@@ -289,7 +293,13 @@ function CreateRoutineScreen({ navigation }) {
               <SettingWrapper style={{ marginBottom: 0 }}>
                 <SettingTitle>일시</SettingTitle>
                 <SettingButton onPress={showDatePicker}>
-                  <Text style={{ opacity: 0.5 }}>{!startDate ? today : startDate}</Text>
+                  <Text style={styles.buttonText}>
+                    {!startDate
+                      ? `${today.split('-')[2]}.${today.split('-')[1]}.${today.split('-')[0]}`
+                      : `${startDate.split('-')[2].slice(2)}년 ${startDate.split('-')[1]}월 ${
+                        startDate.split('-')[0]
+                      }일`}
+                  </Text>
                 </SettingButton>
                 <DateTimePickerModal
                   isVisible={isDatePickerVisible}
@@ -304,8 +314,22 @@ function CreateRoutineScreen({ navigation }) {
                 <SettingTitle></SettingTitle>
                 <View style={{ flex: 4, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <SmallButton onPress={showStartTimePicker}>
-                    <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {!startTime ? '시작 시간' : startTime}
+                    <Text style={styles.buttonTimeText}>
+                      {!startTime
+                        ? '시작 시간'
+                        : startTime.split(':')[0] > 12
+                          ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
+                          : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
+                    </Text>
+                  </SmallButton>
+                  <Text style={styles.buttonText}>-</Text>
+                  <SmallButton onPress={showEndTimePicker}>
+                    <Text style={styles.buttonTimeText}>
+                      {!endTime
+                        ? '종료 시간'
+                        : endTime.split(':')[0] > 12
+                          ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
+                          : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <DateTimePickerModal
@@ -315,11 +339,6 @@ function CreateRoutineScreen({ navigation }) {
                     onConfirm={handleStartConfirm}
                     onCancel={hideStartTimePicker}
                   />
-                  <SmallButton onPress={showEndTimePicker}>
-                    <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {!endTime ? '종료 시간' : endTime}
-                    </Text>
-                  </SmallButton>
                   <DateTimePickerModal
                     isVisible={endTimeShow}
                     // is24Hour={true}
@@ -334,7 +353,7 @@ function CreateRoutineScreen({ navigation }) {
               <SettingWrapper>
                 <SettingTitle>해시태그</SettingTitle>
                 <SettingButton onPress={toggleHashTagModal} onCancel={() => console.log('@')}>
-                  <Text>{hashTag ? hashTag : null}</Text>
+                  <Text style={styles.buttonText}>{hashTag ? hashTag : null}</Text>
                 </SettingButton>
 
                 <ModalComponent showModal={showHashTagModal} setShowModal={setShowHashTagModal}>
@@ -356,7 +375,21 @@ function CreateRoutineScreen({ navigation }) {
               {mode === 'hard' ? (
                 <>
                   <SettingWrapper>
-                    <SettingTitle>QR 생성</SettingTitle>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
+                    {/* <Pressable hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={150}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {`루틴을 완료하기 위한 QR코드를 발급합니다.
+                            
+QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시킬 수 있습니다.`}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable> */}
                     <Switch
                       onValueChange={() => {
                         Alert.alert('😉');
@@ -368,7 +401,19 @@ function CreateRoutineScreen({ navigation }) {
                   </SettingWrapper>
 
                   <SettingWrapper>
-                    <SettingTitle>알람</SettingTitle>
+                    <Text style={styles.settingTitle}>알람</Text>
+                    {/* <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={100}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {'우측 버튼을 토글하여 체크하여 알람 시간을 설정할 수 있습니다.'}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable> */}
                     <Switch
                       value={isAlarm}
                       onValueChange={() => {
@@ -383,12 +428,38 @@ function CreateRoutineScreen({ navigation }) {
               ) : (
                 <>
                   <SettingWrapper>
-                    <SettingTitle>QR 생성</SettingTitle>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
+                    {/* <Pressable style={{ position: 'absolute', left: 90 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={150}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {`루틴을 완료하기 위한 QR코드를 발급합니다.
+                            
+QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시킬 수 있습니다.`}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable> */}
                     <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
                   </SettingWrapper>
 
                   <SettingWrapper>
-                    <SettingTitle>알람</SettingTitle>
+                    <Text style={styles.settingTitle}>알람</Text>
+                    {/* <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={100}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {'우측 버튼을 토글하여 체크하여 알람 시간을 설정할 수 있습니다.'}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable> */}
                     <Switch
                       value={isAlarm}
                       onValueChange={() => setIsAlarm(!isAlarm)}
@@ -400,8 +471,12 @@ function CreateRoutineScreen({ navigation }) {
               {isAlarm ? (
                 <>
                   <SettingButton onPress={showAlarmTimePicker}>
-                    <Text style={{ opacity: 0.5, fontSize: 12 }}>
-                      {!alarmTime ? '알람 시간 설정' : alarmTime}
+                    <Text style={styles.buttonTimeText}>
+                      {!alarmTime
+                        ? '알람 설정'
+                        : alarmTime.split(':')[0] > 12
+                          ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
+                          : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
                     </Text>
                   </SettingButton>
                   <DateTimePickerModal
@@ -417,16 +492,6 @@ function CreateRoutineScreen({ navigation }) {
           </View>
         </Contents>
         {/* section 2 끝 */}
-
-        {/* 루틴을 생성하면 qr코드화면으로 넘어가게 + 루틴의  */}
-        {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Image
-            style={styles.qrImage}
-            source={{
-              uri: 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=1018023613188393',
-            }}
-          />
-        </View> */}
         <JwtConsumer>
           {({ JWT }) => (
             <ButtonWrapper
@@ -447,10 +512,17 @@ function CreateRoutineScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   title: {
+    fontFamily: 'DungGeunMo',
     fontSize: 18,
+    fontWeight: 'bold',
     color: '#000',
     marginTop: 8,
     marginBottom: 8,
+  },
+  settingTitle: {
+    flex: 1,
+    fontSize: 18,
+    color: theme.colors.text.first,
   },
   routineTitle: {
     flex: 1,
@@ -473,8 +545,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+    color: '#f2f3f6',
   },
-  qrTextInput: {},
+  buttonText: {
+    color: theme.colors.text.first,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  buttonTimeText: {
+    color: theme.colors.text.first,
+    fontWeight: 'bold',
+    fontSize: 10,
+  },
 });
 
 export default CreateRoutineScreen;

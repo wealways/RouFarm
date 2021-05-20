@@ -60,18 +60,22 @@ const App = () => {
   // 스플래쉬 이미지 확인
   useEffect(async () => {
     AsyncStorage.getItem('mode').then((mode) => {
-      console.log(mode, 'mode')
-    })
+      console.log(mode, 'mode');
+    });
     // 1. 시간 딜레이 설정
     setTimeout(() => {
       // 2. JWT 토큰 정보 확인
       AsyncStorage.getItem('JWT').then((JWT) => {
         setJwt(JWT);
-        // 토큰이 있다
-        if (JWT !== null) {
-          RootNavigation.reset({ routes: [{ name: 'Home' }] });
-        } else {
-          // 토큰이 없다
+        // // 토큰이 있다
+        // if (JWT !== null) {
+        //   RootNavigation.reset({ routes: [{ name: 'Home' }] });
+        // } else {
+        //   // 토큰이 없다
+        //   RootNavigation.reset({ routes: [{ name: 'Login' }] });
+        // }
+        // Home에서 페이지 리로드가 두번되는 것 방지
+        if (JWT === null) {
           RootNavigation.reset({ routes: [{ name: 'Login' }] });
         }
       });

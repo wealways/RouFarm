@@ -8,6 +8,7 @@ import {
   CreateRoutine,
   UpdateRoutine,
   Login,
+  AlarmTest,
   SelectMode,
   FriendList,
   Detail,
@@ -55,6 +56,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Home" component={Home} />
       <HomeStack.Screen name="CreateRoutine" component={CreateRoutine} />
       <HomeStack.Screen name="UpdateRoutine" component={UpdateRoutine} />
+      <HomeStack.Screen name="AlarmTest" component={AlarmTest} />
     </HomeStack.Navigator>
   );
 }
@@ -159,7 +161,7 @@ function HomeTabs() {
 
 const TabNavigation = () => {
   useEffect(() => {
-    return () => { };
+    return () => {};
   }, []);
   return (
     <Stack.Navigator>

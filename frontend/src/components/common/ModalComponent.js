@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, StyleSheet, View, Text } from 'react-native';
 import { Overlay } from 'react-native-elements';
+import theme from '../../theme';
 const ModalComponent = ({
   showModal,
   setShowModal,
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.third,
     borderRadius: 20,
     padding: 30,
     alignItems: 'center',
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 8,
   },
 });
 
