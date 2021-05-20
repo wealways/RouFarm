@@ -92,7 +92,6 @@ const CustomHeatmapChart = ({navigation,res,token}) => {
       // navigation.navigate('Hide',
       //   { screen: 'Daily', params: { date: date } });
       navigation.navigate('Daily', { date: date,token: token })
-      console.log('here', date)
     }
   };
 

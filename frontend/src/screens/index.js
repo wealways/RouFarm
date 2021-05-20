@@ -15,6 +15,6 @@ export { default as Setting } from './Settings/SettingScreen';
 // settings / QRlist 스크린
 export { default as QRList } from './Settings/QRListScreen';
 // settings / 내 정보 변경
-export { default as SelectMode } from './Settings/SelectMode';
-// 공유 테스트
-export { default as Test } from './FriendList/test';
+export {default as SelectMode} from './Settings/SelectMode';
+// settings / about
+export {default as About} from './Settings/AboutScreen';

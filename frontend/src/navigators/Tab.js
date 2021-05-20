@@ -14,7 +14,7 @@ import {
   Splash,
   Setting,
   QRList,
-  Test,
+  About,
 } from '../screens/index';
 
 // 네비게이션 스택
@@ -195,6 +195,17 @@ const TabNavigation = () => {
           headerTitle: 'Setting',
           // headerStyle: {backgroundColor: '#fffaec'},
           headerStyle: { backgroundColor: '#2c5061' },
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
+      />
+      <Stack.Screen
+        name="About"
+        component={About}
+        options={{
+          headerTitle:'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: {backgroundColor: '#2c5061'},
           headerTintColor: '#fff'
           // tabBarButton: () => null,
         }}

@@ -28,7 +28,6 @@ const CustomDropdown = ({ date,weekDate, flag }) => {
   const onDefault = () =>{
     dateDispatch(date[0])
     weekDateDispatch(weekDate[0])
-    console.log(weekDate[0])
   };
   useEffect(() => {
     if(flag==='month') onDefault()
