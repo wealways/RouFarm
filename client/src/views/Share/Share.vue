@@ -15,23 +15,23 @@
           <!-- % 사용 위해 width 주기 -->
           <div class="child">
             <div class="color color100"></div>
-            <div class="legend-font">100</div>
+            <div class="legend-font">100% 완료</div>
           </div>
           <div class="child">
             <div class="color color50"></div>
-            <div class="legend-font">50</div>
+            <div class="legend-font">50% 이상</div>
           </div>
           <div class="child">
             <div class="color color01"></div>
-            <div class="legend-font">1</div>
+            <div class="legend-font">1~50%</div>
           </div>
           <div class="child">
             <div class="color color00"></div>
-            <div class="legend-font">0</div>
+            <div class="legend-font">완료X</div>
           </div>
           <div class="child">
             <div class="color color-non"></div>
-            <div class="legend-font">X</div>
+            <div class="legend-font">루틴생성X</div>
           </div>
         </div>
       </div>
@@ -40,6 +40,7 @@
         {{ user }}님이 함께 한지 <br /><span>{{ duringDay }}</span
         >일 째👏
       </div>
+      <v-btn class="main-btn" small @click="moveToMain()"> 구경하기 📑</v-btn>
     </div>
   </div>
 </template>
@@ -95,11 +96,11 @@ export default {
           method: "GET",
           url: url + `${user_id}`,
         };
-        console.log(options, "옵션 here");
+        // console.log(options, "옵션 here");
         let response = await axios(options);
         // 테스트용 조회
-        console.log("response - get(user/)");
-        console.log(response);
+        // console.log("response - get(user/)");
+        // console.log(response);
         // 1. 닉네임 변환
         this.user = response.data.profile.nickname;
         // 2. 콤보 정보 변환
@@ -110,8 +111,12 @@ export default {
         this.dateInfo = manipulateMonthInfo(response.data.Month);
       } catch (e) {
         console.error(e);
-        console.log("get error");
+        // console.log("get error");
       }
+    },
+    moveToMain() {
+      // this.$router.push({ path: "/" });
+      this.$router.push({ name: "Main" });
     },
   },
 };
@@ -123,7 +128,6 @@ export default {
   display: flex;
   justify-content: space-evenly;
   flex-direction: column;
-  height: 100vh;
 }
 /* 컨테이너 */
 .container {
@@ -131,14 +135,13 @@ export default {
   flex-direction: column;
   justify-content: space-evenly;
   text-align: center;
-  max-height: 100vh;
-  max-width: 100vw;
+  min-height: 100vh;
 }
 /* 연속 정보 */
 #comb {
   margin: 1%;
   padding: 1%;
-  font-size: 80%;
+  font-size: 120%;
 }
 /* 강조할 내용 */
 span {
@@ -189,13 +192,51 @@ span {
 /* 범례 설명 */
 .legend-font {
   font-size: 100%;
-  font-weight: 500;
+  font-weight: 200;
   margin-left: 3%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 /* 가입일자 */
 #signupdate {
-  margin: 2%;
-  padding: 1%;
-  font-size: 80%;
+  margin-top: 2%;
+  padding-top: 2%;
+  font-size: 120%;
+}
+/* 메인 이동 버튼 */
+.main-btn {
+  display: flex;
+  width: 20%;
+  align-self: flex-end;
+  font-size: 75%;
+  background-color: #ffc111 !important;
+}
+.main-btn:hover {
+  color: #fff;
+  background-color: #2c5061 !important;
+}
+/* 핸드폰 사이즈 */
+@media screen and (max-width: 400px) {
+  #comb {
+    margin: 1%;
+    padding: 1%;
+    font-size: 80%;
+  }
+  #signupdate {
+    margin: 2%;
+    padding: 1%;
+    font-size: 80%;
+  }
+  /* 범례 설명 */
+  .legend-font {
+    font-size: 50%;
+  }
+  .main-btn {
+    display: flex;
+    width: 20%;
+    align-self: flex-end;
+    font-size: 40%;
+  }
 }
 </style>
