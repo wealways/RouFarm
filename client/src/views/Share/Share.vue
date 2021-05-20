@@ -91,7 +91,7 @@ export default {
     // 직접 요청
     async getInfo(user_id) {
       try {
-        let url = "http://k4c105.p.ssafy.io/api/profileWeb/";
+        let url = "api/profileWeb";
         let options = {
           method: "GET",
           url: url + `${user_id}`,
