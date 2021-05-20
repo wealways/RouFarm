@@ -297,8 +297,8 @@ function CreateRoutineScreen({ navigation }) {
                     {!startDate
                       ? `${today.split('-')[2]}.${today.split('-')[1]}.${today.split('-')[0]}`
                       : `${startDate.split('-')[2].slice(2)}년 ${startDate.split('-')[1]}월 ${
-                          startDate.split('-')[0]
-                        }일`}
+                        startDate.split('-')[0]
+                      }일`}
                   </Text>
                 </SettingButton>
                 <DateTimePickerModal
@@ -318,8 +318,8 @@ function CreateRoutineScreen({ navigation }) {
                       {!startTime
                         ? '시작 시간'
                         : startTime.split(':')[0] > 12
-                        ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
-                        : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
+                          ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
+                          : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <Text style={styles.buttonText}>-</Text>
@@ -328,8 +328,8 @@ function CreateRoutineScreen({ navigation }) {
                       {!endTime
                         ? '종료 시간'
                         : endTime.split(':')[0] > 12
-                        ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
-                        : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
+                          ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
+                          : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <DateTimePickerModal
@@ -376,7 +376,7 @@ function CreateRoutineScreen({ navigation }) {
                 <>
                   <SettingWrapper>
                     <Text style={styles.settingTitle}>QR 생성</Text>
-                    <Pressable hitSlop={40}>
+                    {/* <Pressable hitSlop={40}>
                       <Tooltip
                         width={300}
                         height={150}
@@ -389,7 +389,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                         }>
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
-                    </Pressable>
+                    </Pressable> */}
                     <Switch
                       onValueChange={() => {
                         Alert.alert('😉');
@@ -402,7 +402,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
 
                   <SettingWrapper>
                     <Text style={styles.settingTitle}>알람</Text>
-                    <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
+                    {/* <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
                       <Tooltip
                         width={300}
                         height={100}
@@ -413,7 +413,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                         }>
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
-                    </Pressable>
+                    </Pressable> */}
                     <Switch
                       value={isAlarm}
                       onValueChange={() => {
@@ -429,7 +429,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                 <>
                   <SettingWrapper>
                     <Text style={styles.settingTitle}>QR 생성</Text>
-                    <Pressable style={{ position: 'absolute', left: 90 }} hitSlop={40}>
+                    {/* <Pressable style={{ position: 'absolute', left: 90 }} hitSlop={40}>
                       <Tooltip
                         width={300}
                         height={150}
@@ -442,13 +442,13 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                         }>
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
-                    </Pressable>
+                    </Pressable> */}
                     <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
                   </SettingWrapper>
 
                   <SettingWrapper>
                     <Text style={styles.settingTitle}>알람</Text>
-                    <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
+                    {/* <Pressable style={{ position: 'absolute', left: 60 }} hitSlop={40}>
                       <Tooltip
                         width={300}
                         height={100}
@@ -459,7 +459,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                         }>
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
-                    </Pressable>
+                    </Pressable> */}
                     <Switch
                       value={isAlarm}
                       onValueChange={() => setIsAlarm(!isAlarm)}
@@ -475,8 +475,8 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                       {!alarmTime
                         ? '알람 설정'
                         : alarmTime.split(':')[0] > 12
-                        ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
-                        : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
+                          ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
+                          : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
                     </Text>
                   </SettingButton>
                   <DateTimePickerModal
