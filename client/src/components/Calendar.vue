@@ -14,8 +14,7 @@
                   width="100%"
                   height="100%"
                   tile
-                  >{{ val }}</v-sheet
-                >
+                ></v-sheet>
               </template>
             </v-row>
           </template>
