@@ -62,6 +62,7 @@ const App = () => {
     AsyncStorage.getItem('mode').then((mode) => {
       console.log(mode, 'mode');
     });
+
     // 1. 시간 딜레이 설정
     setTimeout(() => {
       // 2. JWT 토큰 정보 확인

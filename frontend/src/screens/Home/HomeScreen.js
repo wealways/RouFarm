@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, ScrollView, Text, StyleSheet, Modal, Alert, Image, Pressable } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  Modal,
+  Alert,
+  Image,
+  Pressable,
+  Touchable,
+} from 'react-native';
 import {
   Wrapper,
   Card,
@@ -36,6 +46,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 // 알람
 import { deleteAlarm, makeAlarm } from '@/components/CreateRoutine/AlarmNotifi';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function HomeScreen({ navigation }) {
   // 모달
@@ -99,8 +110,8 @@ function HomeScreen({ navigation }) {
             // 오늘 알림이 맞으면
             if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
               // 알람이 존재하는지 확인
+              isQuit = true;
               if (quest.alarmIdList.length !== 0) {
-                isQuit = true;
                 await deleteAlarm(quest.alarmIdList[0]);
                 quest.alarmIdList = [];
               }
@@ -211,8 +222,6 @@ function HomeScreen({ navigation }) {
               )
               .then((res) => console.log('post response!', res.data))
               .catch((err) => console.log(err));
-
-            Alert.alert('루틴 성공 !');
           }
         }
       } else {
@@ -222,6 +231,7 @@ function HomeScreen({ navigation }) {
       }
     }
   };
+
   return (
     <Wrapper>
       <ScrollView>
@@ -448,7 +458,9 @@ function HomeScreen({ navigation }) {
           </View>
         </Contents>
       </ScrollView>
-
+      <TouchableOpacity onPress={() => navigation.navigate('AlarmTest')}>
+        <Text>알람 테스트</Text>
+      </TouchableOpacity>
       <RoutineCreateButton
         style={styles.android}
         onPress={() => {

@@ -130,13 +130,11 @@ function CreateRoutineScreen({ navigation }) {
           console.log('반복성 QR 알람 생성');
           qrRepeatAlarmIdList = await makeQRAlarm(startDate, repeatYoilList, questName, alarmTime);
         }
-        showAlertModal();
       } else {
         console.log('QR 없는 알람 생성');
         alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
       }
     }
-
     // 반복일 계산
     let repeatDateList = [];
     repeatYoilList.map((v) => {
@@ -173,6 +171,12 @@ function CreateRoutineScreen({ navigation }) {
 
       await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
         console.log('정보 저장 완료');
+
+        if (isQR) {
+          showAlertModal();
+        } else {
+          navigation.navigate('Home');
+        }
       });
 
       if (err) console.log(err);
@@ -201,8 +205,6 @@ function CreateRoutineScreen({ navigation }) {
       )
       .then((res) => console.log('post response!', res.data))
       .catch((err) => console.log('post error!', err));
-
-    console.log(jwt);
   };
 
   // 모달 활성/비활성
@@ -394,8 +396,7 @@ function CreateRoutineScreen({ navigation }) {
               {mode === 'hard' ? (
                 <>
                   <SettingWrapper>
-                    <Text style={styles.settingTitle}>QR 생성</Text>
-                    <Pressable hitSlop={40} style={{ position: 'absolute', top: 8, left: 90 }}>
+                    <Pressable hitSlop={40} style={{ width: 20 }}>
                       <Tooltip
                         width={300}
                         height={150}
@@ -409,6 +410,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
                     </Pressable>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
                     <Switch
                       onValueChange={() => {
                         Alert.alert('😉');
@@ -419,8 +421,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                   </SettingWrapper>
 
                   <SettingWrapper>
-                    <Text style={styles.settingTitle}>알람</Text>
-                    <Pressable style={{ position: 'absolute', top: 8, left: 60 }} hitSlop={40}>
+                    <Pressable hitSlop={40} style={{ width: 20 }}>
                       <Tooltip
                         width={300}
                         height={100}
@@ -432,6 +433,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
                     </Pressable>
+                    <Text style={styles.settingTitle}>알람</Text>
                     <Switch
                       value={isAlarm}
                       onValueChange={() => {
@@ -444,21 +446,22 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
               ) : (
                 <>
                   <SettingWrapper>
-                    <Text style={styles.settingTitle}>QR 생성</Text>
-                    <Pressable style={{ position: 'absolute', top: 8, left: 90 }} hitSlop={40}>
+                    <Pressable hitSlop={40} style={{ width: 20 }}>
                       <Tooltip
                         width={300}
                         height={150}
                         popover={
                           <Text style={{ color: theme.colors.text.first }}>
-                            {`루틴을 완료하기 위한 QR코드를 발급합니다.
-                            
-QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시킬 수 있습니다.`}
+                            {`⏰ 알람필수 ⏰
+
+- 루틴을 완료하기 위한 QR코드 생성.
+- 알람이 울릴 때 QR로만 루틴 완료가능.`}
                           </Text>
                         }>
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
                     </Pressable>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
                     <Switch
                       onValueChange={() => {
                         setIsQR(!isQR);
@@ -472,8 +475,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                   </SettingWrapper>
 
                   <SettingWrapper>
-                    <Text style={styles.settingTitle}>알람</Text>
-                    <Pressable style={{ position: 'absolute', top: 8, left: 60 }} hitSlop={40}>
+                    <Pressable hitSlop={40} style={{ width: 20 }}>
                       <Tooltip
                         width={300}
                         height={100}
@@ -485,6 +487,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                         <QuestionMarkSvg width={14} height={14} fill={'orange'} />
                       </Tooltip>
                     </Pressable>
+                    <Text style={styles.settingTitle}>알람</Text>
                     <Switch
                       value={isAlarm}
                       onValueChange={() => setIsAlarm(!isAlarm)}
