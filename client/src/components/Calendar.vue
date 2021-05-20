@@ -8,9 +8,9 @@
             <v-row class="fill-height">
               <template v-if="past">
                 <v-sheet
-                  v-for="i in grassInfo.info[date]"
-                  :key="i"
-                  :color="i"
+                  v-for="val in grassInfo.info[date]"
+                  :key="val"
+                  :color="val"
                   width="100%"
                   height="100%"
                   tile

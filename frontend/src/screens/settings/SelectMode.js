@@ -48,7 +48,7 @@ function selectMode({ navigation }) {
     // 1. JWT 토큰을 가져온다
     const JWT = await AsyncStorage.getItem('JWT');
     try {
-      let url = 'http://k4c105.p.ssafy.io:8080/api/user/';
+      let url = 'http://k4c105.p.ssafy.io/api/user/';
       let options = {
         method: 'GET',
         url: url,
@@ -79,7 +79,7 @@ function selectMode({ navigation }) {
   const modifyUserInfo = async (newNickname, newMode) => {
     const JWT = await AsyncStorage.getItem('JWT');
     try {
-      let url = 'http://k4c105.p.ssafy.io:8080/api/user/';
+      let url = 'http://k4c105.p.ssafy.io/api/user/';
       let options = {
         method: 'PUT',
         url: url,

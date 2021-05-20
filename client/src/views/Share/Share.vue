@@ -8,7 +8,7 @@
       </div>
       <!-- 캘린더 컴포넌트가 들어갈 부분 -->
       <div>
-        <Calendar :grassInfo="this.dateInfo" />
+        <Calendar :grassInfo="dateInfo" />
         <!-- 범례 부분 -->
         <div class="legend">
           <!-- 100% -->
@@ -91,7 +91,7 @@ export default {
     // 직접 요청
     async getInfo(user_id) {
       try {
-        let url = "api/profileWeb/";
+        let url = "api/profileWeb";
         let options = {
           method: "GET",
           url: url + `${user_id}`,
@@ -109,6 +109,7 @@ export default {
         this.duringDay = calcDuringDay(response.data.profile.signindate);
         // 4. 잔디 정보 형태변화
         this.dateInfo = manipulateMonthInfo(response.data.Month);
+        // console.log(this.dateInfo, "dateInfo");
       } catch (e) {
         console.error(e);
         // console.log("get error");

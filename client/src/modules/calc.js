@@ -72,5 +72,7 @@ export function manipulateMonthInfo(Month) {
     info: newDateInfo,
   }
 
+  // console.log('최종 결과물', result)
+
   return result
 }
