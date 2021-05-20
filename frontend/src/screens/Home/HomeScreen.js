@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -8,7 +8,7 @@ import {
   Alert,
   Image,
   Pressable,
-  Touchable,
+  RefreshControl,
 } from 'react-native';
 import {
   Wrapper,
@@ -20,7 +20,6 @@ import {
 import { JwtConsumer } from '@/contexts/jwt';
 
 // 컴포넌트
-import { NavigationButton } from '@/components/common';
 import { GetRoutine } from '@/components/Home';
 import { getDailyQuests } from '@/components/Home/GetRoutine';
 import { stopAlarmSound } from '@/components/CreateRoutine/AlarmNotifi';
@@ -35,8 +34,11 @@ import FarmerAnim from '../../components/animations/FarmerAnim';
 import AsyncStorage from '@react-native-community/async-storage';
 import { instance } from '@/api';
 import theme from '../../theme';
-import { Overlay } from 'react-native-elements';
 import { yoilReverse } from '../../utils/parsedate';
+
+// 라이브러리
+import { Overlay } from 'react-native-elements';
+import { showMessage, hideMessage } from 'react-native-flash-message';
 
 // 디바이스 사이즈
 import { deviceWidth, deviceHeight } from '@/utils/devicesize';
@@ -46,9 +48,21 @@ import { useIsFocused } from '@react-navigation/native';
 
 // 알람
 import { deleteAlarm, makeAlarm } from '@/components/CreateRoutine/AlarmNotifi';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { format } from 'prettier';
 
 function HomeScreen({ navigation }) {
+  const myRef = React.useRef();
+  // 리프레쉬 컨트롤
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
+
   // 모달
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
@@ -115,7 +129,6 @@ function HomeScreen({ navigation }) {
                 await deleteAlarm(quest.alarmIdList[0]);
                 quest.alarmIdList = [];
               }
-
               // 삭제
               delete quests[uuid];
               instance
@@ -126,6 +139,11 @@ function HomeScreen({ navigation }) {
                 })
                 .then((res) => console.log('delete response', res.data))
                 .catch((err) => console.log(err));
+
+              showMessage({
+                message: '루틴을 성공했어요 ! 🎉',
+                type: 'success',
+              });
             }
           } else {
             // 반복성
@@ -185,6 +203,11 @@ function HomeScreen({ navigation }) {
 
               // quests 수정
               quests[uuid] = quest;
+
+              showMessage({
+                message: '루틴을 성공했어요 ! 🎉',
+                type: 'success',
+              });
             }
           }
 
@@ -234,8 +257,9 @@ function HomeScreen({ navigation }) {
 
   return (
     <Wrapper>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <Overlay isVisible={showModal} />
+
         {new Date().getHours() >= 6 && new Date().getHours() < 18 ? (
           <View>
             <Image
@@ -251,7 +275,7 @@ function HomeScreen({ navigation }) {
               }}
             />
           </View>
-        ) : new Date().getHours() >= 18 && new Date().getHours() < 22 ? (
+        ) : new Date().getHours() >= 18 && new Date().getHours() < 20 ? (
           <Image
             style={styles.backgroundImageWrapper}
             source={require('../../assets/images/morning.jpg')}></Image>
@@ -435,6 +459,7 @@ function HomeScreen({ navigation }) {
                                       onPress={() => {
                                         console.log(JWT.jwt);
                                         handleComplete(JWT.jwt);
+
                                         toggleModal();
                                       }}>
                                       <Text style={styles.modalText}>완료</Text>
@@ -458,9 +483,7 @@ function HomeScreen({ navigation }) {
           </View>
         </Contents>
       </ScrollView>
-      <TouchableOpacity onPress={() => navigation.navigate('AlarmTest')}>
-        <Text>알람 테스트</Text>
-      </TouchableOpacity>
+
       <RoutineCreateButton
         style={styles.android}
         onPress={() => {

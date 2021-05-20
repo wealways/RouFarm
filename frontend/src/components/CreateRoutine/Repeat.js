@@ -9,14 +9,14 @@ const ButtonWrapper = styled.View`
   justify-content: space-between;
 `;
 const Button = styled.TouchableOpacity`
-  background: ${(props) => (props.checked ? '#2C5061' : '#fff')};
+  background: ${(props) => (props.checked ? '#2C5061' : '#FFFAED')};
   padding: 8px;
   margin: 8px;
   border: 1px solid ${({ theme }) => theme.colors.first};
   border-radius: 4px;
 `;
 const ConfigButton = styled.TouchableOpacity`
-  background: ${(props) => (props.confirm ? '#2C5061' : '#fff')};
+  background: ${(props) => (props.confirm ? '#2C5061' : '#FFFAED')};
   padding: 8px 16px;
   border-radius: 8px;
 `;

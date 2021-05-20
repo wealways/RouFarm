@@ -62,13 +62,6 @@ function CreateRoutineScreen({ navigation }) {
     setShowHashTagModal((prev) => !prev);
   };
 
-  // 모달 상태
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [startTimeShow, setStartTimeShow] = useState(false);
-  const [endTimeShow, setEndTimeShow] = useState(false);
-  const [alarmTimeShow, setAlarmTimeShow] = useState(false);
-  const [createdUuid, setCreatedUuid] = useState(0);
-
   // Alert라이브러리
   const [showAlert, setShowAlert] = useState(false);
   const showAlertModal = () => {
@@ -77,6 +70,13 @@ function CreateRoutineScreen({ navigation }) {
   const hideAlertModal = () => {
     setShowAlert(false);
   };
+
+  // 모달 상태
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [startTimeShow, setStartTimeShow] = useState(false);
+  const [endTimeShow, setEndTimeShow] = useState(false);
+  const [alarmTimeShow, setAlarmTimeShow] = useState(false);
+  const [createdUuid, setCreatedUuid] = useState(0);
 
   // 생성시 넘길 데이터
   const [questName, setQuestname] = useState('');
@@ -135,6 +135,7 @@ function CreateRoutineScreen({ navigation }) {
         alarmIdList = await makeAlarm(startDate, repeatYoilList, questName, alarmTime);
       }
     }
+
     // 반복일 계산
     let repeatDateList = [];
     repeatYoilList.map((v) => {
@@ -413,7 +414,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                     <Text style={styles.settingTitle}>QR 생성</Text>
                     <Switch
                       onValueChange={() => {
-                        Alert.alert('😉');
+                        Alert.alert('하드모드에서는 QR생성이 필수입니다!');
                       }}
                       value={isQR}
                       color="orange"
@@ -437,7 +438,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                     <Switch
                       value={isAlarm}
                       onValueChange={() => {
-                        Alert.alert('😉');
+                        Alert.alert('하드모드에서는 알람 생성이 필수입니다!');
                       }}
                       color="orange"
                     />
