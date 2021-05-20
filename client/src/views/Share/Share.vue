@@ -7,7 +7,34 @@
         연속으로 루틴을 지켰어요!💪
       </div>
       <!-- 캘린더 컴포넌트가 들어갈 부분 -->
-      <Calendar />
+      <div>
+        <Calendar :grassInfo="this.dateInfo" />
+        <!-- 범례 부분 -->
+        <div class="legend">
+          <!-- 100% -->
+          <!-- % 사용 위해 width 주기 -->
+          <div class="child">
+            <div class="color color100"></div>
+            <div class="legend-font">100</div>
+          </div>
+          <div class="child">
+            <div class="color color50"></div>
+            <div class="legend-font">50</div>
+          </div>
+          <div class="child">
+            <div class="color color01"></div>
+            <div class="legend-font">1</div>
+          </div>
+          <div class="child">
+            <div class="color color00"></div>
+            <div class="legend-font">0</div>
+          </div>
+          <div class="child">
+            <div class="color color-non"></div>
+            <div class="legend-font">X</div>
+          </div>
+        </div>
+      </div>
       <!-- 가입 일자 정보 나올 부분 -->
       <div id="signupdate">
         {{ user }}님이 함께 한지 <br /><span>{{ duringDay }}</span
@@ -109,8 +136,8 @@ export default {
 }
 /* 연속 정보 */
 #comb {
-  margin: 2%;
-  padding: 2%;
+  margin: 1%;
+  padding: 1%;
   font-size: 80%;
 }
 /* 강조할 내용 */
@@ -120,10 +147,55 @@ span {
   color: #2c5061;
 }
 /* 캘린더 */
+.legend {
+  max-height: 3vh;
+  margin: 2% 10% 0 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.child {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+/* 범례 사이즈 */
+.color {
+  width: 25%;
+  padding-bottom: 25%;
+}
+/* 100% */
+.color100 {
+  background-color: #216e39;
+}
+/* 50% */
+.color50 {
+  background-color: #ced730;
+}
+/* 0% 이상 */
+.color01 {
+  background-color: #e1e5a6;
+}
+/* 0 */
+.color00 {
+  background-color: #d4003d;
+}
+/* 루틴설정X */
+.color-non {
+  background-color: #e2e0d8;
+}
+/* 범례 설명 */
+.legend-font {
+  font-size: 100%;
+  font-weight: 500;
+  margin-left: 3%;
+}
 /* 가입일자 */
 #signupdate {
   margin: 2%;
-  padding: 2%;
+  padding: 1%;
   font-size: 80%;
 }
 </style>

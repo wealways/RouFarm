@@ -1,5 +1,5 @@
 import React from 'react';
-import {View,Text,ActivityIndicator} from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
 const Loading = () => {
@@ -16,9 +16,10 @@ const Container = styled.View`
   flex:1;
   justify-content:center;
   align-items:center;
+  background-color: #FFFAEC;
 `
 const StyledText = styled.Text`
-  font-size:${({size}) => size}px;
+  font-size:${({ size }) => size}px;
   color: #2c5061;
   margin-top:10px;
 `

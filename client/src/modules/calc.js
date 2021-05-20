@@ -31,7 +31,8 @@ export function manipulateMonthInfo(Month) {
   const year = String(today.getFullYear())
   // 1월 => 0
   // 한자리 수 월에는 0 붙여주기
-  const month = String(today.getMonth() + 1).padStart(2, '0')
+  // const month = String(today.getMonth() + 1).padStart(2, '0')
+  const month = '03'
 
   const currentMonth = [year, month].join('-')
 
@@ -46,7 +47,9 @@ export function manipulateMonthInfo(Month) {
     let val = Month[currentMonth][i]
 
     // 조건문
-    let temp = val >= 100 ? '#216e39' : val >= 50 ? '#30a14e' : val > 0 ? '#9be9a8' : val == 0 ? '#ff0101' : val == -1 ? '#ebedf0' : '#fff'
+    // let temp = val >= 100 ? '#216e39' : val >= 50 ? '#30a14e' : val > 0 ? '#9be9a8' : val == 0 ? '#ff0101' : val == -1 ? '#ebedf0' : '#fff'
+
+    let temp = val >= 100 ? '#216e39' : val >= 50 ? '#ced730' : val > 0 ? '#e1e5a6' : val == 0 ? '#d4003d' : val == -1 ? '#e2e0d8' : '#fff'
     // 1-3. key: value 형식으로 저장
     newDateInfo[key] = [temp]
   }
