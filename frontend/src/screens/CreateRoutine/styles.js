@@ -68,6 +68,13 @@ const SmallButton = styled.TouchableOpacity`
   justify-content: center;
 `;
 
+const HashTagButton = styled.TouchableOpacity`
+  width: 120px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+`;
+
 export {
   Wrapper,
   ButtonWrapper,
@@ -77,4 +84,5 @@ export {
   SettingTitle,
   SettingButton,
   SmallButton,
+  HashTagButton,
 };

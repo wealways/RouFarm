@@ -39,8 +39,8 @@ const UserStatus = styled.View`
 `;
 
 const RoutineCreateButton = styled.TouchableOpacity`
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   background: ${({ theme }) => theme.colors.first};
   position: absolute;
   right: 0;
@@ -49,7 +49,7 @@ const RoutineCreateButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   border-radius: 16px;
-  border: 2px solid rgba(225, 100, 55, 0.5);
+  border: 2px solid rgba(255, 125, 125, 0.7);
 `;
 
 const EditDeleteCompleteButton = styled.TouchableOpacity`

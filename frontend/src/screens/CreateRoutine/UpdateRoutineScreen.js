@@ -1,13 +1,5 @@
-import React, { useState } from 'react';
-import {
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Text,
-  View,
-  TextInput,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Alert, StyleSheet, ScrollView, Text, View, TextInput, Pressable } from 'react-native';
 
 import {
   Wrapper,
@@ -18,19 +10,20 @@ import {
   SmallButton,
   SettingTitle,
   SettingButton,
+  HashTagButton,
 } from './styles';
 import { deviceWidth } from '@/utils/devicesize';
 
 // 라이브러리
 import { Switch } from 'react-native-elements';
-import axios from 'axios';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { instance } from '@/api';
+import { Tooltip } from 'react-native-elements';
 import { JwtConsumer } from '@/contexts/jwt';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 // 컴포넌트
 import ModalComponent from '@/components/common/ModalComponent';
-import NavigationButton from '@/components/common/NavigationButton';
 import Repreat from '@/components/CreateRoutine/Repeat';
 import {
   deleteAlarm,
@@ -38,6 +31,8 @@ import {
   makeAlarm,
   makeRepeatDate,
 } from '@/components/CreateRoutine/AlarmNotifi';
+import QuestionMarkSvg from '../../assets/images/question-mark.svg';
+import { pushQR } from '@/utils/KakaoLink';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
@@ -63,6 +58,17 @@ function UpdateRoutineScreen({ navigation, route }) {
     setShowHashTagModal((prev) => !prev);
   };
 
+  // Alert라이브러리
+  const [showAlert, setShowAlert] = useState(false);
+  const showAlertModal = () => {
+    setShowAlert(true);
+  };
+  const hideAlertModal = () => {
+    setShowAlert(false);
+  };
+
+  const [createdUuid, setCreatedUuid] = useState(0);
+
   // 모달 상태
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [startTimeShow, setStartTimeShow] = useState(false);
@@ -84,6 +90,7 @@ function UpdateRoutineScreen({ navigation, route }) {
       0,
   );
   const [isAlarm, setIsAlarm] = useState(alarmTime !== '');
+  const [mode, setMode] = useState('');
 
   // 퀘스트 생성
   const handleCreate = async (jwt) => {
@@ -183,6 +190,16 @@ function UpdateRoutineScreen({ navigation, route }) {
       .catch((err) => console.log(err));
   };
 
+  useEffect(async () => {
+    await AsyncStorage.getItem('mode', (err, res) => {
+      setMode(res);
+      if (res === 'hard') {
+        setIsAlarm(true);
+        setIsQR(true);
+      }
+    });
+  }, []);
+
   // 모달 활성/비활성
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -251,10 +268,10 @@ function UpdateRoutineScreen({ navigation, route }) {
               <TextInput
                 onChangeText={(text) => setQuestname(text)}
                 style={styles.textInput}
-                placeholder="어떤 퀘스트인가요?"
-                maxLength={30}>
-                {questName}
-              </TextInput>
+                value={questName}
+                placeholder="어떤 루틴인가요?"
+                placeholderTextColor="#d2e3e6"
+                maxLength={30}></TextInput>
             </Card>
           </View>
         </Contents>
@@ -278,7 +295,10 @@ function UpdateRoutineScreen({ navigation, route }) {
                   )}
                 </SettingButton>
                 <ModalComponent showModal={showRepeatModal} setShowModal={setShowRepeatModal}>
-                  <Repreat setShowModal={setShowRepeatModal} setIsReapeat={setRepeatYoilList} />
+                  <Repreat
+                    setShowModal={setShowRepeatModal}
+                    setRepeatYoilList={setRepeatYoilList}
+                  />
                 </ModalComponent>
               </SettingWrapper>
 
@@ -315,13 +335,7 @@ function UpdateRoutineScreen({ navigation, route }) {
                         : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
-                  <DateTimePickerModal
-                    isVisible={startTimeShow}
-                    mode="time"
-                    // is24Hour={true}
-                    onConfirm={handleStartConfirm}
-                    onCancel={hideStartTimePicker}
-                  />
+                  <Text style={styles.buttonText}>-</Text>
                   <SmallButton onPress={showEndTimePicker}>
                     <Text style={styles.buttonTimeText}>
                       {!endTime
@@ -331,6 +345,13 @@ function UpdateRoutineScreen({ navigation, route }) {
                         : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
+                  <DateTimePickerModal
+                    isVisible={startTimeShow}
+                    mode="time"
+                    // is24Hour={true}
+                    onConfirm={handleStartConfirm}
+                    onCancel={hideStartTimePicker}
+                  />
                   <DateTimePickerModal
                     isVisible={endTimeShow}
                     // is24Hour={true}
@@ -344,42 +365,135 @@ function UpdateRoutineScreen({ navigation, route }) {
               {/* 해시태그 */}
               <SettingWrapper>
                 <SettingTitle>해시태그</SettingTitle>
-                <SettingButton onPress={toggleHashTagModal} onCanccel={() => console.log('@')}>
+                <SettingButton onPress={toggleHashTagModal} onCancel={() => console.log('@')}>
                   <Text style={styles.buttonText}>{hashTag ? hashTag : null}</Text>
                 </SettingButton>
 
                 <ModalComponent showModal={showHashTagModal} setShowModal={setShowHashTagModal}>
                   <>
                     {tagName.map((v, i) => (
-                      <TouchableOpacity
+                      <HashTagButton
                         key={i}
                         onPress={() => {
                           setHashTag(v);
                           toggleHashTagModal();
                         }}>
-                        <Text>{v}</Text>
-                      </TouchableOpacity>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#2e2e2e' }}>
+                          {v}
+                        </Text>
+                      </HashTagButton>
                     ))}
                   </>
                 </ModalComponent>
               </SettingWrapper>
 
-              {/* QR 생성 여부 */}
-              <SettingWrapper>
-                <SettingTitle>QR 생성</SettingTitle>
-                <Switch onValueChange={() => setIsQR(!isQR)} value={isQR} color="orange" />
-              </SettingWrapper>
+              {mode === 'hard' ? (
+                <>
+                  <SettingWrapper>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
+                    <Pressable hitSlop={40} style={{ position: 'absolute', top: 8, left: 90 }}>
+                      <Tooltip
+                        width={300}
+                        height={150}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {`루틴을 완료하기 위한 QR코드를 발급합니다.
+                            
+QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시킬 수 있습니다.`}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
+                    <Switch
+                      onValueChange={() => {
+                        Alert.alert('😉');
+                      }}
+                      value={isQR}
+                      color="orange"
+                    />
+                  </SettingWrapper>
 
-              {/* 알람 유무 */}
-              <SettingWrapper>
-                <SettingTitle>알람</SettingTitle>
-                <Switch value={isAlarm} onValueChange={() => setIsAlarm(!isAlarm)} color="orange" />
-              </SettingWrapper>
+                  <SettingWrapper>
+                    <Text style={styles.settingTitle}>알람</Text>
+                    <Pressable style={{ position: 'absolute', top: 8, left: 60 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={100}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {'우측 버튼을 눌러 알람 시간을 설정할 수 있습니다.'}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
+                    <Switch
+                      value={isAlarm}
+                      onValueChange={() => {
+                        Alert.alert('😉');
+                      }}
+                      color="orange"
+                    />
+                  </SettingWrapper>
+                </>
+              ) : (
+                <>
+                  <SettingWrapper>
+                    <Text style={styles.settingTitle}>QR 생성</Text>
+                    <Pressable style={{ position: 'absolute', top: 8, left: 90 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={150}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {`루틴을 완료하기 위한 QR코드를 발급합니다.
+                            
+QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시킬 수 있습니다.`}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
+                    <Switch
+                      onValueChange={() => {
+                        setIsQR(!isQR);
+                        if (isQR) {
+                          setIsAlarm(!isAlarm);
+                        }
+                      }}
+                      value={isQR}
+                      color="orange"
+                    />
+                  </SettingWrapper>
+
+                  <SettingWrapper>
+                    <Text style={styles.settingTitle}>알람</Text>
+                    <Pressable style={{ position: 'absolute', top: 8, left: 60 }} hitSlop={40}>
+                      <Tooltip
+                        width={300}
+                        height={100}
+                        popover={
+                          <Text style={{ color: theme.colors.text.first }}>
+                            {'우측 버튼을 눌러 알람 시간을 설정할 수 있습니다.'}
+                          </Text>
+                        }>
+                        <QuestionMarkSvg width={14} height={14} fill={'orange'} />
+                      </Tooltip>
+                    </Pressable>
+                    <Switch
+                      value={isAlarm}
+                      onValueChange={() => setIsAlarm(!isAlarm)}
+                      color="orange"
+                    />
+                  </SettingWrapper>
+                </>
+              )}
               {isAlarm ? (
                 <>
                   <SettingButton onPress={showAlarmTimePicker}>
                     <Text style={styles.buttonTimeText}>
-                      {alarmTime === ''
+                      {!alarmTime
                         ? '알람 설정'
                         : alarmTime.split(':')[0] > 12
                         ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
@@ -399,8 +513,6 @@ function UpdateRoutineScreen({ navigation, route }) {
           </View>
         </Contents>
         {/* section 2 끝 */}
-
-        {/* 전역에 있는 토큰 불러와서 적용 */}
         <JwtConsumer>
           {({ JWT }) => (
             <ButtonWrapper
@@ -413,8 +525,31 @@ function UpdateRoutineScreen({ navigation, route }) {
           )}
         </JwtConsumer>
       </ScrollView>
-
-      <NavigationButton navigation={navigation} />
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title="루틴 생성 완료"
+        message="QR코드를 공유해주세요!"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelText="홈으로"
+        confirmText="공유하기"
+        confirmButtonColor="#DD6B55"
+        onCancelPressed={() => {
+          hideAlertModal();
+          navigation.navigate('Home');
+        }}
+        onConfirmPressed={() => {
+          pushQR(
+            createdUuid.toString(),
+            `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${createdUuid}`,
+            `chart?cht=qr&chs=200x200&chl=${createdUuid}`,
+          );
+          navigation.navigate('Home');
+        }}
+      />
     </Wrapper>
   );
 }
@@ -427,6 +562,11 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 8,
     marginBottom: 8,
+  },
+  settingTitle: {
+    flex: 1,
+    fontSize: 18,
+    color: theme.colors.text.first,
   },
   routineTitle: {
     flex: 1,

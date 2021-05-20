@@ -1,15 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {
-  View,
-  ScrollView,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  Alert,
-  Image,
-  Pressable,
-} from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Modal, Alert, Image, Pressable } from 'react-native';
 import {
   Wrapper,
   Card,
@@ -27,7 +17,8 @@ import { stopAlarmSound } from '@/components/CreateRoutine/AlarmNotifi';
 import AlarmSvg from '@/assets/images/alarm.svg';
 import StartSvg from '@/assets/images/flag.svg';
 import MenuSvg from '@/assets/images/menu.svg';
-import SeedsSvg from '@/assets/images/seeds.svg';
+import PenSvg from '@/assets/images/pen.svg';
+import QrCodeSvg from '@/assets/images/qr-code.svg';
 import FarmerAnim from '../../components/animations/FarmerAnim';
 
 // 유틸
@@ -96,132 +87,138 @@ function HomeScreen({ navigation }) {
 
     // 존재하는 루틴 인지 확인
     if (quest !== null) {
-      // 시작된 루틴 인지 확인
-      let [date, month, year] = [...quest.startDate.split('-')];
+      // qr 알람이 아니면
+      if (quest.qrOnceAlarmIdList.length + quest.qrRepeatAlarmIdList.length === 0) {
+        // 시작된 루틴 인지 확인
+        let [date, month, year] = [...quest.startDate.split('-')];
+        if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
+          let isQuit = false;
 
-      if (new Date(year, month * 1 - 1, date * 1) <= new Date()) {
-        let isQuit = false;
+          // 일회성
+          if (quest.repeatYoilList.length === 0) {
+            // 오늘 알림이 맞으면
+            if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
+              // 알람이 존재하는지 확인
+              if (quest.alarmIdList.length !== 0) {
+                isQuit = true;
+                await deleteAlarm(quest.alarmIdList[0]);
+                quest.alarmIdList = [];
+              }
 
-        // 일회성
-        if (quest.repeatYoilList.length === 0) {
-          // 오늘 알림이 맞으면
-          if (new Date(year, month * 1 - 1, date * 1).getDay() === new Date().getDay()) {
-            // 알람이 존재하는지 확인
-            if (quest.alarmIdList.length !== 0) {
-              isQuit = true;
-              await deleteAlarm(quest.alarmIdList[0]);
-              quest.alarmIdList = [];
+              // 삭제
+              delete quests[uuid];
+              instance
+                .delete(`routine/${uuid}`, {
+                  headers: {
+                    Authorization: jwt,
+                  },
+                })
+                .then((res) => console.log('delete response', res.data))
+                .catch((err) => console.log(err));
             }
+          } else {
+            // 반복성
+            let i = -1;
 
-            // 삭제
-            delete quests[uuid];
-            instance
-              .delete(`routine/${uuid}`, {
-                headers: {
-                  Authorization: jwt,
-                },
-              })
-              .then((res) => console.log('delete response', res.data))
-              .catch((err) => console.log(err));
-          }
-        } else {
-          // 반복성
-          let i = -1;
+            quest.repeatYoilList.map((val, idx) => {
+              // 같은 요일 인지 확인
+              if (yoilReverse[val] === new Date().getDay()) {
+                isQuit = true;
+                i = idx;
+              }
+            });
 
-          quest.repeatYoilList.map((val, idx) => {
-            // 같은 요일 인지 확인
-            if (yoilReverse[val] === new Date().getDay()) {
-              isQuit = true;
-              i = idx;
-            }
-          });
-
-          // 오늘 루틴이 맞으면
-          if (i !== -1) {
-            // 루틴 완료!
-            // 추가 알람 시간 계산
-            let alarmDate = new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() + 7,
-            );
-            alarmDate =
-              alarmDate.getDate() +
-              '-' +
-              (alarmDate.getMonth() * 1 + 1) +
-              '-' +
-              alarmDate.getFullYear();
-
-            // quest.startDate 계산
-            quest.repeatDateList[i] = alarmDate;
-
-            let tempRepeatDateList = [].concat(quest.repeatDateList);
-            tempRepeatDateList &&
-              tempRepeatDateList.sort((a, b) => {
-                const [dayA, monthA, yearA] = a.split('-');
-                const [dayB, monthB, yearB] = b.split('-');
-                return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
-              });
-            quest.startDate = tempRepeatDateList[0];
-
-            // 알람 다음주로 변경!
-            // 알람이 존재하는지 확인
-            if (quest.alarmIdList.length !== 0) {
-              // 기존 알람 삭제
-              await deleteAlarm(quest.alarmIdList[i]);
-              // 향후 알람 추가
-              const alarmId = await makeAlarm(
-                alarmDate,
-                [quest.repeatYoilList[i]],
-                quest.questName,
-                quest.alarmTime,
+            // 오늘 루틴이 맞으면
+            if (i !== -1) {
+              // 루틴 완료!
+              // 추가 알람 시간 계산
+              let alarmDate = new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                new Date().getDate() + 7,
               );
-              console.log(alarmId);
-              quest.alarmIdList[i] = alarmId[0];
+              alarmDate =
+                alarmDate.getDate() +
+                '-' +
+                (alarmDate.getMonth() * 1 + 1) +
+                '-' +
+                alarmDate.getFullYear();
+
+              // quest.startDate 계산
+              quest.repeatDateList[i] = alarmDate;
+
+              let tempRepeatDateList = [].concat(quest.repeatDateList);
+              tempRepeatDateList &&
+                tempRepeatDateList.sort((a, b) => {
+                  const [dayA, monthA, yearA] = a.split('-');
+                  const [dayB, monthB, yearB] = b.split('-');
+                  return new Date(yearA, monthA, dayA) < new Date(yearB, monthB, dayB) ? -1 : 1;
+                });
+              quest.startDate = tempRepeatDateList[0];
+
+              // 알람 다음주로 변경!
+              // 알람이 존재하는지 확인
+              if (quest.alarmIdList.length !== 0) {
+                // 기존 알람 삭제
+                await deleteAlarm(quest.alarmIdList[i]);
+                // 향후 알람 추가
+                const alarmId = await makeAlarm(
+                  alarmDate,
+                  [quest.repeatYoilList[i]],
+                  quest.questName,
+                  quest.alarmTime,
+                );
+                console.log(alarmId);
+                quest.alarmIdList[i] = alarmId[0];
+              }
+
+              // quests 수정
+              quests[uuid] = quest;
+            }
+          }
+
+          // 진짜 알람들을 삭제 했냐? == 좀 원래꺼랑 바꿨냐?
+          if (isQuit) {
+            // 알람이 울린 후이면, 알람 종료
+            let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
+            if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
+              stopAlarmSound();
             }
 
-            // quests 수정
-            quests[uuid] = quest;
-          }
-        }
+            // 메모리에 저장
+            await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
+              console.log('정보 저장 완료');
+              navigation.navigate('Home');
+            });
 
-        // 진짜 알람들을 삭제 했냐? == 좀 원래꺼랑 바꿨냐?
-        if (isQuit) {
-          // 알람이 울린 후이면, 알람 종료
-          let [hours, minutes, seconds] = [...quest.alarmTime.split(':')];
-          if (new Date(year, month * 1 - 1, date * 1, hours, minutes, seconds) <= new Date()) {
-            stopAlarmSound();
-          }
+            // 루틴 로그 기록
+            date = date.length == 1 ? '0' + date : date;
+            month = month.length == 1 ? '0' + month : month;
 
-          // 메모리에 저장
-          await AsyncStorage.setItem('quests', JSON.stringify(quests), () => {
-            console.log('정보 저장 완료');
-            navigation.navigate('Home');
-          });
-
-          // 루틴 로그 기록
-          date = date.length == 1 ? '0' + date : date;
-          month = month.length == 1 ? '0' + month : month;
-
-          instance
-            .post(
-              'routineLog/',
-              {
-                routineId: uuid,
-                time: date + '-' + month + '-' + year,
-                isSuccess: 'true',
-              },
-              {
-                headers: {
-                  Authorization: jwt,
+            instance
+              .post(
+                'routineLog/',
+                {
+                  routineId: uuid,
+                  time: date + '-' + month + '-' + year,
+                  isSuccess: 'true',
                 },
-              },
-            )
-            .then((res) => console.log('post response!', res.data))
-            .catch((err) => console.log(err));
+                {
+                  headers: {
+                    Authorization: jwt,
+                  },
+                },
+              )
+              .then((res) => console.log('post response!', res.data))
+              .catch((err) => console.log(err));
 
-          Alert.alert('루틴 성공 !');
+            Alert.alert('루틴 성공 !');
+          }
         }
+      } else {
+        // qr 알람이면
+        Alert.alert('QR알람은 QR태그로만 완료할 수 있어요 !');
+        navigation.navigate('QR');
       }
     }
   };
@@ -254,7 +251,7 @@ function HomeScreen({ navigation }) {
             source={require('../../assets/images/night.jpg')}></Image>
         )}
         {/* section 1 - 일일 퀘스트 */}
-        <Contents style={styles.android}>
+        <Contents style={(styles.android, { paddingBottom: 40 })}>
           <View>
             {quests !== null ? (
               <GetRoutine quests={quests} setClickedQuestUuidList={setClickedQuestUuidList} />
@@ -268,11 +265,28 @@ function HomeScreen({ navigation }) {
                       <Card style={styles.cardWrapper}>
                         <>
                           <View>
-                            <Text style={styles.cardTitle}>{quests[uuid].questName}</Text>
-                            <View style={{ flexDirection: 'row' }}>
+                            {/* 루틴제목(+ QR유무) */}
+                            {quests[uuid].qrOnceAlarmIdList.length +
+                              quests[uuid].qrRepeatAlarmIdList.length >
+                            0 ? (
+                              <View style={styles.cardTitleWrapper}>
+                                <QrCodeSvg width={20} height={20} marginRight={8} fill={'#fff'} />
+                                <Text style={styles.cardTitle}>{quests[uuid].questName}</Text>
+                              </View>
+                            ) : (
+                              <Text style={styles.cardTitle}>{quests[uuid].questName}</Text>
+                            )}
+
+                            {/* 시작/끝 시간 */}
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginBottom: 4,
+                              }}>
                               <StartSvg
-                                width={12}
-                                height={12}
+                                width={10}
+                                height={10}
                                 fill={'#fff'}
                                 style={{ marginRight: 8 }}
                               />
@@ -301,13 +315,15 @@ function HomeScreen({ navigation }) {
                                 </>
                               )}
                             </View>
+
+                            {/* 알람 */}
                             {quests[uuid].alarmTime !== '' && (
                               <>
-                                <View style={{ flexDirection: 'row' }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                   <View>
                                     <AlarmSvg
-                                      width={12}
-                                      height={12}
+                                      width={10}
+                                      height={10}
                                       fill={'#fff'}
                                       style={{ marginRight: 8 }}
                                     />
@@ -432,13 +448,13 @@ function HomeScreen({ navigation }) {
           </View>
         </Contents>
       </ScrollView>
-      {/* 네비게이션 버튼 */}
-      <NavigationButton navigation={navigation} />
+
       <RoutineCreateButton
+        style={styles.android}
         onPress={() => {
           navigation.navigate('CreateRoutine');
         }}>
-        <SeedsSvg width={40} height={40} fill={'#fff'} />
+        <PenSvg width={32} height={32} fill={'#fff'} />
       </RoutineCreateButton>
     </Wrapper>
   );
@@ -495,10 +511,16 @@ const styles = StyleSheet.create({
     width: deviceWidth - 20,
     elevation: 12,
   },
+  cardTitleWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   cardTitle: {
     color: '#f2f3f6',
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   cardTime: {
     color: '#f2f3f6',

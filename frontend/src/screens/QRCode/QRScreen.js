@@ -5,23 +5,15 @@ import { View, Text, AppRegistry, StyleSheet, TouchableOpacity, StatusBar } from
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
 import { Dimensions } from 'react-native';
-import theme from '@/theme';
 
 // 유틸
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
 import { instance } from '@/api';
 import { JwtConsumer } from '@/contexts/jwt';
 import { yoilReverse } from '@/utils/parsedate';
 
 // 컴포넌트
-import {
-  makeQRAlarm,
-  makeAlarm,
-  makeRepeatDate,
-  deleteAlarm,
-  stopAlarmSound,
-} from '@/components/CreateRoutine/AlarmNotifi';
+import { makeQRAlarm, deleteAlarm, stopAlarmSound } from '@/components/CreateRoutine/AlarmNotifi';
 
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;

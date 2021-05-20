@@ -25,6 +25,7 @@
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-alarm-notification": "1.7.1",
+    "react-native-awesome-alerts": "1.4.2",
     "react-native-calendars": "1.1258.0",
     "react-native-camera": "3.43.6",
     "react-native-device-info": "8.1.2",

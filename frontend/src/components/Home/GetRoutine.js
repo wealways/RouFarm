@@ -60,7 +60,14 @@ function GetRoutine({ quests, setClickedQuestUuidList }) {
 
   for (let i = 0; i < listOfDays.length; i++) {
     listOfDays[i] =
-      date.getDate() + i + '-' + (date.getMonth() * 1 + 1).toString() + '-' + date.getFullYear();
+      new Date(date.getFullYear(), date.getMonth(), date.getDate() + i).getDate() +
+      '-' +
+      (
+        new Date(date.getFullYear(), date.getMonth(), date.getDate() + i).getMonth() * 1 +
+        1
+      ).toString() +
+      '-' +
+      new Date(date.getFullYear(), date.getMonth(), date.getDate() + i).getFullYear();
   }
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
