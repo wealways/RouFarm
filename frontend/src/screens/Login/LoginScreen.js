@@ -90,6 +90,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { configs } from 'eslint-plugin-prettier';
 import LodingSplash from '../Splash/Splash';
 
+// test 용
+import { instance } from '@/api';
+
 function LoginPage({ navigation }) {
   // 카카오 정보 조회
   const [kakaoInfo, setKakaoInfo] = useState({
@@ -100,9 +103,13 @@ function LoginPage({ navigation }) {
   // 로딩 중
   const [isLoading, setIsLoading] = useState(true);
 
+  // JWT 발급 안되는 문제 체크
+  // const [error, setError] = useState('');
+
   useEffect(() => {
     // 마운트되면 로딩 끝
     setIsLoading(false);
+    // api test
   }, [])
 
   // 카카오 연결 끊기
@@ -127,6 +134,9 @@ function LoginPage({ navigation }) {
     } catch (e) {
       console.log('카카오 토큰 발급 실패');
       console.error(e);
+      // 실패 시 로그인 화면 되돌아가기
+      setIsLoading(false);
+      // showAlert('카카오 토큰 발급 실패');
       // 중간 실패 거르기
       return false;
     }
@@ -146,19 +156,20 @@ function LoginPage({ navigation }) {
     } catch (e) {
       console.log('카카오 프로필 조회 실패');
       console.error(e);
+      // 실패 시 로그인 화면 되돌아가기
+      setIsLoading(false);
       showAlert('카카오 프로필 조회 실패');
     }
   };
   // 3. JWT token API
   const getJWTToken = async (kakaoprofile) => {
     try {
-      let url = 'http://k4c105.p.ssafy.io:8080/api/user';
+      let url = 'http://k4c105.p.ssafy.io/api/user';
       let options = {
         method: 'POST',
         url: url,
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json;charset=UTF-8',
+          'Content-Type': 'application/json'
         },
         data: JSON.stringify(kakaoprofile),
       };
@@ -172,7 +183,10 @@ function LoginPage({ navigation }) {
       saveUserInfo(response.data);
     } catch (e) {
       console.error(e);
+      // 실패 시 로그인 화면 되돌아가기
+      setIsLoading(false);
       showAlert('JWT token 발급 실패');
+      // setError(JSON.stringify(e))
     }
   };
 
