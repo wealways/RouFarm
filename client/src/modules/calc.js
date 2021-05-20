@@ -60,6 +60,7 @@ export function manipulateMonthInfo(Month) {
   }
   // 2. 오늘날짜 넣어주기
   const now = [year, month, String(today.getDate()).padStart(2, '0')].join('-')
+  // console.log(now, '현재 시간')
   // 3. 이번 달 정보 넣어주기
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
