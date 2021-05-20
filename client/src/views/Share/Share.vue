@@ -8,7 +8,7 @@
       </div>
       <!-- 캘린더 컴포넌트가 들어갈 부분 -->
       <div>
-        <Calendar :grassInfo="this.dateInfo" />
+        <Calendar :grassInfo="dateInfo" />
         <!-- 범례 부분 -->
         <div class="legend">
           <!-- 100% -->
