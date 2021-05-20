@@ -8,7 +8,7 @@ const TagText = styled.Text`
   padding:7px;
   font-size:14px;
   border-radius:10px;
-  background-color:${({name}) => name==="운동" ? "#6f95aa" : name==="지식" ? "#0c985e" : name==="자기개발" ? "#dce8ef" : "#687396"};
+  background-color:${({name}) => name==="운동" ? "#DE9E9B" : name==="지식" ? "#7EC07A" : name==="자기개발" ? "#86C5C9" : "#E75B46"};
   color:${({name}) => name!="자기개발"?"white":"#000"};
 `
 const ItemView= styled.View`
@@ -58,7 +58,7 @@ const CustomHeatmapRate = ({res}) => {
               </ItemView>
             ))}
           </View>
-          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginLeft:3,marginRight:3,marginTop:5,borderStyle:'solid',borderColor:"#000066", borderTopWidth:2}}>
+          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginLeft:3,marginRight:3,marginTop:5,borderStyle:'solid',borderColor:"#2c5061", borderTopWidth:2}}>
             <View></View>
             <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',width:100}}>
               <Text style={{fontSize:20}}>{list.reduce((acc,cur)=>acc+cur.cnt,0)}</Text>

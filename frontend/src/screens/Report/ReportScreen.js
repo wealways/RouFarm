@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext,componentDidMount  } from 'react';
+import React, { useState, useEffect, useContext  } from 'react';
 import {
   Text,
   View,
@@ -24,6 +24,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 // components
+import CustomNoData from '@/components/Report/CustomNoData';
 import CustomHeatmapChart from '@/components/Report/CustomHeatmapChart';
 import CustomHeatmapRate from '@/components/Report/CustomHeatmapRate';
 import FailView from '@/components/Report/CustomFailList';
@@ -31,6 +32,7 @@ import CustomBarChart from '@/components/Report/CustomBarChart';
 import CustomPieChart from '@/components/Report/CustomPieChart';
 import CustomPieList from '@/components/Report/CustomPieList';
 import CustomDropdown from '@/components/Report/CustomDropdown';
+import Loading from '@/components/Report/Loading';
 
 //Context API
 import { HeatmapProvider } from '@/contexts/Report/Heatmap';
@@ -43,9 +45,10 @@ import { instance } from '@/api';
 
 
 function ReportScreen({navigation}) {
-
   const [res,setRes] = useState('')
   const [loading, setLoading] = useState(true);
+  // 1 모든데이터 렌더링하겠다. 0 0개데이터렌더링하겠다. -1 로딩중이다.
+  const [isRender,setIsRender] = useState(-1);
   const [monthRes,setMonthRes] = useState({});
   const [weekRes,setWeekRes] = useState({});
   const [monthDate,setMonthDate] = useState(['2021-05'])
@@ -58,27 +61,44 @@ function ReportScreen({navigation}) {
   
   //jwt
   const {JWT} = useContext(jwtContext);
-  console.log('JWT',JWT.jwt)
   
   //데이터 가져오기
   useEffect(()=>{
     instance.get(`report/monthAPI/`, {
       headers: {
         Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI0ODYiLCJpYXQiOjE2MjA5NzA0MDcsImV4cCI6MTYyMzU2MjQwN30.CtvAR1QeW4pR_NbF8JU8_YDqrw5aWZAJJ87vQ5l6dgLwImMIestqlFlKWwSKHC4hYhbfX5CUkKpAHcs5-1XwJQ',
+        // Authorization: JWT.jwt,
       },
     }).then(res=>{
-
+      let tempres = {}
       // month
-      setMonthDate(Object.keys(res.data))
-      setMonthRes(res.data)
-
+      let tempdate = res.data.map((data,idx)=>{
+        tempres = {...tempres,...data}
+        return Object.keys(data)[0]
+      })
+      
+      if(tempdate.length===0){
+        setIsRender(0)
+      }
+      setMonthDate(tempdate)
+      setMonthRes(tempres)
       instance.get(`report/weekAPI/`,{
         headers: {
           Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI0ODYiLCJpYXQiOjE2MjA5NzA0MDcsImV4cCI6MTYyMzU2MjQwN30.CtvAR1QeW4pR_NbF8JU8_YDqrw5aWZAJJ87vQ5l6dgLwImMIestqlFlKWwSKHC4hYhbfX5CUkKpAHcs5-1XwJQ',
+          // Authorization: JWT.jwt,
         },
       }).then(res=>{
-        setweekDate(Object.keys(res.data))
-        setWeekRes(res.data)
+        let tempres = {}
+        // month
+        let tempdate = res.data.map((data,idx)=>{
+          tempres = {...tempres,...data}
+          return Object.keys(data)[0]
+        })
+        setweekDate(tempdate)
+        setWeekRes(tempres)
+        if(tempdate.length!==0){
+          setIsRender(1)
+        }
         setLoading(false);
       }).catch(e=>{
         console.error('week',e)
@@ -96,18 +116,14 @@ function ReportScreen({navigation}) {
 
   const TopTab = ({
     tabs: ['월간 리포트', '주간 리포트'],
-    lineColor: '#000066',
+    lineColor: '#2c5061',
     noSelectedStyled: { color: '#525252', fontSize: 14 },
-    selectedStyle: { color: 'black', fontWeight: 'bold', fontSize: 14 },
+    selectedStyle: { color: 'white', fontWeight: 'bold', fontSize: 14 },
     tabStyle: { paddingTop: 12, paddingBottom: 5, marginRight: 10 }
   })
 
   const [showIndex, setShowIndex] = useState(0);
   
-
-  useEffect(() => {
-    // setLoading(true);
-  })
 
   
 
@@ -115,12 +131,13 @@ function ReportScreen({navigation}) {
     
     <LinearGradient
       // colors={['#dce8ef', '#fff']}
-      colors={['#FFFAEC', '#fff']}
+      colors={['#fffaec', '#fff']}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={styles.container}
     > 
-    {loading===false && 
+    {isRender===0 && loading===false && <CustomNoData />}
+    {isRender===1 && loading===false &&
       <HeatmapProvider>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {/* <TitleText> Report Page</TitleText> */}
@@ -136,9 +153,11 @@ function ReportScreen({navigation}) {
                     }
                   }}
                   style={{
-                    borderBottomWidth: showIndex === idx ? 1 : 0,
+                    borderBottomWidth: showIndex === idx ? 0 : 1,
                     borderBottomColor: TopTab.lineColor,
+                    backgroundColor:showIndex===idx ? '#2c5061': '#fffaec',
                     width: width / 2,
+                    height: 45,
                     alignItems: 'center'
                   }}
                 >
@@ -159,16 +178,16 @@ function ReportScreen({navigation}) {
               {/* section 1 - 월간 수확 */}
               <Contents>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                  <CustomDropdown date={monthDate} flag={'month'} />
+                  <CustomDropdown date={monthDate} weekDate={weekDate} flag={'month'} />
                   <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <SubtitleText>월간 수확</SubtitleText>
+                  <SubtitleText>월간 수확   </SubtitleText>
                 </View>
                 <View>
                   <Card width={width}>
                     <MonthChartView>
-                      <CustomHeatmapChart navigation={navigation} res={monthRes}/>
+                      <CustomHeatmapChart navigation={navigation} res={monthRes} token={JWT.jwt}/>
                     </MonthChartView>
                     <MonthTextView>
                       <CustomHeatmapRate />
@@ -178,7 +197,9 @@ function ReportScreen({navigation}) {
               </Contents>
               {/* section 4 - 해쉬태그 별 달성률 */}
               <Contents>
-                <SubtitleText>해쉬태그 별 루틴 개수</SubtitleText>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SubtitleText>해쉬태그 별 루틴 개수   </SubtitleText>
+                </View>
                 <View>
                   <Card width={width}>
                     <CustomPieChart date={monthDate} res={monthRes}/>
@@ -199,7 +220,7 @@ function ReportScreen({navigation}) {
                   <Icon name="caret-down" size={15} color="#000" style={{ marginRight: 6 }} />
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: 330 }}>
-                  <SubtitleText>실패리스트</SubtitleText>
+                  <SubtitleText>실패리스트   </SubtitleText>
                 </View>
                 <Card width={width}>
                   <FailView res={weekRes}/>
@@ -207,7 +228,9 @@ function ReportScreen({navigation}) {
               </Contents>
               {/* section 3 - 요일 별 달성률 */}
               <Contents>
-                <SubtitleText>요일 별 달성률</SubtitleText>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SubtitleText>요일별 달성률   </SubtitleText>
+                </View>
                 <View>
                   <Card width={width}>
                     <CustomBarChart res={weekRes}/>
@@ -221,8 +244,8 @@ function ReportScreen({navigation}) {
         </ScrollView>
       </HeatmapProvider>
     }
-    {loading===true &&
-      <Text>로딩중입니다...</Text>
+    {loading===true && isRender===-1 &&
+      <Loading />
     }
     </LinearGradient>
   );

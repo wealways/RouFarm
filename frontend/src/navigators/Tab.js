@@ -13,6 +13,9 @@ import {
   FriendList,
   Detail,
   Splash,
+  Setting,
+  QRList,
+  About,
 } from '../screens/index';
 
 // 네비게이션 스택
@@ -23,19 +26,23 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import theme from '../theme';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
+// 로딩 - 메세지 공유
+import commonLoading from '../components/common/commonLoading';
+
+
 const HomeStack = createStackNavigator();
 // tab navi
 const Tab = createBottomTabNavigator();
 
 // route 이름 가져오기
 function getHeaderTitle(route) {
-  console.log(route, 'route정보');
-  console.log(route.params.date, 'route정보');
+  // console.log(route, 'route정보');
+  // console.log(route.params.date, 'route정보');
   // 날짜가 있으면 날짜를 반환하고 없으면 하루라는 정보 보여주기
   const routeName = 'Daily';
   // 확인
-  console.log(routeName, 'routeName');
-  console.log(route, 'routeName');
+  // console.log(routeName, 'routeName');
+  // console.log(route, 'routeName');
   return routeName;
 }
 
@@ -66,11 +73,11 @@ const Stack = createStackNavigator();
 function HomeTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="환경설정"
+      initialRouteName="Home"
       tabBarOptions={{
         activeTintColor: '#fff',
         activeBackgroundColor: theme.colors.first,
-        style: { height: 56, justifyContent: 'center', alignItems: 'center' },
+        style: { height: 56, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FCFAF5' },
         labelStyle: { fontSize: 10 },
       }}>
       <Tab.Screen
@@ -102,15 +109,15 @@ function HomeTabs() {
       {/* 루틴 자랑 */}
       <Tab.Screen
         name="Share"
-        component={FriendList}
+        component={commonLoading}
         options={{
           tabBarLabel: '루틴 자랑',
           tabBarIcon: (props) => TabIcon({ ...props, name: 'message-image-outline' }),
         }}
       />
       <Tab.Screen
-        name="SelectMode"
-        component={SelectMode}
+        name="Settings"
+        component={Setting}
         options={{
           tabBarLabel: '설정',
           tabBarIcon: (props) => TabIcon({ ...props, name: 'cog' }),
@@ -166,17 +173,46 @@ const TabNavigation = () => {
         options={({ route }) => ({
           // header title
           headerTitle: getHeaderTitle(route),
+          // headerStyle: {backgroundColor: '#dce8ef'},
+          headerStyle: { backgroundColor: '#fffaec' },
         })}
       />
-      <Stack.Screen name="Splash" component={Detail} />
+      <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
       <Stack.Screen
-        name="Login"
-        component={Detail}
-        options={({ route }) => ({
-          // header title
-          headerTitle: getHeaderTitle(route),
-        })}
+        name="QRList"
+        component={QRList}
+        options={{
+          headerTitle: 'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: { backgroundColor: '#2c5061' },
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
       />
+      <Stack.Screen
+        name="SelectMode"
+        component={SelectMode}
+        options={{
+          headerTitle: 'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: { backgroundColor: '#2c5061' },
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
+      />
+      <Stack.Screen
+        name="About"
+        component={About}
+        options={{
+          headerTitle:'Setting',
+          // headerStyle: {backgroundColor: '#fffaec'},
+          headerStyle: {backgroundColor: '#2c5061'},
+          headerTintColor: '#fff'
+          // tabBarButton: () => null,
+        }}
+      />
+      {/* <Stack.Screen name="QRList" component={QRList} options={{ headerShown: false }} /> */}
     </Stack.Navigator>
   );
 };
