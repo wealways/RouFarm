@@ -18,6 +18,7 @@ public class Routine {
      private String endTime; // 끝시간
      private List<String> repeatYoilList; // 요일 리스트
      private String category; // 분류
+     private String isQR; // QR존재 여부
 
      private HashSet<String> routineLog; // 루틴 로그 id 집합
      private String isActivate; // 활성화여부
