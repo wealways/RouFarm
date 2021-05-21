@@ -156,8 +156,20 @@ const makeRepeatDate = (startDate, repeatYoil, alarmTime) => {
   // 갭이 0보다 작으면 현재요일(숫자)이 반복요일(숫자)을 지났다는 의미이므로 --> 현재요일(숫자) + gap + 7
   // 현재 요일보다 반복해야하는 요일 더 뒤면 현재요일(숫자) + gap
   gap < 0 ? (tempDate += gap + 7) : (tempDate += gap);
-  if (gap === 0 && new Date().toTimeString().split(' ')[0] > alarmTime) {
-    gap += 7;
+  if (gap === 0) {
+    let [hours1, minutes1, seconds1] = [...alarmTime.split(':')];
+    let time = new Date().toTimeString().split(' ')[0];
+    let [hours2, minutes2, seconds2] = [...time.split(':')];
+
+    console.log(hours1, minutes1, seconds1);
+    console.log(hours2, minutes2, seconds2);
+    if (
+      parseInt(hours2) > parseInt(hours1) ||
+      (parseInt(hours2) === parseInt(hours1) && parseInt(minutes2) > parseInt(minutes1))
+    ) {
+      console.log('next week!', alarmTime);
+      tempDate += 7;
+    }
   }
 
   if (dayOfMonth[month] < tempDate) {

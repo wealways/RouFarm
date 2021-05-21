@@ -1,19 +1,24 @@
-import React from 'react';
-import { Text, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, ScrollView, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
-import { yoilReverse } from '../../utils/parsedate';
+import { yoilReverse, yoil } from '../../utils/parsedate';
 
 const DateButton = styled.Pressable`
+  justify-content: center;
+  align-items: center;
   padding: 8px;
-  margin: 0 4px;
-  background: #382f9b;
+  margin: 8px 4px;
+  background: ${(props) => (props.clickedIdx === props.i ? '#2C5061' : '#FFFAEC')};
   border-radius: 8px;
+  width: 80px;
 `;
 
-// 요일 버튼을 누르면 해당 요일에 퀘스트 uuid를 가져오기
-export const getDailyQuests = (quests, date) => {
-  console.log(date);
+const DateText = styled.Text`
+  color: ${(props) => (props.clickedIdx === props.idx ? '#fff' : '#222')};
+`;
 
+// 요일 버튼을 누르면 해당 요일에 루틴 uuid를 가져오기
+export const getDailyQuests = (quests, date) => {
   const [day1, month1, year1] = date.split('-');
 
   let uuidList = Object.keys(quests).filter((uuid) => {
@@ -30,7 +35,6 @@ export const getDailyQuests = (quests, date) => {
 
         // 같은 요일 루틴인지 확인
         const result = quests[uuid].repeatYoilList.filter((yoil2) => {
-          console.log(yoil1, yoilReverse[yoil2]);
           if (yoil1 === yoilReverse[yoil2]) {
             return true;
           }
@@ -44,33 +48,62 @@ export const getDailyQuests = (quests, date) => {
   });
 
   uuidList = uuidList === null ? [] : uuidList;
-  console.log(uuidList);
+
   return uuidList;
 };
 
 function GetRoutine({ quests, setClickedQuestUuidList }) {
   let date = new Date();
-  let sevenDays = new Array(7);
+  let listOfDays = new Array(14);
 
-  for (let i = 0; i < sevenDays.length; i++) {
-    sevenDays[i] =
-      date.getDate() + i + '-' + (date.getMonth() * 1 + 1).toString() + '-' + date.getFullYear();
+  const [clickedIdx, setClickedIdx] = useState(0);
+
+  for (let i = 0; i < listOfDays.length; i++) {
+    listOfDays[i] =
+      new Date(date.getFullYear(), date.getMonth(), date.getDate() + i).getDate() +
+      '-' +
+      (
+        new Date(date.getFullYear(), date.getMonth(), date.getDate() + i).getMonth() * 1 +
+        1
+      ).toString() +
+      '-' +
+      new Date(date.getFullYear(), date.getMonth(), date.getDate() + i).getFullYear();
   }
-
   return (
-    <ScrollView horizontal={true}>
-      {sevenDays.map((v, i) => (
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      {listOfDays.map((v, i) => (
         <React.Fragment key={i}>
           <DateButton
+            style={styles.android}
+            clickedIdx={clickedIdx}
+            i={i}
             onPress={() => {
               setClickedQuestUuidList(getDailyQuests(quests, v));
+              setClickedIdx(i);
             }}>
-            <Text style={{ color: '#fff' }}>{v}</Text>
+            <DateText style={styles.yoilText} clickedIdx={clickedIdx} idx={i}>
+              {yoil[new Date(v.split('-')[2], v.split('-')[1] * 1 - 1, v.split('-')[0]).getDay()]}
+            </DateText>
+            <DateText style={styles.dateText} clickedIdx={clickedIdx} idx={i}>
+              {v.split('-')[1] + '월 ' + v.split('-')[0] + '일'}
+            </DateText>
           </DateButton>
         </React.Fragment>
       ))}
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  android: {
+    elevation: 6,
+  },
+  dateText: {
+    fontSize: 12,
+  },
+  yoilText: {
+    fontSize: 11,
+  },
+});
 
 export default GetRoutine;

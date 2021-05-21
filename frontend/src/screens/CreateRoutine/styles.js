@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 const Wrapper = styled.View`
   flex: 1;
   background: ${({ theme }) => theme.colors.third};
+  padding-top: 16px;
 `;
 
 const Contents = styled.View`
@@ -24,7 +25,7 @@ const ButtonWrapper = styled.TouchableOpacity`
   margin: 16px auto;
   justify-content: center;
   align-items: center;
-  width: 90%;
+  width: 93.5%;
   height: 48px;
   border-radius: 8px;
   background: ${({ theme }) => theme.colors.first};
@@ -43,25 +44,35 @@ const SettingTitle = styled.Text`
   align-items: center;
   justify-content: center;
   font-size: 18px;
+  color: ${({ theme }) => theme.colors.text.first};
 `;
 const SettingButton = styled.TouchableOpacity`
   flex: 4;
   flex-direction: row;
+  width: 50%;
   height: 100%;
   min-height: 48px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
   align-items: center;
   justify-content: center;
+  background: ${({ theme }) => theme.colors.first};
 `;
 
 const SmallButton = styled.TouchableOpacity`
   width: 45%;
   height: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 16px;
   align-items: center;
   justify-content: center;
+`;
+
+const HashTagButton = styled.TouchableOpacity`
+  width: 120px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export {
@@ -73,4 +84,5 @@ export {
   SettingTitle,
   SettingButton,
   SmallButton,
+  HashTagButton,
 };

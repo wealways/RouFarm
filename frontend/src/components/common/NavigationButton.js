@@ -7,7 +7,7 @@ const ButtonWrapper = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   position: absolute;
-  right: 0;
+  left: 0;
   bottom: 0;
   width: 64px;
   height: 48px;
@@ -20,7 +20,7 @@ const HideButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   position: absolute;
-  right: 0;
+  left: 0;
   bottom: ${(props) => (props.open ? props.order * 56 + 'px' : 0)};
   width: 64px;
   height: 48px;
@@ -31,15 +31,17 @@ const HideButton = styled.TouchableOpacity`
 
 function NavigationButton({ navigation }) {
   const paths = [
-    { id: 1, path: 'Home', name: '홈' },
-    { id: 2, path: 'Report', name: '리포트' },
-    { id: 3, path: 'CreateRoutine', name: '퀘스트 생성' },
-    { id: 4, path: 'Settings', name: '환경설정' },
+    { id: 1, path: 'CreateRoutine', name: '퀘스트 생성' },
+    { id: 2, path: 'Settings', name: '환경설정' },
     // 스크린 테스트용 - 나중에 변경
-    { id: 5, path: 'Login', name: '로그인' },
-    { id: 6, path: 'SelectMode', name: '모드선택' },
-    { id: 7, path: 'FriendList', name: '친구목록' },
-    { id: 8, path: 'AlarmTest', name: '알람 테스트' },
+    { id: 3, path: 'Login', name: '로그인' },
+    { id: 4, path: 'SelectMode', name: '모드선택' },
+    { id: 5, path: 'FriendList', name: '친구목록' },
+    { id: 6, path: 'AlarmTest', name: '알람 테스트' },
+    // splash screen
+    { id: 7, path: 'SplashScreen', name: '홈화면' },
+    // qr리스트
+    // { id: 8, path: 'QRList', name: '큐알리스트' },
   ];
 
   const [open, setOpen] = useState(false);
