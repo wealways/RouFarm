@@ -1,0 +1,4 @@
+_class,_id,profile.achievement,profile.combo,profile.exp,profile.level,profile.mode,profile.nickname,profile.signindate,profile.title,routines
+com.c105.roufarm.model.User,12345678,[],0,0,0,soft,Admin,20210514,,"[""123457"",""123458"",""123456""]"
+com.c105.roufarm.model.User,12345679,[],0,0,0,soft,Admin2,20210514,,[]
+com.c105.roufarm.model.User,486,[],0,0,0,soft,password,20210514,,[]
