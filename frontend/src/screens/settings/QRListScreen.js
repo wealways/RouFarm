@@ -32,7 +32,6 @@ const QRListScreen = () => {
   useEffect(() => {
     instance.get(`routine/`, {
       headers: {
-        // Authorization: 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI0ODYiLCJpYXQiOjE2MjA5NzA0MDcsImV4cCI6MTYyMzU2MjQwN30.CtvAR1QeW4pR_NbF8JU8_YDqrw5aWZAJJ87vQ5l6dgLwImMIestqlFlKWwSKHC4hYhbfX5CUkKpAHcs5-1XwJQ',
         Authorization: JWT.jwt,
       },
     }).then(res => {

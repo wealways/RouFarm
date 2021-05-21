@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  Pressable,
-} from 'react-native';
+import { StyleSheet, ScrollView, Text, View, TextInput, Alert, Pressable } from 'react-native';
 
 import {
   Wrapper,
@@ -330,8 +321,8 @@ function CreateRoutineScreen({ navigation }) {
                     {!startDate
                       ? `${today.split('-')[2]}.${today.split('-')[1]}.${today.split('-')[0]}`
                       : `${startDate.split('-')[2].slice(2)}년 ${startDate.split('-')[1]}월 ${
-                        startDate.split('-')[0]
-                      }일`}
+                          startDate.split('-')[0]
+                        }일`}
                   </Text>
                 </SettingButton>
                 <DateTimePickerModal
@@ -351,8 +342,8 @@ function CreateRoutineScreen({ navigation }) {
                       {!startTime
                         ? '시작 시간'
                         : startTime.split(':')[0] > 12
-                          ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
-                          : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
+                        ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
+                        : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <Text style={styles.buttonText}>-</Text>
@@ -361,8 +352,8 @@ function CreateRoutineScreen({ navigation }) {
                       {!endTime
                         ? '종료 시간'
                         : endTime.split(':')[0] > 12
-                          ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
-                          : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
+                        ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
+                        : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <DateTimePickerModal
@@ -517,8 +508,8 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                       {!alarmTime
                         ? '알람 설정'
                         : alarmTime.split(':')[0] > 12
-                          ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
-                          : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
+                        ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
+                        : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
                     </Text>
                   </SettingButton>
                   <DateTimePickerModal
@@ -564,7 +555,7 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
         }}
         onConfirmPressed={() => {
           pushQR(
-            createdUuid.toString(),
+            questName,
             `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${createdUuid}`,
             `chart?cht=qr&chs=200x200&chl=${createdUuid}`,
           );

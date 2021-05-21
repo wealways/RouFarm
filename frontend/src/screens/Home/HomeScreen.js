@@ -85,10 +85,10 @@ function HomeScreen({ navigation }) {
         getDailyQuests(
           data,
           new Date().getDate() +
-            '-' +
-            (new Date().getMonth() * 1 + 1) +
-            '-' +
-            new Date().getFullYear(),
+          '-' +
+          (new Date().getMonth() * 1 + 1) +
+          '-' +
+          new Date().getFullYear(),
         ),
       );
 
@@ -302,7 +302,7 @@ function HomeScreen({ navigation }) {
                             {/* 루틴제목(+ QR유무) */}
                             {quests[uuid].qrOnceAlarmIdList.length +
                               quests[uuid].qrRepeatAlarmIdList.length >
-                            0 ? (
+                              0 ? (
                               <View style={styles.cardTitleWrapper}>
                                 <QrCodeSvg width={20} height={20} marginRight={8} fill={'#fff'} />
                                 <Text style={styles.cardTitle}>{quests[uuid].questName}</Text>
@@ -326,24 +326,20 @@ function HomeScreen({ navigation }) {
                               />
                               <Text style={styles.cardTime}>
                                 {quests[uuid].startTime.split(':')[0] > 12
-                                  ? `PM ${quests[uuid].startTime.split(':')[0] - 12}시 ${
-                                      quests[uuid].startTime.split(':')[1]
-                                    }분 ~ `
-                                  : `AM ${quests[uuid].startTime.split(':')[0]}시 ${
-                                      quests[uuid].startTime.split(':')[1]
-                                    }분 ~ `}
+                                  ? `PM ${quests[uuid].startTime.split(':')[0] - 12}시 ${quests[uuid].startTime.split(':')[1]
+                                  }분 ~ `
+                                  : `AM ${quests[uuid].startTime.split(':')[0]}시 ${quests[uuid].startTime.split(':')[1]
+                                  }분 ~ `}
                               </Text>
                               {quests[uuid].endTime !== '' && (
                                 <>
                                   <View style={{ flexDirection: 'row' }}>
                                     <Text style={styles.cardTime}>
                                       {quests[uuid].endTime.split(':')[0] > 12
-                                        ? `PM ${quests[uuid].endTime.split(':')[0] - 12}: ${
-                                            quests[uuid].endTime.split(':')[1]
-                                          }`
-                                        : `AM ${quests[uuid].endTime.split(':')[0]}:${
-                                            quests[uuid].endTime.split(':')[1]
-                                          }`}
+                                        ? `PM ${quests[uuid].endTime.split(':')[0] - 12}: ${quests[uuid].endTime.split(':')[1]
+                                        }`
+                                        : `AM ${quests[uuid].endTime.split(':')[0]}:${quests[uuid].endTime.split(':')[1]
+                                        }`}
                                     </Text>
                                   </View>
                                 </>
@@ -364,12 +360,10 @@ function HomeScreen({ navigation }) {
                                   </View>
                                   <Text style={styles.cardTime}>
                                     {quests[uuid].alarmTime.split(':')[0] > 12
-                                      ? `PM ${quests[uuid].alarmTime.split(':')[0] - 12}시 ${
-                                          quests[uuid].alarmTime.split(':')[1]
-                                        }분`
-                                      : `AM ${quests[uuid].alarmTime.split(':')[0]}시 ${
-                                          quests[uuid].alarmTime.split(':')[1]
-                                        }분`}
+                                      ? `PM ${quests[uuid].alarmTime.split(':')[0] - 12}시 ${quests[uuid].alarmTime.split(':')[1]
+                                      }분`
+                                      : `AM ${quests[uuid].alarmTime.split(':')[0]}시 ${quests[uuid].alarmTime.split(':')[1]
+                                      }분`}
                                   </Text>
                                 </View>
                               </>
@@ -483,7 +477,6 @@ function HomeScreen({ navigation }) {
           </View>
         </Contents>
       </ScrollView>
-
       <RoutineCreateButton
         style={styles.android}
         onPress={() => {
