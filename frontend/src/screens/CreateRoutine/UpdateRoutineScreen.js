@@ -86,7 +86,7 @@ function UpdateRoutineScreen({ navigation, route }) {
   // 스위치 상태
   const [isQR, setIsQR] = useState(
     route.params.quest.qrOnceAlarmIdList.length + route.params.quest.qrRepeatAlarmIdList.length !==
-      0,
+    0,
   );
   const [isAlarm, setIsAlarm] = useState(alarmTime !== '');
   const [mode, setMode] = useState('');
@@ -108,6 +108,19 @@ function UpdateRoutineScreen({ navigation, route }) {
       return;
     } else if (isQR && !isAlarm) {
       Alert.alert('알람을 설정해주세요 !');
+      return;
+    } else if (isQR && isAlarm && alarmTime === '') {
+      Alert.alert('알람 시간을 설정해주세요 !');
+      return;
+    } else if (isAlarm && alarmTime === '') {
+      Alert.alert('알람 시간을 설정해주세요 !');
+      return;
+    } else if (
+      alarmTime.split(':')[0] <= new Date().getHours() &&
+      alarmTime.split(':')[1] <= new Date().getMinutes() &&
+      alarmTime.split(':')[2] < new Date().getSeconds()
+    ) {
+      Alert.alert('알람 시간이 과거로 설정되었습니다.');
       return;
     }
 
@@ -244,10 +257,10 @@ function UpdateRoutineScreen({ navigation, route }) {
   const handleConfirm = (element) => {
     setStartDate(
       element.getDate() +
-        '-' +
-        (element.getMonth() * 1 + 1).toString() +
-        '-' +
-        element.getFullYear(),
+      '-' +
+      (element.getMonth() * 1 + 1).toString() +
+      '-' +
+      element.getFullYear(),
     );
     hideDatePicker();
   };
@@ -322,9 +335,8 @@ function UpdateRoutineScreen({ navigation, route }) {
                   <Text style={styles.buttonText}>
                     {!startDate
                       ? `${today.split('-')[2]}.${today.split('-')[1]}.${today.split('-')[0]}`
-                      : `${startDate.split('-')[2].slice(2)}년 ${startDate.split('-')[1]}월 ${
-                          startDate.split('-')[0]
-                        }일`}
+                      : `${startDate.split('-')[2].slice(2)}년 ${startDate.split('-')[1]}월 ${startDate.split('-')[0]
+                      }일`}
                   </Text>
                 </SettingButton>
                 <DateTimePickerModal
@@ -344,8 +356,8 @@ function UpdateRoutineScreen({ navigation, route }) {
                       {!startTime
                         ? '시작 시간'
                         : startTime.split(':')[0] > 12
-                        ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
-                        : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
+                          ? `오후 ${startTime.split(':')[0] * 1 - 12}시 ${startTime.split(':')[1]}분`
+                          : `오전 ${startTime.split(':')[0]}시 ${startTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <Text style={styles.buttonText}>-</Text>
@@ -354,8 +366,8 @@ function UpdateRoutineScreen({ navigation, route }) {
                       {!endTime
                         ? '종료 시간'
                         : endTime.split(':')[0] > 12
-                        ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
-                        : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
+                          ? `오후 ${endTime.split(':')[0] * 1 - 12}시 ${endTime.split(':')[1]}분`
+                          : `오전 ${endTime.split(':')[0]}시 ${endTime.split(':')[1]}분`}
                     </Text>
                   </SmallButton>
                   <DateTimePickerModal
@@ -509,8 +521,8 @@ QR을 체크하면 알람이 울릴 때 QR을 사용하여 루틴을 성공시�
                       {!alarmTime
                         ? '알람 설정'
                         : alarmTime.split(':')[0] > 12
-                        ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
-                        : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
+                          ? `오후 ${alarmTime.split(':')[0] * 1 - 12}시 ${alarmTime.split(':')[1]}분`
+                          : `오전 ${alarmTime.split(':')[0]}시 ${alarmTime.split(':')[1]}분`}
                     </Text>
                   </SettingButton>
                   <DateTimePickerModal

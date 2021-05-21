@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  Pressable,
-} from 'react-native';
+import { StyleSheet, ScrollView, Text, View, TextInput, Alert, Pressable } from 'react-native';
 
 import {
   Wrapper,
@@ -109,6 +100,19 @@ function CreateRoutineScreen({ navigation }) {
       return;
     } else if (isQR && !isAlarm) {
       Alert.alert('알람을 설정해주세요 !');
+      return;
+    } else if (isQR && isAlarm && alarmTime === '') {
+      Alert.alert('알람 시간을 설정해주세요 !');
+      return;
+    } else if (isAlarm && alarmTime === '') {
+      Alert.alert('알람 시간을 설정해주세요 !');
+      return;
+    } else if (
+      alarmTime.split(':')[0] <= new Date().getHours() &&
+      alarmTime.split(':')[1] <= new Date().getMinutes() &&
+      alarmTime.split(':')[2] < new Date().getSeconds()
+    ) {
+      Alert.alert('알람 시간이 과거로 설정되었습니다.');
       return;
     }
 
