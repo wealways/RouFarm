@@ -49,7 +49,7 @@ const RoutineCreateButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   border-radius: 16px;
-  border: 2px solid rgba(255, 125, 125, 0.7);
+  border: 2px solid rgba(255, 125, 125, 0.5);
 `;
 
 const EditDeleteCompleteButton = styled.TouchableOpacity`
