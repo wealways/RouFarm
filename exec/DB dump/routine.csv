@@ -1,0 +1,4 @@
+_class,_id,alarmTime,category,endTime,isActivate,kakaoId,questName,repeatYoilList,routineLog,startDate,startTime
+com.c105.roufarm.model.Routine,123456,17:55:00,운동,19:00:00,false,12345678,달리기2,"[""금""]","[""609dd771e13dbd6eac69331f"",""609dd767e13dbd6eac69331e"",""609dd778e13dbd6eac693320"",""609dd782e13dbd6eac693321""]",13-5-2021,18:00:00
+com.c105.roufarm.model.Routine,123457,17:55:00,운동,19:00:00,true,12345678,달리기3,"[""월"",""수""]","[""609dd85ae13dbd6eac693322""]",1-6-2021,18:00:00
+com.c105.roufarm.model.Routine,123458,17:55:00,운동,19:00:00,true,12345678,달리기,"[""월""]","[""609dd860e13dbd6eac693323"",""609ddba5e13dbd6eac693326""]",13-5-2021,18:00:00

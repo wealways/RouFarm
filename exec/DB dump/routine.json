@@ -1,0 +1,57 @@
+[{
+  "_id": "123456",
+  "kakaoId": "12345678",
+  "startDate": "13-5-2021",
+  "questName": "달리기2",
+  "alarmTime": "17:55:00",
+  "startTime": "18:00:00",
+  "endTime": "19:00:00",
+  "repeatYoilList": [
+    "금"
+  ],
+  "category": "운동",
+  "routineLog": [
+    "609dd771e13dbd6eac69331f",
+    "609dd767e13dbd6eac69331e",
+    "609dd778e13dbd6eac693320",
+    "609dd782e13dbd6eac693321"
+  ],
+  "isActivate": "false",
+  "_class": "com.c105.roufarm.model.Routine"
+},{
+  "_id": "123457",
+  "kakaoId": "12345678",
+  "startDate": "1-6-2021",
+  "questName": "달리기3",
+  "alarmTime": "17:55:00",
+  "startTime": "18:00:00",
+  "endTime": "19:00:00",
+  "repeatYoilList": [
+    "월",
+    "수"
+  ],
+  "category": "운동",
+  "routineLog": [
+    "609dd85ae13dbd6eac693322"
+  ],
+  "isActivate": "true",
+  "_class": "com.c105.roufarm.model.Routine"
+},{
+  "_id": "123458",
+  "kakaoId": "12345678",
+  "startDate": "13-5-2021",
+  "questName": "달리기",
+  "alarmTime": "17:55:00",
+  "startTime": "18:00:00",
+  "endTime": "19:00:00",
+  "repeatYoilList": [
+    "월"
+  ],
+  "category": "운동",
+  "routineLog": [
+    "609dd860e13dbd6eac693323",
+    "609ddba5e13dbd6eac693326"
+  ],
+  "isActivate": "true",
+  "_class": "com.c105.roufarm.model.Routine"
+}]
